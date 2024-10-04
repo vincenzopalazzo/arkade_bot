@@ -71,7 +71,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (wasmLoaded) return
     const go = new window.Go()
-    WebAssembly.instantiateStreaming(fetch('https://arkadewasm.bordalix.workers.dev?x'), go.importObject).then(
+    WebAssembly.instantiateStreaming(fetch('https://arkadewasm.bordalix.workers.dev?21'), go.importObject).then(
       (result) => {
         go.run(result.instance)
         setWasmLoaded(true)
