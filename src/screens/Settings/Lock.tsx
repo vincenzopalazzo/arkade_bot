@@ -45,9 +45,7 @@ export default function Lock() {
           </div>
         ) : (
           <div className='flex flex-col gap-4'>
-            <p className='mt-10 mb-4 max-w-64 mx-auto'>
-              After locking you'll need to re-enter your password to unlock the wallet.
-            </p>
+            <p className='mt-10 mb-4 max-w-64 mx-auto'>After locking you'll need to re-enter your password to unlock</p>
             <Input label='Insert password' onChange={handleChange} type='password' />
             <Error error={Boolean(error)} text={error} />
           </div>

@@ -1,11 +1,11 @@
-import { defaultNetwork } from './constants'
+import { defaultDust, defaultMinRelayFee, defaultNetwork, defaultRoundInterval } from './constants'
 import { NetworkName } from './network'
 import { Satoshis, Tx } from './types'
 
-export const defaultMinRelayFee = 30
-export const defaultRoundInterval = 10
-
 export const emptyAspInfo = {
+  boardingDescriptorTemplate: '',
+  dust: defaultDust,
+  forfeitAddress: '',
   minRelayFee: 0,
   network: defaultNetwork,
   pubkey: '',
@@ -15,7 +15,7 @@ export const emptyAspInfo = {
   url: '',
 }
 
-const aspUrl = {
+const aspMap = {
   [NetworkName.Liquid]: 'https://asp-liquid.arkdev.info',
   [NetworkName.Regtest]: 'http://localhost:7070',
   [NetworkName.Signet]: 'https://asp.signet.arklabs.to',
@@ -25,7 +25,7 @@ const aspUrl = {
 const headers = { 'Content-Type': 'application/json' }
 
 const get = async (endpoint: string, net: NetworkName) => {
-  const response = await fetch(aspUrl[net] + endpoint, { headers })
+  const response = await fetch(aspMap[net] + endpoint, { headers })
   return await response.json()
 }
 
@@ -34,6 +34,9 @@ export const claimVtxos = async () => {
 }
 
 export interface AspInfo {
+  boardingDescriptorTemplate: string
+  dust: number
+  forfeitAddress: string
   minRelayFee: number
   network: NetworkName
   pubkey: string
@@ -44,15 +47,28 @@ export interface AspInfo {
 }
 
 export const getAspInfo = async (net: NetworkName): Promise<AspInfo> => {
-  const { minRelayFee, network, pubkey, roundInterval, roundLifetime, unilateralExitDelay } = await get('/v1/info', net)
+  const {
+    boardingDescriptorTemplate,
+    dust,
+    forfeitAddress,
+    minRelayFee,
+    network,
+    pubkey,
+    roundInterval,
+    roundLifetime,
+    unilateralExitDelay,
+  } = await get('/v1/info', net)
   return {
+    boardingDescriptorTemplate,
+    dust: dust ? Number(dust) : defaultDust,
+    forfeitAddress,
     minRelayFee: minRelayFee ? Number(minRelayFee) : defaultMinRelayFee,
     network: network ? (network as NetworkName) : defaultNetwork,
     pubkey,
     roundInterval: roundInterval ? Number(roundInterval) : defaultRoundInterval,
     roundLifetime: Number(roundLifetime),
     unilateralExitDelay: Number(unilateralExitDelay),
-    url: aspUrl[net],
+    url: aspMap[net],
   }
 }
 

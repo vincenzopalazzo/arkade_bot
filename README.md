@@ -1,4 +1,4 @@
-# Ark wallet
+# Arkade
 
 Scaling Bitcoin one VTXO at the time
 

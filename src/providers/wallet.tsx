@@ -33,7 +33,7 @@ const defaultWallet: Wallet = {
 }
 
 interface WalletContextProps {
-  initWallet: (password: string, privateKey?: string) => Promise<void>
+  initWallet: (password: string, privateKey: string) => Promise<void>
   lockWallet: (password: string) => Promise<void>
   reloadWallet: () => void
   resetWallet: () => void
@@ -61,7 +61,7 @@ export const WalletContext = createContext<WalletContextProps>({
 })
 
 export const WalletProvider = ({ children }: { children: ReactNode }) => {
-  const { setAspInfo } = useContext(AspContext)
+  const { setAspInfo, aspInfo } = useContext(AspContext)
   const { navigate } = useContext(NavigationContext)
 
   const [walletUnlocked, setWalletUnlocked] = useState(false)
@@ -93,11 +93,8 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [wasmLoaded])
 
-  const initWallet = async (
-    password: string,
-    privateKey = '63a692c8b930b43a0b5b1da13d4b0c8dd7206409bb6b7bd26b23e8d1a2aa11b8',
-  ) => {
-    const aspUrl = 'http://localhost:7070'
+  const initWallet = async (password: string, privateKey: string) => {
+    const aspUrl = aspInfo.url
     const chain = 'bitcoin'
     const clientType = 'rest'
     const walletType = 'singlekey'

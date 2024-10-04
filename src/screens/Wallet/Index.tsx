@@ -8,14 +8,15 @@ import Content from '../../components/Content'
 import QRCodeIcon from '../../icons/QRCode'
 import ScanIcon from '../../icons/Scan'
 import TransactionsList from '../../components/TransactionsList'
-import { dustLimit } from '../../lib/constants'
 import { WalletContext } from '../../providers/wallet'
+import { AspContext } from '../../providers/asp'
 
 export default function Wallet() {
+  const { aspInfo } = useContext(AspContext)
   const { navigate } = useContext(NavigationContext)
   const { reloadWallet, wallet } = useContext(WalletContext)
 
-  const canSend = wallet.balance > dustLimit
+  const canSend = wallet.balance > aspInfo.dust
 
   useEffect(() => {
     reloadWallet()

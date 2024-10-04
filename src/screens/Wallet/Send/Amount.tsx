@@ -7,8 +7,8 @@ import Title from '../../../components/Title'
 import Content from '../../../components/Content'
 import InputAmount from '../../../components/InputAmount'
 import Container from '../../../components/Container'
-import { dustLimit } from '../../../lib/constants'
 import { WalletContext } from '../../../providers/wallet'
+import { AspContext } from '../../../providers/asp'
 
 enum ButtonLabel {
   NoBalance = 'Not enough balance',
@@ -19,8 +19,9 @@ enum ButtonLabel {
 }
 
 export default function SendAmount() {
-  const { navigate } = useContext(NavigationContext)
+  const { aspInfo } = useContext(AspContext)
   const { sendInfo, setSendInfo } = useContext(FlowContext)
+  const { navigate } = useContext(NavigationContext)
   const { wallet } = useContext(WalletContext)
 
   const [amount, setAmount] = useState(0)
@@ -35,7 +36,8 @@ export default function SendAmount() {
     navigate(Pages.SendDetails)
   }
 
-  const label = amount > wallet.balance ? ButtonLabel.NoBalance : amount < dustLimit ? ButtonLabel.Low : ButtonLabel.Ok
+  const label =
+    amount > wallet.balance ? ButtonLabel.NoBalance : amount < aspInfo.dust ? ButtonLabel.Low : ButtonLabel.Ok
 
   const disabled = label !== ButtonLabel.Ok
 

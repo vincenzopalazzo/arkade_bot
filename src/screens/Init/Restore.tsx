@@ -7,7 +7,6 @@ import { NavigationContext, Pages } from '../../providers/navigation'
 import Content from '../../components/Content'
 import { FlowContext } from '../../providers/flow'
 import Container from '../../components/Container'
-import Input from '../../components/Input'
 import { invalidPrivateKey } from '../../lib/privateKey'
 import Textarea from '../../components/Textarea'
 

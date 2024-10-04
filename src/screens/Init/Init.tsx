@@ -11,9 +11,10 @@ export default function Init() {
   return (
     <Container>
       <div className='mt-24 max-w-80 md:max-w-full mx-auto'>
-        <Title text='Ark wallet' subtext='Bitcoin transactions that scale' />
+        <Title text='Arkade' subtext='Ark wallet PoC' />
         <div className='flex flex-col gap-1'>
-          <p>Built with React and Arklabs' SDK</p>
+          <p>Bitcoin transactions that scale</p>
+          <p>Built with React and Arklabs SDK</p>
           <p>Extremely beta software</p>
           <p>Signet only</p>
         </div>
