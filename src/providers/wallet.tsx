@@ -71,11 +71,13 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (wasmLoaded) return
     const go = new window.Go()
-    WebAssembly.instantiateStreaming(fetch('ark-sdk-with-async-and-dump.wasm'), go.importObject).then((result) => {
-      go.run(result.instance)
-      setWasmLoaded(true)
-      console.log('wasm loaded')
-    })
+    WebAssembly.instantiateStreaming(fetch('https://arkadewasm.bordalix.workers.dev?x'), go.importObject).then(
+      (result) => {
+        go.run(result.instance)
+        setWasmLoaded(true)
+        console.log('wasm loaded')
+      },
+    )
     getAspInfo(wallet.network).then(setAspInfo)
   }, [])
 
