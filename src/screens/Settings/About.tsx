@@ -14,13 +14,7 @@ export default function About() {
       <Content>
         <Title text='About' />
         <div className='flex flex-col gap-2'>
-          <p>
-            Built with React and{' '}
-            <a className='underline' href='https://arklabs.to'>
-              Arklabs
-            </a>{' '}
-            SDK
-          </p>
+          <p>Ark wallet PoC</p>
           <p>Extremely beta software</p>
           <p>Signet only</p>
         </div>

@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import Balance from '../../components/Balance'
 import Button from '../../components/Button'
 import ButtonsOnBottom from '../../components/ButtonsOnBottom'
@@ -16,11 +16,24 @@ export default function Wallet() {
   const { navigate } = useContext(NavigationContext)
   const { reloadWallet, wallet } = useContext(WalletContext)
 
-  const canSend = wallet.balance > aspInfo.dust
+  const [error, setError] = useState(false)
+  const [lowFunds, setLowFunds] = useState(false)
 
   useEffect(() => {
     reloadWallet()
   }, [])
+
+  useEffect(() => {
+    setError(!(aspInfo.pubkey?.length > 0))
+  }, [aspInfo.pubkey])
+
+  useEffect(() => {
+    if (!aspInfo.dust) return
+    setLowFunds(wallet.balance < aspInfo.dust)
+  }, [aspInfo.dust])
+
+  const handleRecv = () => navigate(Pages.ReceiveAmount)
+  const handleSend = () => navigate(Pages.SendInvoice)
 
   return (
     <Container>
@@ -29,8 +42,8 @@ export default function Wallet() {
         <TransactionsList short />
       </Content>
       <ButtonsOnBottom>
-        <Button icon={<ScanIcon />} label='Send' onClick={() => navigate(Pages.SendInvoice)} disabled={!canSend} />
-        <Button icon={<QRCodeIcon />} label='Receive' onClick={() => navigate(Pages.ReceiveAmount)} />
+        <Button disabled={error || lowFunds} icon={<ScanIcon />} label='Send' onClick={handleSend} />
+        <Button disabled={error} icon={<QRCodeIcon />} label='Receive' onClick={handleRecv} />
       </ButtonsOnBottom>
     </Container>
   )
