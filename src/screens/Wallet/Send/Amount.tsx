@@ -44,7 +44,7 @@ export default function SendAmount() {
   return (
     <Container>
       <Content>
-        <Title text='Send' subtext='subtext' />
+        <Title text='Send' subtext='Define amount' />
         <div className='flex flex-col gap-2'>
           <InputAmount label='Amount' onChange={setAmount} />
         </div>

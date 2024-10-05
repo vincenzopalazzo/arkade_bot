@@ -10,6 +10,7 @@ import { prettyNumber } from '../../../lib/format'
 import { WalletContext } from '../../../providers/wallet'
 import Error from '../../../components/Error'
 import Table from '../../../components/Table'
+import { defaultFees } from '../../../lib/constants'
 
 export default function SendFees() {
   const { wallet } = useContext(WalletContext)
@@ -19,7 +20,7 @@ export default function SendFees() {
   const [error, setError] = useState('')
 
   const { address, arkAddress, satoshis } = sendInfo
-  const feeInSats = 206 // TODO
+  const feeInSats = defaultFees // TODO
 
   useEffect(() => {
     if (wallet.initialized && satoshis) {

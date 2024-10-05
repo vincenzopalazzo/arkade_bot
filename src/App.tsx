@@ -25,6 +25,7 @@ import Unlock from './screens/Wallet/Unlock'
 import './wasm_exec.js'
 import './wasmTypes.d.ts'
 import InitConnect from './screens/Init/Connect'
+import Transaction from './screens/Wallet/Transaction'
 
 export default function App() {
   const { wasmLoaded } = useContext(WalletContext)
@@ -53,6 +54,7 @@ export default function App() {
         {screen === Pages.SendPayment && <SendPayment />}
         {screen === Pages.SendSuccess && <SendSuccess />}
         {screen === Pages.Transactions && <Transactions />}
+        {screen === Pages.Transaction && <Transaction />}
         {screen === Pages.Unlock && <Unlock />}
         {screen === Pages.Wallet && <Wallet />}
       </div>

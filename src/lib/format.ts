@@ -20,6 +20,18 @@ export const prettyUnixTimestamp = (num: number): string => {
   }).format(date)
 }
 
+export const prettyDate = (num: number): string => {
+  if (!num) return ''
+  const date = new Date(num * 1000)
+  return new Intl.DateTimeFormat('en', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    minute: '2-digit',
+    hour: '2-digit',
+  }).format(date)
+}
+
 export const fromSatoshis = (num: Satoshis): number => {
   return Decimal.div(num, 100_000_000).toNumber()
 }

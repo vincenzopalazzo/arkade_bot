@@ -1,24 +1,30 @@
 import { useContext } from 'react'
-import { Wallet, WalletContext } from '../providers/wallet'
+import { WalletContext } from '../providers/wallet'
 import Label from './Label'
 import { Tx } from '../lib/types'
 import { prettyAgo, prettyNumber } from '../lib/format'
 import ArrowIcon from '../icons/Arrow'
 import { NavigationContext, Pages } from '../providers/navigation'
 import Pill from './Pill'
+import { FlowContext } from '../providers/flow'
 
-const TransactionLine = ({ data }: { data: Tx; wallet: Wallet }) => {
+const TransactionLine = ({ tx }: { tx: Tx }) => {
+  const { setTxInfo } = useContext(FlowContext)
   const { navigate } = useContext(NavigationContext)
-  const prefix = data.type === 'sent' ? '-' : '+'
-  const amount = `${prefix} ${prettyNumber(data.amount)} sats`
-  const date = prettyAgo(data.createdAt)
+
+  const prefix = tx.type === 'sent' ? '-' : '+'
+  const amount = `${prefix} ${prettyNumber(tx.amount)} sats`
+  const date = prettyAgo(tx.createdAt)
+
+  const handleClick = () => {
+    setTxInfo(tx)
+    navigate(Pages.Transaction)
+  }
+
   return (
-    <div
-      className='border cursor-pointer p-2 flex justify-between w-full rounded-md'
-      onClick={() => navigate(Pages.Transactions)}
-    >
+    <div className='border cursor-pointer p-2 flex justify-between w-full rounded-md' onClick={handleClick}>
       <p className='text-left w-2/5'>{amount}</p>
-      {data.isPending ? <Pill text='Pending' /> : null}
+      {tx.isPending ? <Pill text='Pending' /> : null}
       <p className='text-right w-2/5'>{date}</p>
     </div>
   )
@@ -40,8 +46,8 @@ export default function TransactionsList({ short }: { short?: boolean }) {
     <div className='mt-4'>
       <Label text={`${short ? 'Last' : 'All'} transactions`} />
       <div className='flex flex-col gap-2 h-72 overflow-auto'>
-        {showTxs.map((t) => (
-          <TransactionLine key={`${t.createdAt}${t.boardingTxid}${t.roundTxid}`} data={t} wallet={wallet} />
+        {showTxs.map((tx) => (
+          <TransactionLine key={`${tx.createdAt}${tx.boardingTxid}${tx.roundTxid}`} tx={tx} />
         ))}
         {short && transactions.length > showMax ? (
           <div
