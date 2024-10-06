@@ -43,6 +43,7 @@ export default function Transaction() {
       await settlePending()
       if (txInfo) setTxInfo({ ...txInfo, isPending: false })
     } catch (err) {
+      console.log('error settling', err)
       setError(extractError(err))
     }
     setSettling(false)

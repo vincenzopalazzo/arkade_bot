@@ -33,7 +33,6 @@ export default function ReceiveSuccess() {
         </div>
       </Content>
       <ButtonsOnBottom>
-        <Button onClick={handleExplorer} label='View on explorer' />
         <Button onClick={goBackToWallet} label='Back to wallet' secondary />
       </ButtonsOnBottom>
     </Container>
