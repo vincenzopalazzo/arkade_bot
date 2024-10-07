@@ -14,6 +14,8 @@ import Error from '../../components/Error'
 import { extractError } from '../../lib/error'
 import Loading from '../../components/Loading'
 import { openInNewTab } from '../../lib/explorers'
+import Modal from '../../components/Modal'
+import TipIcon from '../../icons/Tip'
 
 export default function Transaction() {
   const { txInfo, setTxInfo } = useContext(FlowContext)
@@ -26,6 +28,7 @@ export default function Transaction() {
 
   const [buttonLabel, setButtonLabel] = useState(defaultButtonLabel)
   const [showButton, setShowButton] = useState(false)
+  const [showInfo, setShowInfo] = useState(false)
   const [settling, setSettling] = useState(false)
   const [error, setError] = useState('')
 
@@ -71,12 +74,31 @@ export default function Transaction() {
         <Title text='Transaction' subtext={tx.type} />
         <Error error={Boolean(error)} text={error} />
         {settling ? <Loading /> : <Table data={data} />}
+        <div className='flex justify-center align-middle mt-4' onClick={() => setShowInfo(true)}>
+          <TipIcon small />
+          <p className='text-sm underline underline-offset-2 cursor-pointer'>What are pending transactions?</p>
+        </div>
       </Content>
       <ButtonsOnBottom>
         {showButton ? <Button onClick={handleClaim} label={buttonLabel} disabled={settling} /> : null}
         {tx.roundTxid ? <Button onClick={handleExplorer} label='View on explorer' /> : null}
         <Button onClick={goBackToWallet} label='Back to wallet' secondary />
       </ButtonsOnBottom>
+      <Modal open={showInfo} onClose={() => setShowInfo(false)}>
+        <div className='flex flex-col gap-4 text-left'>
+          <p className='font-semibold text-center'>Pending transactions</p>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
+            ea commodo consequat.
+          </p>
+          <p>
+            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+            Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est
+            laborum
+          </p>
+        </div>
+      </Modal>
     </Container>
   )
 }
