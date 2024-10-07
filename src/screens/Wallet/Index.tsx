@@ -30,7 +30,7 @@ export default function Wallet() {
   useEffect(() => {
     if (!aspInfo.dust) return
     setLowFunds(wallet.balance < aspInfo.dust)
-  }, [aspInfo.dust])
+  }, [aspInfo.dust, wallet.balance])
 
   const handleRecv = () => navigate(Pages.ReceiveAmount)
   const handleSend = () => navigate(Pages.SendInvoice)
