@@ -4,6 +4,7 @@ import { NetworkName } from './network'
 export enum ExplorerName {
   Blockstream = 'Blockstream',
   Mempool = 'Mempool',
+  Mutiny = 'Mutiny',
   Nigiri = 'Nigiri',
 }
 
@@ -44,6 +45,12 @@ const explorers: Explorer[] = [
       restApiExplorerURL: 'http://localhost:5001',
     },
   },
+  {
+    name: ExplorerName.Mutiny,
+    [NetworkName.Signet]: {
+      restApiExplorerURL: 'https://mutinynet.com',
+    },
+  },
 ]
 
 export const getExplorerNames = (network: NetworkName) =>
@@ -65,17 +72,4 @@ export const getTxIdURL = (txid: string, wallet: Wallet) => {
 
 export const openInNewTab = (txid: string, wallet: Wallet) => {
   window.open(getTxIdURL(txid, wallet), '_blank', 'noreferrer')
-}
-
-export const broadcastTxHex = async (txHex: string, wallet: Wallet): Promise<{ id: string }> => {
-  const t = wallet.network === NetworkName.Testnet ? 'testnet.' : ''
-  const url = `https://api.${t}boltz.exchange/v2/chain/L-BTC/transaction`
-  const response = await fetch(url, {
-    body: JSON.stringify({ hex: txHex }),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    method: 'POST',
-  })
-  return await response.json()
 }

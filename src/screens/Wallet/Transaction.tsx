@@ -13,24 +13,25 @@ import Table from '../../components/Table'
 import Error from '../../components/Error'
 import { extractError } from '../../lib/error'
 import Loading from '../../components/Loading'
+import { openInNewTab } from '../../lib/explorers'
 
 export default function Transaction() {
   const { txInfo, setTxInfo } = useContext(FlowContext)
   const { navigate } = useContext(NavigationContext)
-  const { settlePending } = useContext(WalletContext)
+  const { settlePending, wallet } = useContext(WalletContext)
 
+  const tx = txInfo
   const goBackToWallet = () => navigate(Pages.Wallet)
   const defaultButtonLabel = 'Settle pending'
 
   const [buttonLabel, setButtonLabel] = useState(defaultButtonLabel)
-  const [error, setError] = useState('')
   const [showButton, setShowButton] = useState(false)
   const [settling, setSettling] = useState(false)
+  const [error, setError] = useState('')
 
   useEffect(() => {
-    if (!txInfo) return
-    setShowButton(txInfo.isPending)
-  }, [txInfo?.isPending])
+    if (tx) setShowButton(tx.isPending)
+  }, [tx?.isPending])
 
   useEffect(() => {
     setButtonLabel(settling ? 'Settling...' : defaultButtonLabel)
@@ -41,17 +42,19 @@ export default function Transaction() {
     setSettling(true)
     try {
       await settlePending()
-      if (txInfo) setTxInfo({ ...txInfo, isPending: false })
+      if (tx) setTxInfo({ ...tx, isPending: false })
     } catch (err) {
-      console.log('error settling', err)
+      console.log('error settling', typeof err, err)
       setError(extractError(err))
     }
     setSettling(false)
   }
 
-  if (!txInfo) return <></>
+  const handleExplorer = () => {
+    if (tx?.roundTxid) openInNewTab(tx.roundTxid, wallet)
+  }
 
-  const tx = txInfo
+  if (!tx) return <></>
 
   const data = [
     ['When', prettyAgo(tx.createdAt)],
@@ -71,6 +74,7 @@ export default function Transaction() {
       </Content>
       <ButtonsOnBottom>
         {showButton ? <Button onClick={handleClaim} label={buttonLabel} disabled={settling} /> : null}
+        {tx.roundTxid ? <Button onClick={handleExplorer} label='View on explorer' /> : null}
         <Button onClick={goBackToWallet} label='Back to wallet' secondary />
       </ButtonsOnBottom>
     </Container>
