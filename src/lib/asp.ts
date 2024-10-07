@@ -47,36 +47,49 @@ export interface AspInfo {
 }
 
 export const getAspInfo = async (net: NetworkName): Promise<AspInfo> => {
-  const {
-    boardingDescriptorTemplate,
-    dust,
-    forfeitAddress,
-    minRelayFee,
-    network,
-    pubkey,
-    roundInterval,
-    roundLifetime,
-    unilateralExitDelay,
-  } = await get('/v1/info', net)
-  return {
-    boardingDescriptorTemplate,
-    dust: dust ? Number(dust) : defaultDust,
-    forfeitAddress,
-    minRelayFee: minRelayFee ? Number(minRelayFee) : defaultMinRelayFee,
-    network: network ? (network as NetworkName) : defaultNetwork,
-    pubkey,
-    roundInterval: roundInterval ? Number(roundInterval) : defaultRoundInterval,
-    roundLifetime: Number(roundLifetime),
-    unilateralExitDelay: Number(unilateralExitDelay),
-    url: aspMap[net],
-  }
+  return new Promise((resolve) => {
+    get('/v1/info', net)
+      .then(
+        ({
+          boardingDescriptorTemplate,
+          dust,
+          forfeitAddress,
+          minRelayFee,
+          network,
+          pubkey,
+          roundInterval,
+          roundLifetime,
+          unilateralExitDelay,
+        }) => {
+          resolve({
+            boardingDescriptorTemplate,
+            dust: dust ? Number(dust) : defaultDust,
+            forfeitAddress,
+            minRelayFee: minRelayFee ? Number(minRelayFee) : defaultMinRelayFee,
+            network: network ? (network as NetworkName) : defaultNetwork,
+            pubkey,
+            roundInterval: roundInterval ? Number(roundInterval) : defaultRoundInterval,
+            roundLifetime: Number(roundLifetime),
+            unilateralExitDelay: Number(unilateralExitDelay),
+            url: aspMap[net],
+          })
+        },
+      )
+      .catch(() => resolve(emptyAspInfo))
+  })
 }
 
 export const getBalance = async (): Promise<Satoshis> => {
-  const balance = await window.balance(false)
-  if (!balance) return 0
-  const { offchainBalance, onchainBalance } = balance
-  return offchainBalance + onchainBalance.spendable + onchainBalance.locked
+  return new Promise((resolve) => {
+    window
+      .balance(false)
+      .then((balance) => {
+        if (!balance) resolve(0)
+        const { offchainBalance, onchainBalance } = balance
+        resolve(offchainBalance + onchainBalance.spendable + onchainBalance.locked)
+      })
+      .catch(() => resolve(0))
+  })
 }
 
 export const getPrivateKey = async () => {
