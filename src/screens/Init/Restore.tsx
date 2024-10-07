@@ -7,7 +7,7 @@ import { NavigationContext, Pages } from '../../providers/navigation'
 import Content from '../../components/Content'
 import { FlowContext } from '../../providers/flow'
 import Container from '../../components/Container'
-import { invalidPrivateKey } from '../../lib/privateKey'
+import { invalidPrivateKey, nsecToPrivateKey } from '../../lib/privateKey'
 import Textarea from '../../components/Textarea'
 
 enum ButtonLabel {
@@ -22,6 +22,7 @@ export default function InitOld() {
   const [error, setError] = useState('')
   const [label, setLabel] = useState(ButtonLabel.Ok)
   const [privateKey, setPrivateKey] = useState('')
+  const [someKey, setSomeKey] = useState('')
 
   useEffect(() => {
     const err = invalidPrivateKey(privateKey)
@@ -29,7 +30,11 @@ export default function InitOld() {
     setError(err)
   }, [privateKey])
 
-  const handleChange = (e: any) => setPrivateKey(e.target.value)
+  useEffect(() => {
+    setPrivateKey(someKey.match(/^nsec/) ? nsecToPrivateKey(someKey) : someKey)
+  }, [someKey])
+
+  const handleChange = (e: any) => setSomeKey(e.target.value)
 
   const handleCancel = () => navigate(Pages.Init)
 
@@ -38,7 +43,7 @@ export default function InitOld() {
     navigate(Pages.InitPassword)
   }
 
-  const disabled = privateKey.length !== 64 || error.length > 0
+  const disabled = privateKey.length > 0 && error.length > 0
 
   return (
     <Container>

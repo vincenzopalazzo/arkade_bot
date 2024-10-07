@@ -8,6 +8,7 @@ import Textarea from '../../components/Textarea'
 import Container from '../../components/Container'
 import { copyToClipboard } from '../../lib/clipboard'
 import { getPrivateKey } from '../../lib/asp'
+import { privateKeyToNsec } from '../../lib/privateKey'
 
 export default function Backup() {
   const { toggleShowConfig } = useContext(ConfigContext)
@@ -15,10 +16,10 @@ export default function Backup() {
   const label = 'Copy to clipboard'
 
   const [buttonLabel, setButtonLabel] = useState(label)
-  const [privateKey, setPrivateKey] = useState('')
+  const [nsec, setNsec] = useState('')
 
   useEffect(() => {
-    getPrivateKey().then(setPrivateKey)
+    getPrivateKey().then((sk) => setNsec(privateKeyToNsec(sk)))
   }, [])
 
   const handleClose = () => {
@@ -26,7 +27,7 @@ export default function Backup() {
   }
 
   const handleCopy = async () => {
-    await copyToClipboard(privateKey)
+    await copyToClipboard(nsec)
     setButtonLabel('Copied')
     setTimeout(() => setButtonLabel(label), 2000)
   }
@@ -35,7 +36,7 @@ export default function Backup() {
     <Container>
       <Content>
         <Title text='Backup' subtext='Save your data' />
-        <Textarea label='Private key' value={privateKey} />
+        <Textarea label='Private key' value={nsec} />
       </Content>
       <ButtonsOnBottom>
         <Button onClick={handleCopy} label={buttonLabel} />
