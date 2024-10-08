@@ -87,16 +87,7 @@ export default function Transaction() {
       <Modal open={showInfo} onClose={() => setShowInfo(false)}>
         <div className='flex flex-col gap-4 text-left'>
           <p className='font-semibold text-center'>Pending transactions</p>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-            ea commodo consequat.
-          </p>
-          <p>
-            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-            Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est
-            laborum
-          </p>
+          <p>This transaction is reversible in case the settlement doesn't go through.</p>
         </div>
       </Modal>
     </Container>
