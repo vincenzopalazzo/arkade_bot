@@ -73,11 +73,17 @@ export default function Transaction() {
       <Content>
         <Title text='Transaction' subtext={tx.type} />
         <Error error={Boolean(error)} text={error} />
-        {settling ? <Loading /> : <Table data={data} />}
-        <div className='flex justify-center align-middle mt-4' onClick={() => setShowInfo(true)}>
-          <TipIcon small />
-          <p className='text-sm underline underline-offset-2 cursor-pointer'>What are pending transactions?</p>
-        </div>
+        {settling ? (
+          <Loading />
+        ) : (
+          <>
+            <Table data={data} />
+            <div className='flex justify-center align-middle mt-4' onClick={() => setShowInfo(true)}>
+              <TipIcon small />
+              <p className='text-sm underline underline-offset-2 cursor-pointer'>What are pending transactions?</p>
+            </div>
+          </>
+        )}
       </Content>
       <ButtonsOnBottom>
         {showButton ? <Button onClick={handleClaim} label={buttonLabel} disabled={settling} /> : null}
@@ -87,7 +93,9 @@ export default function Transaction() {
       <Modal open={showInfo} onClose={() => setShowInfo(false)}>
         <div className='flex flex-col gap-4 text-left'>
           <p className='font-semibold text-center'>Pending transactions</p>
-          <p>This transaction is reversible in case the settlement doesn't go through.</p>
+          <p>This transaction is not yet final.</p>
+          <p>The sender can still cancel or redirect it to another recipient.</p>
+          <p>Funds will become non-reversible once the transaction is settled.</p>
         </div>
       </Modal>
     </Container>

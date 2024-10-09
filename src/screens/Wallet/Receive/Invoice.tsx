@@ -11,7 +11,7 @@ import { NavigationContext, Pages } from '../../../providers/navigation'
 import { extractError } from '../../../lib/error'
 import { copyToClipboard } from '../../../lib/clipboard'
 import * as bip21 from '../../../lib/bip21'
-import { waitPayment } from '../../../lib/asp'
+import { getBalance } from '../../../lib/asp'
 import { WalletContext } from '../../../providers/wallet'
 
 export default function ReceiveInvoice() {
@@ -23,7 +23,7 @@ export default function ReceiveInvoice() {
   const [buttonLabel, setButtonLabel] = useState(label)
   const [error, setError] = useState('')
 
-  const poolAspIntervalId = useRef<number>()
+  const poolAspIntervalId = useRef<NodeJS.Timer>()
 
   const firefox = !navigator.clipboard || !('writeText' in navigator.clipboard)
 
@@ -49,12 +49,20 @@ export default function ReceiveInvoice() {
   }
 
   useEffect(() => {
+    if (!wallet) return
     try {
-      waitPayment(wallet.balance).then(() => onFinish(''))
+      poolAspIntervalId.current = setInterval(() => {
+        getBalance().then((balance) => {
+          if (balance !== wallet.balance) {
+            clearTimeout(poolAspIntervalId.current)
+            onFinish('')
+          }
+        })
+      }, 1000)
     } catch (error) {
       setError(extractError(error))
     }
-  })
+  }, [])
 
   const bip21uri = bip21.encode(boardingAddr, offchainAddr, satoshis)
 

@@ -139,16 +139,3 @@ export const sendOnchain = async (sats: number, address: string): Promise<string
   console.log('Sending onchain', sats, address)
   return await window.sendOnChain([{ To: address, Amount: sats }])
 }
-
-export const waitPayment = async (initialBalance: number): Promise<boolean> => {
-  return new Promise((resolve) => {
-    const id = setInterval(() => {
-      getBalance().then((balance) => {
-        if (balance !== initialBalance) {
-          clearTimeout(id)
-          resolve(true)
-        }
-      })
-    }, 1000)
-  })
-}
