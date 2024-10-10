@@ -64,7 +64,7 @@ export default function Transaction() {
     ['State', tx.isPending ? 'Pending' : 'Settled'],
     ['Date', prettyDate(tx.createdAt)],
     ['Amount', prettyNumber(tx.type === 'sent' ? tx.amount - defaultFees : tx.amount)],
-    ['Network fees', prettyNumber(tx.type === 'sent' ? defaultFees : 0)],
+    ['Net fees', prettyNumber(tx.type === 'sent' ? defaultFees : 0)],
     ['Total', prettyNumber(tx.amount)],
   ]
 

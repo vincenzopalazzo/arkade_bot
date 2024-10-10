@@ -55,7 +55,7 @@ export default function SendFees() {
 
   const data = [
     ['Amount', prettyNumber(satoshis)],
-    ['Network fees', feeInSats.toString()],
+    ['Net fees', feeInSats.toString()],
     ['Total', prettyTotal],
   ].filter((row) => row[0] !== 'Boltz fees')
 
