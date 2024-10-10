@@ -71,7 +71,7 @@ export default function Transaction() {
   return (
     <Container>
       <Content>
-        <Title text='Transaction' subtext={tx.type} />
+        <Title text='Transaction' />
         <Error error={Boolean(error)} text={error} />
         {settling ? (
           <Loading />

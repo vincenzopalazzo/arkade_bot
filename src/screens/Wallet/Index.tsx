@@ -40,9 +40,9 @@ export default function Wallet() {
     <Container>
       <Content>
         <Balance sats={wallet.balance} />
-        <div className='flex flex-col gap-4'>
-          {wallet.vtxos.spendable?.length > 0 ? <NextRecycle /> : null}
+        <div className='flex flex-col'>
           <TransactionsList short />
+          {wallet.vtxos.spendable?.length > 0 && false ? <NextRecycle /> : null}
         </div>
       </Content>
       <ButtonsOnBottom>

@@ -39,7 +39,7 @@ export default function Vtxos() {
         ) : (
           <>
             <Label text='Amount and expiration' />
-            <div className='flex flex-col gap-2 h-72 overflow-auto'>
+            <div className='flex flex-col gap-2 h-60 overflow-auto'>
               {wallet.vtxos.spendable?.map((v) => (
                 <div className='border p-2 flex justify-between w-full rounded-md' key={v.txid}>
                   <p className='text-left w-2/5'>{prettyNumber(v.amount)} sats</p>

@@ -16,7 +16,7 @@ export default function Header() {
   }
 
   return (
-    <header className='flex justify-between w-full mb-10'>
+    <header className='flex justify-between w-full mb-6'>
       <button
         onClick={handleClick}
         aria-label='Back to homepage'
