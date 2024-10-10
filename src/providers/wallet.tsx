@@ -2,10 +2,10 @@ import { ReactNode, createContext, useContext, useEffect, useState } from 'react
 import { readWalletFromStorage, saveWalletToStorage } from '../lib/storage'
 import { NavigationContext, Pages } from './navigation'
 import { NetworkName } from '../lib/network'
-import { Tx } from '../lib/types'
+import { Tx, Vtxo } from '../lib/types'
 import { ExplorerName } from '../lib/explorers'
 import { defaultExplorer, defaultNetwork } from '../lib/constants'
-import { claimVtxos, getAspInfo, getBalance, getTxHistory } from '../lib/asp'
+import { claimVtxos, getAspInfo, getBalance, getReceivingAddresses, getTxHistory, getVtxos } from '../lib/asp'
 import { AspContext } from './asp'
 
 export interface Wallet {
@@ -15,9 +15,14 @@ export interface Wallet {
   initialized: boolean
   lastUpdate: number
   network: NetworkName
+  nextRecycle: number
   password: string
   privateKey: string
   txs: Tx[]
+  vtxos: {
+    spendable: Vtxo[]
+    spent: Vtxo[]
+  }
 }
 
 const defaultWallet: Wallet = {
@@ -27,14 +32,20 @@ const defaultWallet: Wallet = {
   initialized: false,
   lastUpdate: 0,
   network: defaultNetwork,
+  nextRecycle: 0,
   password: '',
   privateKey: '',
   txs: [],
+  vtxos: {
+    spendable: [],
+    spent: [],
+  },
 }
 
 interface WalletContextProps {
   initWallet: (password: string, privateKey: string) => Promise<void>
   lockWallet: (password: string) => Promise<void>
+  recycleVtxos: () => Promise<void>
   reloadWallet: () => void
   resetWallet: () => void
   setPrivateKey: (key: string) => void
@@ -49,6 +60,7 @@ interface WalletContextProps {
 export const WalletContext = createContext<WalletContextProps>({
   initWallet: () => Promise.resolve(),
   lockWallet: () => Promise.resolve(),
+  recycleVtxos: () => Promise.resolve(),
   reloadWallet: () => {},
   resetWallet: () => {},
   settlePending: () => Promise.resolve(),
@@ -73,6 +85,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     const go = new window.Go()
     WebAssembly.instantiateStreaming(fetch('https://arkadewasm.bordalix.workers.dev?21'), go.importObject).then(
       (result) => {
+        // WebAssembly.instantiateStreaming(fetch('ark-sdk.wasm'), go.importObject).then((result) => {
         go.run(result.instance)
         setWasmLoaded(true)
         console.log('wasm loaded')
@@ -122,11 +135,25 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     }
   }
 
+  const recycleVtxos = async () => {
+    const { offchainAddr } = await getReceivingAddresses()
+    const amount = wallet.vtxos.spendable.reduce((acc, cur) => acc + cur.amount, 0)
+    await window.sendOffChain(false, [{ To: offchainAddr, Amount: amount }])
+    await reloadWallet()
+  }
+
   const reloadWallet = async () => {
+    const vtxos = await getVtxos()
     const balance = await getBalance()
     const txs = await getTxHistory()
     const now = Math.floor(new Date().getTime() / 1000)
-    updateWallet({ ...wallet, balance, lastUpdate: now, txs })
+    const nextRecycle = vtxos.spendable
+      ? vtxos.spendable.reduce((acc, cur) => {
+          const unixtimestamp = Math.floor(new Date(cur.expireAt).getTime() / 1000)
+          return unixtimestamp < acc || acc === 0 ? unixtimestamp : acc
+        }, 0)
+      : 0
+    updateWallet({ ...wallet, balance, lastUpdate: now, nextRecycle, txs, vtxos })
   }
 
   const resetWallet = async () => {
@@ -164,6 +191,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
       value={{
         initWallet,
         lockWallet,
+        recycleVtxos,
         reloadWallet,
         resetWallet,
         setPrivateKey,

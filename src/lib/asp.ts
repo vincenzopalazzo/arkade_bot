@@ -1,6 +1,6 @@
 import { defaultDust, defaultMinRelayFee, defaultNetwork, defaultRoundInterval } from './constants'
 import { NetworkName } from './network'
-import { Satoshis, Tx } from './types'
+import { Satoshis, Tx, Vtxo } from './types'
 
 export const emptyAspInfo = {
   boardingDescriptorTemplate: '',
@@ -100,7 +100,7 @@ export const getTxHistory = async (): Promise<Tx[]> => {
   const txs: Tx[] = []
   try {
     const res = await window.getTransactionHistory()
-    console.log('res', res)
+    // console.log('res', res)
     if (!res) return []
     for (const tx of JSON.parse(res)) {
       const date = new Date(tx.createdAt)
@@ -123,6 +123,28 @@ export const getTxHistory = async (): Promise<Tx[]> => {
 
 export const getReceivingAddresses = async (): Promise<{ offchainAddr: string; boardingAddr: string }> => {
   return await window.receive()
+}
+
+export const getVtxos = async (): Promise<{ spendable: Vtxo[]; spent: Vtxo[] }> => {
+  const toVtxo = (v: any): Vtxo => {
+    return {
+      amount: v.Amount,
+      descriptor: v.Descriptor,
+      expireAt: v.ExpiresAt,
+      pending: v.Pending,
+      roundTxid: v.RoundTxid,
+      redeemTx: v.RedeemTx,
+      spent: v.Spent,
+      spentBy: v.SpentBy,
+      txid: v.Txid,
+      vout: v.VOut,
+    }
+  }
+  const json = await window.listVtxos()
+  const data = JSON.parse(json)
+  const spendable = data.spendable?.map(toVtxo)
+  const spent = data.spent?.map(toVtxo)
+  return { spendable, spent }
 }
 
 export const sendAsync = async (sats: number, address: string): Promise<string> => {

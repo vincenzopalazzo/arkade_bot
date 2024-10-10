@@ -35,8 +35,9 @@ export default function Backup() {
   return (
     <Container>
       <Content>
-        <Title text='Backup' subtext='Save your data' />
+        <Title text='Backup' />
         <Textarea label='Private key' value={nsec} />
+        <p className='mt-10'>This is enough to restore your wallet</p>
       </Content>
       <ButtonsOnBottom>
         <Button onClick={handleCopy} label={buttonLabel} />

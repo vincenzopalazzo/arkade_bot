@@ -44,7 +44,7 @@ export default function TransactionsList({ short }: { short?: boolean }) {
 
   return (
     <div className='mt-4'>
-      <Label text={`${short ? 'Last' : 'All'} transactions`} />
+      <Label text={`${short ? 'Last' : 'All ' + showTxs.length} transactions`} />
       <div className='flex flex-col gap-2 h-72 overflow-auto'>
         {showTxs.map((tx) => (
           <TransactionLine key={`${tx.createdAt}${tx.boardingTxid}${tx.roundTxid}`} tx={tx} />

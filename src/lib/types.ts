@@ -26,19 +26,14 @@ export type Transaction = {
 export type Transactions = Record<NetworkName, Transaction[]>
 
 export type Vtxo = {
-  dateCreated: number
-  dateSpent: number
+  amount: number
+  descriptor: string
   expireAt: number
-  outpoint: {
-    txid: string
-    vout: 0
-  }
-  poolTxid: string
-  receiver: {
-    address: string
-    amount: number
-  }
+  pending: boolean
+  roundTxid: string
+  redeemTx: string
   spent: boolean
   spentBy: string
-  swept: boolean
+  txid: string
+  vout: number
 }

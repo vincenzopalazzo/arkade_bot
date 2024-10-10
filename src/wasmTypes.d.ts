@@ -13,6 +13,7 @@ declare global {
       password: string,
       chain: string,
     ) => Promise<void>
+    listVtxos: () => Promise<any>
     lock: (password: string) => Promise<any>
     locked: () => Promise<bool>
     receive: () => Promise<any>

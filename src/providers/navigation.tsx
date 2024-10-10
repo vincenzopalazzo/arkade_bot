@@ -19,6 +19,7 @@ export enum Pages {
   Transaction,
   Transactions,
   Unlock,
+  Vtxos,
   Wallet,
 }
 

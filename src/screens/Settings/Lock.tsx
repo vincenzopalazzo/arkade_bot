@@ -9,6 +9,7 @@ import { extractError } from '../../lib/error'
 import Container from '../../components/Container'
 import Input from '../../components/Input'
 import Error from '../../components/Error'
+import Loading from '../../components/Loading'
 
 export default function Lock() {
   const { navigate } = useContext(NavigationContext)
@@ -39,15 +40,12 @@ export default function Lock() {
       <Content>
         <Title text='Lock' />
         {locking ? (
-          <div className='flex flex-col gap-4'>
-            <p>Locking wallet.</p>
-            <p>This can take a few seconds.</p>
-          </div>
+          <Loading />
         ) : (
           <div className='flex flex-col gap-4'>
-            <p className='mt-10 mb-4 max-w-64 mx-auto'>After locking you'll need to re-enter your password to unlock</p>
             <Input label='Insert password' onChange={handleChange} type='password' />
             <Error error={Boolean(error)} text={error} />
+            <p className='mt-10 mb-4 mx-auto'>After locking you'll need to re-enter your password to unlock</p>
           </div>
         )}
       </Content>

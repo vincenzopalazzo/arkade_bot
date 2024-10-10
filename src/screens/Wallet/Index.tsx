@@ -10,6 +10,7 @@ import ScanIcon from '../../icons/Scan'
 import TransactionsList from '../../components/TransactionsList'
 import { WalletContext } from '../../providers/wallet'
 import { AspContext } from '../../providers/asp'
+import NextRecycle from '../../components/NextRecycle'
 
 export default function Wallet() {
   const { aspInfo } = useContext(AspContext)
@@ -39,7 +40,10 @@ export default function Wallet() {
     <Container>
       <Content>
         <Balance sats={wallet.balance} />
-        <TransactionsList short />
+        <div className='flex flex-col gap-4'>
+          {wallet.vtxos.spendable?.length > 0 || false ? <NextRecycle /> : null}
+          <TransactionsList short />
+        </div>
       </Content>
       <ButtonsOnBottom>
         <Button disabled={error || lowFunds} icon={<ScanIcon />} label='Send' onClick={handleSend} />

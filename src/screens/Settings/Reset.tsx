@@ -23,7 +23,7 @@ export default function Restore({ backup }: { backup: () => void }) {
         <div className='flex flex-col gap-6 mt-10'>
           <p>
             Did you{' '}
-            <span className='underline cursor-pointer' onClick={backup}>
+            <span className='underline underline-offset-2 cursor-pointer' onClick={backup}>
               backup your wallet
             </span>
             ?
