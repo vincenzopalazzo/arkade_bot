@@ -20,15 +20,21 @@ export default function Unlock() {
   const [unlocking, setUnlocking] = useState(false)
 
   const handleChange = (e: any) => {
-    setPassword(e.target.value)
     setError('')
+    setPassword(e.target.value)
   }
 
-  const handleUnlock = async () => {
+  const handlePaste = async (e: any) => {
+    setError('')
+    const pass = e.clipboardData.getData('text/plain')
+    setPassword(pass)
+    handleUnlock(pass)
+  }
+
+  const handleUnlock = async (pass: string) => {
     setUnlocking(true)
     setLabel('Unlocking')
-    await new Promise((resolve) => setTimeout(resolve, 100))
-    unlockWallet(password)
+    unlockWallet(pass)
       .then(() => navigate(Pages.Wallet))
       .catch((err) => {
         setError(extractError(err))
@@ -40,17 +46,15 @@ export default function Unlock() {
     <Container>
       <Content>
         <Title text={label} subtext='Access your wallet' />
-        {unlocking ? (
-          <p>This can take a few seconds.</p>
-        ) : (
+        {unlocking ? null : (
           <div className='flex flex-col gap-4'>
-            <Input label='Insert password' onChange={handleChange} type='password' />
+            <Input label='Insert password' onChange={handleChange} onPaste={handlePaste} type='password' />
             <Error error={Boolean(error)} text={error} />
           </div>
         )}
       </Content>
       <ButtonsOnBottom>
-        <Button onClick={handleUnlock} label='Unlock' disabled={unlocking} />
+        <Button onClick={() => handleUnlock(password)} label='Unlock' disabled={unlocking} />
       </ButtonsOnBottom>
     </Container>
   )
