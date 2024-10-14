@@ -7,7 +7,7 @@ import { NavigationContext, Pages } from '../../providers/navigation'
 import Content from '../../components/Content'
 import { FlowContext } from '../../providers/flow'
 import Container from '../../components/Container'
-import { invalidPrivateKey, nsecToPrivateKey } from '../../lib/privateKey'
+import { invalidPrivateKey, nsecToSeed } from '../../lib/privateKey'
 import Textarea from '../../components/Textarea'
 
 enum ButtonLabel {
@@ -31,7 +31,7 @@ export default function InitOld() {
   }, [privateKey])
 
   useEffect(() => {
-    setPrivateKey(someKey.match(/^nsec/) ? nsecToPrivateKey(someKey) : someKey)
+    setPrivateKey(someKey.match(/^nsec/) ? nsecToSeed(someKey) : someKey)
   }, [someKey])
 
   const handleChange = (e: any) => setSomeKey(e.target.value)

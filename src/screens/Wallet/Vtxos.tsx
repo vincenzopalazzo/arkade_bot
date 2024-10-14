@@ -37,7 +37,7 @@ export default function Vtxos() {
         {recycling ? (
           <Loading />
         ) : (
-          <>
+          <div className='mt-10'>
             <Label text='Amount and expiration' />
             <div className='flex flex-col gap-2 h-60 overflow-auto'>
               {wallet.vtxos.spendable?.map((v) => (
@@ -47,7 +47,7 @@ export default function Vtxos() {
                 </div>
               ))}
             </div>
-          </>
+          </div>
         )}
       </Content>
       <ButtonsOnBottom>

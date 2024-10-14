@@ -18,6 +18,7 @@ import {
   walletLocked,
 } from '../lib/asp'
 import { AspContext } from './asp'
+import { NostrContext } from './nostr'
 
 export interface Wallet {
   arkAddress: string
@@ -86,6 +87,7 @@ export const WalletContext = createContext<WalletContextProps>({
 export const WalletProvider = ({ children }: { children: ReactNode }) => {
   const { setAspInfo, aspInfo } = useContext(AspContext)
   const { navigate } = useContext(NavigationContext)
+  const { sendNotification } = useContext(NostrContext)
 
   const [walletUnlocked, setWalletUnlocked] = useState(false)
   const [wasmLoaded, setWasmLoaded] = useState(false)
@@ -132,6 +134,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     try {
       return await walletLocked()
     } catch (err) {
+      console.log('err', err)
       return true
     }
   }
@@ -151,6 +154,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     const amount = wallet.vtxos.spendable.reduce((acc, cur) => acc + cur.amount, 0)
     await sendOffChain(amount, offchainAddr)
     await reloadWallet()
+    sendNotification('vtxos recycled')
   }
 
   const reloadWallet = async () => {
@@ -164,7 +168,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
           return unixtimestamp < acc || acc === 0 ? unixtimestamp : acc
         }, 0)
       : 0
-    updateWallet({ ...wallet, balance, lastUpdate: now, nextRecycle, txs, vtxos })
+    updateWallet({ ...wallet, balance, initialized: true, lastUpdate: now, nextRecycle, txs, vtxos })
   }
 
   const resetWallet = async () => {
@@ -176,6 +180,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   const settlePending = async () => {
     await claimVtxos()
     await reloadWallet()
+    sendNotification('pending transactions settled')
   }
 
   const setPrivateKey = (privateKey: string) => {
@@ -183,7 +188,6 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const unlockWallet = async (password: string) => {
-    console.log('wallet provider unlockWallet', password)
     try {
       await unlock(password)
       setWalletUnlocked(true)

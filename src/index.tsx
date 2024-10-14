@@ -2,12 +2,13 @@ import ReactDOM from 'react-dom/client'
 import './index.css'
 import App from './App'
 import * as serviceWorkerRegistration from './serviceWorkerRegistration'
-import { ConfigProvider } from './providers/config'
-import { NavigationProvider } from './providers/navigation'
-import { FlowProvider } from './providers/flow'
-import { WalletProvider } from './providers/wallet'
-import { FiatProvider } from './providers/fiat'
 import { AspProvider } from './providers/asp'
+import { ConfigProvider } from './providers/config'
+import { FiatProvider } from './providers/fiat'
+import { FlowProvider } from './providers/flow'
+import { NavigationProvider } from './providers/navigation'
+import { NostrProvider } from './providers/nostr'
+import { WalletProvider } from './providers/wallet'
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
@@ -15,13 +16,15 @@ root.render(
   <NavigationProvider>
     <ConfigProvider>
       <AspProvider>
-        <FiatProvider>
-          <WalletProvider>
-            <FlowProvider>
-              <App />
-            </FlowProvider>
-          </WalletProvider>
-        </FiatProvider>
+        <NostrProvider>
+          <FiatProvider>
+            <WalletProvider>
+              <FlowProvider>
+                <App />
+              </FlowProvider>
+            </WalletProvider>
+          </FiatProvider>
+        </NostrProvider>
       </AspProvider>
     </ConfigProvider>
   </NavigationProvider>,

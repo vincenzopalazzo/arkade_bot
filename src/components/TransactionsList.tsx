@@ -38,9 +38,13 @@ export default function TransactionsList({ short }: { short?: boolean }) {
 
   if (transactions?.length === 0) return <></>
 
+  const sortFunction = (a: Tx, b: Tx) => (!a.createdAt ? -1 : !b.createdAt ? 1 : b.createdAt - a.createdAt)
+
   const showMax = 3
-  const sorted = wallet.txs.sort((a, b) => (!a.createdAt ? -1 : !b.createdAt ? 1 : b.createdAt - a.createdAt))
-  const showTxs = short ? sorted.slice(0, showMax) : sorted
+  const pending = wallet.txs.filter((tx) => tx.isPending).sort(sortFunction)
+  const settled = wallet.txs.filter((tx) => !tx.isPending).sort(sortFunction)
+  const ordered = [...pending, ...settled]
+  const showTxs = short ? ordered.slice(0, showMax) : ordered
 
   const key = (tx: Tx) => `${tx.createdAt}${tx.boardingTxid}${tx.roundTxid}${tx.redeemTxid}`
 

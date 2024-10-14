@@ -1,4 +1,5 @@
-import { bech32 } from 'bech32'
+import { getPublicKey, nip19 } from 'nostr-tools'
+import { bytesToHex, hexToBytes } from '@noble/hashes/utils'
 
 export const invalidPrivateKey = (key: string): string => {
   if (key.length === 0) return ''
@@ -7,13 +8,18 @@ export const invalidPrivateKey = (key: string): string => {
   return ''
 }
 
-export const nsecToPrivateKey = (nsec: string): string => {
-  const x = bech32.decode(nsec)
-  const z = bech32.fromWords(x.words)
-  return Array.from(z, (byte) => byte.toString(16).padStart(2, '0')).join('')
+export const nsecToSeed = (nsec: string): string => {
+  const { type, data } = nip19.decode(nsec)
+  if (type !== 'nsec') throw 'invalid nsec'
+  return bytesToHex(data)
 }
 
-export const privateKeyToNsec = (sk: string): string => {
-  let words = bech32.toWords(Buffer.from(sk, 'hex'))
-  return bech32.encode('nsec', words)
+export const seedToNsec = (seed: string | Uint8Array): string => {
+  const sk = typeof seed === 'string' ? hexToBytes(seed) : seed
+  return nip19.nsecEncode(sk)
+}
+
+export const seedToNpub = (seed: string | Uint8Array): string => {
+  const sk = typeof seed === 'string' ? hexToBytes(seed) : seed
+  return nip19.npubEncode(getPublicKey(sk))
 }

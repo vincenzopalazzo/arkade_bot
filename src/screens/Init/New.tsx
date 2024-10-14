@@ -9,7 +9,7 @@ import { FlowContext } from '../../providers/flow'
 import Container from '../../components/Container'
 import { getPrivateKeyFromMnemonic } from '../../lib/wallet'
 import TipIcon from '../../icons/Tip'
-import { privateKeyToNsec } from '../../lib/privateKey'
+import { seedToNsec } from '../../lib/privateKey'
 
 export default function InitNew() {
   const { navigate } = useContext(NavigationContext)
@@ -26,7 +26,7 @@ export default function InitNew() {
 
   useEffect(() => {
     if (!privateKey) return
-    setNsec(privateKeyToNsec(privateKey))
+    setNsec(seedToNsec(privateKey))
   }, [privateKey])
 
   const handleCancel = () => navigate(Pages.Init)

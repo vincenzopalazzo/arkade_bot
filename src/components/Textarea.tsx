@@ -14,9 +14,9 @@ export default function Textarea({ children, label, onChange, value }: TextareaP
   const readOnly = typeof onChange === 'undefined'
 
   return (
-    <div className='pt-10'>
+    <div className='mt-10'>
       {label ? <Label text={label} /> : null}
-      <textarea className={className} onChange={onChange} readOnly={readOnly} rows={3} value={value}>
+      <textarea className={className} onChange={onChange} readOnly={readOnly} rows={2} value={value}>
         {children}
       </textarea>
     </div>

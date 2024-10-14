@@ -8,19 +8,19 @@ import Textarea from '../../components/Textarea'
 import Container from '../../components/Container'
 import { copyToClipboard } from '../../lib/clipboard'
 import { getPrivateKey } from '../../lib/asp'
-import { seedToNsec } from '../../lib/privateKey'
+import { seedToNpub } from '../../lib/privateKey'
 
-export default function Backup() {
+export default function Nostr() {
   const { toggleShowConfig } = useContext(ConfigContext)
 
   const label = 'Copy to clipboard'
 
   const [buttonLabel, setButtonLabel] = useState(label)
-  const [nsec, setNsec] = useState('')
+  const [npub, setNpub] = useState('')
 
   useEffect(() => {
     getPrivateKey().then((sk) => {
-      setNsec(seedToNsec(sk))
+      setNpub(seedToNpub(sk))
     })
   }, [])
 
@@ -29,18 +29,18 @@ export default function Backup() {
   }
 
   const handleCopy = async () => {
-    await copyToClipboard(nsec)
+    await copyToClipboard(npub)
     setButtonLabel('Copied')
-    setTimeout(() => setButtonLabel(label), 2000)
+    setTimeout(() => setButtonLabel(label), 2100)
   }
 
   return (
     <Container>
       <Content>
-        <Title text='Backup' />
+        <Title text='Nostr' />
         <div className='flex flex-col gap-10'>
-          <Textarea label='Private key' value={nsec} />
-          <p>This is enough to restore your wallet</p>
+          <Textarea label='Public key' value={npub} />
+          <p>Use this to get notifications on Nostr</p>
         </div>
       </Content>
       <ButtonsOnBottom>

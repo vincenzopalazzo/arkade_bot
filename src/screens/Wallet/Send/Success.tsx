@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import Button from '../../../components/Button'
 import SuccessIcon from '../../../icons/Success'
 import Title from '../../../components/Title'
@@ -6,11 +6,19 @@ import ButtonsOnBottom from '../../../components/ButtonsOnBottom'
 import { NavigationContext, Pages } from '../../../providers/navigation'
 import Content from '../../../components/Content'
 import Container from '../../../components/Container'
+import { FlowContext } from '../../../providers/flow'
+import { NostrContext } from '../../../providers/nostr'
 
 export default function SendSuccess() {
+  const { sendInfo } = useContext(FlowContext)
   const { navigate } = useContext(NavigationContext)
+  const { sendNotification } = useContext(NostrContext)
 
   const goBackToWallet = () => navigate(Pages.Wallet)
+
+  useEffect(() => {
+    sendNotification(`payment sent: ${sendInfo.satoshis} sats`)
+  }, [])
 
   return (
     <Container>

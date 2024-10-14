@@ -58,10 +58,12 @@ export default function SendInvoice() {
       }
       setSendInfo({ arkAddress: pastedData })
       return navigate(Pages.SendAmount)
-    } else {
+    }
+    if (/^bc1/.test(pastedData) || /^tb1/.test(pastedData)) {
       setSendInfo({ address: pastedData })
       return navigate(Pages.SendAmount)
     }
+    setError('Invalid address')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pastedData])
 

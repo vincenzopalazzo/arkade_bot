@@ -29,10 +29,10 @@ export default function ReceiveInvoice() {
 
   const { boardingAddr, offchainAddr, satoshis } = recvInfo
 
-  const onFinish = (txid: string) => {
-    console.log('txid', txid)
+  const onFinish = (satoshis: number) => {
+    console.log('satoshis received', satoshis)
     clearInterval(poolAspIntervalId.current)
-    setRecvInfo({ ...recvInfo, txid })
+    setRecvInfo({ ...recvInfo, satoshis })
     navigate(Pages.ReceiveSuccess)
   }
 
@@ -55,7 +55,7 @@ export default function ReceiveInvoice() {
         getBalance().then((balance) => {
           if (balance > wallet.balance) {
             clearInterval(poolAspIntervalId.current)
-            onFinish('')
+            onFinish(balance - wallet.balance)
           }
         })
       }, 1000)

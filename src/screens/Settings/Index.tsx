@@ -1,4 +1,4 @@
-import { ReactElement, useContext, useState } from 'react'
+import { ReactElement, useContext, useEffect, useState } from 'react'
 import Lock from './Lock'
 import Header from './Header'
 import ArrowIcon from '../../icons/Arrow'
@@ -14,6 +14,8 @@ import InfoIcon from '../../icons/Info'
 import About from './About'
 import DarkThemeIcon from '../../icons/DarkTheme'
 import Theme from './Theme'
+import NostrIcon from '../../icons/Nostr'
+import Nostr from './Nostr'
 
 enum Options {
   Menu = 'menu',
@@ -21,6 +23,7 @@ enum Options {
   Backup = 'backup',
   Lock = 'lock wallet',
   Notifications = 'notifications',
+  Nostr = 'nostr',
   Password = 'password',
   Reset = 'reset',
   Theme = 'theme',
@@ -52,6 +55,10 @@ export default function Settings() {
       option: Options.Lock,
     },
     {
+      icon: <NostrIcon />,
+      option: Options.Nostr,
+    },
+    {
       icon: <ResetIcon />,
       option: Options.Reset,
     },
@@ -66,6 +73,8 @@ export default function Settings() {
     const hiddenOptions = [Options.Backup, Options.Lock, Options.Password, Options.Reset]
     return options.filter((o) => !hiddenOptions.includes(o.option))
   }
+
+  useEffect(() => console.log('wallet.initialized', wallet.initialized, [wallet.initialized]))
 
   return (
     <OuterContainer>
@@ -94,6 +103,7 @@ export default function Settings() {
         {option === Options.Backup && <Backup />}
         {option === Options.Lock && <Lock />}
         {option === Options.Notifications && <Notifications />}
+        {option === Options.Nostr && <Nostr />}
         {option === Options.Reset && <Reset backup={() => setOption(Options.Backup)} />}
         {option === Options.Theme && <Theme />}
       </div>

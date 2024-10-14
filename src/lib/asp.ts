@@ -167,7 +167,6 @@ export const sendOnChain = async (sats: number, address: string): Promise<string
 }
 
 export const unlock = async (password: string): Promise<void> => {
-  console.log('unlock', password)
   await window.unlock(password)
 }
 
