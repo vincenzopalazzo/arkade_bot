@@ -147,17 +147,30 @@ export const getVtxos = async (): Promise<{ spendable: Vtxo[]; spent: Vtxo[] }> 
   return { spendable, spent }
 }
 
+export const lock = async (password: string): Promise<void> => {
+  await window.lock(password)
+}
+
 export const sendAsync = async (sats: number, address: string): Promise<string> => {
   console.log('Sending async', sats, address)
   return await window.sendAsync(false, [{ To: address, Amount: sats }])
 }
 
-export const sendOffchain = async (sats: number, address: string): Promise<string> => {
+export const sendOffChain = async (sats: number, address: string): Promise<string> => {
   console.log('Sending offchain', sats, address)
   return await window.sendOffChain(false, [{ To: address, Amount: sats }])
 }
 
-export const sendOnchain = async (sats: number, address: string): Promise<string> => {
+export const sendOnChain = async (sats: number, address: string): Promise<string> => {
   console.log('Sending onchain', sats, address)
   return await window.sendOnChain([{ To: address, Amount: sats }])
+}
+
+export const unlock = async (password: string): Promise<void> => {
+  console.log('unlock', password)
+  await window.unlock(password)
+}
+
+export const walletLocked = async (): Promise<void> => {
+  await window.locked()
 }

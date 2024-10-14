@@ -10,7 +10,7 @@ import { prettyNumber } from '../../../lib/format'
 import { WalletContext } from '../../../providers/wallet'
 import Error from '../../../components/Error'
 import { extractError } from '../../../lib/error'
-import { sendAsync, sendOnchain } from '../../../lib/asp'
+import { sendAsync, sendOnChain } from '../../../lib/asp'
 
 export default function SendPayment() {
   const { navigate } = useContext(NavigationContext)
@@ -44,7 +44,7 @@ export default function SendPayment() {
             .then((txid) => onTxid(txid))
             .catch((error) => setError(extractError(error)))
         } else if (address) {
-          sendOnchain(satoshis, address)
+          sendOnChain(satoshis, address)
             .then((txid) => onTxid(txid))
             .catch((error) => setError(extractError(error)))
         }

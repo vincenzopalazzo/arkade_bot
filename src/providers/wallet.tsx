@@ -5,7 +5,18 @@ import { NetworkName } from '../lib/network'
 import { Tx, Vtxo } from '../lib/types'
 import { ExplorerName } from '../lib/explorers'
 import { defaultExplorer, defaultNetwork } from '../lib/constants'
-import { claimVtxos, getAspInfo, getBalance, getReceivingAddresses, getTxHistory, getVtxos } from '../lib/asp'
+import {
+  claimVtxos,
+  getAspInfo,
+  getBalance,
+  getReceivingAddresses,
+  getTxHistory,
+  getVtxos,
+  lock,
+  sendOffChain,
+  unlock,
+  walletLocked,
+} from '../lib/asp'
 import { AspContext } from './asp'
 
 export interface Wallet {
@@ -119,7 +130,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
 
   const lockedWallet = async () => {
     try {
-      return await window.locked()
+      return await walletLocked()
     } catch (err) {
       return true
     }
@@ -127,7 +138,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
 
   const lockWallet = async (password: string) => {
     try {
-      await window.lock(password)
+      await lock(password)
       setWalletUnlocked(false)
       reloadWallet()
     } catch (err) {
@@ -138,7 +149,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   const recycleVtxos = async () => {
     const { offchainAddr } = await getReceivingAddresses()
     const amount = wallet.vtxos.spendable.reduce((acc, cur) => acc + cur.amount, 0)
-    await window.sendOffChain(false, [{ To: offchainAddr, Amount: amount }])
+    await sendOffChain(amount, offchainAddr)
     await reloadWallet()
   }
 
@@ -172,8 +183,9 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const unlockWallet = async (password: string) => {
+    console.log('wallet provider unlockWallet', password)
     try {
-      await window.unlock(password)
+      await unlock(password)
       setWalletUnlocked(true)
       reloadWallet()
     } catch (err) {
