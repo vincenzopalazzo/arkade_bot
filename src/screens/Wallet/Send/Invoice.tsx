@@ -77,7 +77,7 @@ export default function SendInvoice() {
     navigate(Pages.Wallet)
   }
 
-  const handleChange = (e: any) => setPastedData(e.target.value)
+  const handleChange = (invoice: string) => setPastedData(invoice)
 
   return (
     <Container>

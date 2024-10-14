@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import Button from '../../components/Button'
 import Title from '../../components/Title'
 import ButtonsOnBottom from '../../components/ButtonsOnBottom'
@@ -19,21 +19,19 @@ export default function Unlock() {
   const [password, setPassword] = useState('')
   const [unlocking, setUnlocking] = useState(false)
 
-  const handleChange = (e: any) => {
-    setError('')
-    setPassword(e.target.value)
-  }
+  useEffect(() => {
+    setLabel(unlocking ? 'Unlocking' : 'Unlock')
+  }, [unlocking])
 
-  const handlePaste = async (e: any) => {
-    setError('')
-    const pass = e.clipboardData.getData('text/plain')
+  const handleChange = (pass: string) => {
     setPassword(pass)
-    handleUnlock(pass)
+    unlockWallet(pass)
+      .then(() => navigate(Pages.Wallet))
+      .catch(() => {})
   }
 
   const handleUnlock = async (pass: string) => {
     setUnlocking(true)
-    setLabel('Unlocking')
     unlockWallet(pass)
       .then(() => navigate(Pages.Wallet))
       .catch((err) => {
@@ -48,7 +46,7 @@ export default function Unlock() {
         <Title text={label} subtext='Access your wallet' />
         {unlocking ? null : (
           <div className='flex flex-col gap-4'>
-            <Input label='Insert password' onChange={handleChange} onPaste={handlePaste} type='password' />
+            <Input label='Insert password' onChange={handleChange} type='password' />
             <Error error={Boolean(error)} text={error} />
           </div>
         )}

@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import Button from '../../components/Button'
 import ButtonsOnBottom from '../../components/ButtonsOnBottom'
 import Title from '../../components/Title'
@@ -16,17 +16,24 @@ export default function Lock() {
   const { lockWallet } = useContext(WalletContext)
 
   const [error, setError] = useState('')
+  const [label, setLabel] = useState('Lock')
   const [password, setPassword] = useState('')
   const [locking, setLocking] = useState(false)
 
-  const handleChange = (e: any) => {
-    setPassword(e.target.value)
+  useEffect(() => {
+    setLabel(locking ? 'Locking...' : 'Lock')
+  }, [locking])
+
+  const handleChange = (pass: string) => {
     setError('')
+    setPassword(pass)
+    lockWallet(pass)
+      .then(() => navigate(Pages.Wallet))
+      .catch(() => {})
   }
 
   const handleLock = async () => {
     setLocking(true)
-    await new Promise((resolve) => setTimeout(resolve, 100))
     lockWallet(password)
       .then(() => navigate(Pages.Wallet))
       .catch((err) => {
@@ -50,7 +57,7 @@ export default function Lock() {
         )}
       </Content>
       <ButtonsOnBottom>
-        <Button onClick={handleLock} label='Lock' disabled={locking} />
+        <Button onClick={handleLock} label={label} disabled={locking} />
       </ButtonsOnBottom>
     </Container>
   )
