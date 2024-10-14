@@ -42,12 +42,14 @@ export default function TransactionsList({ short }: { short?: boolean }) {
   const sorted = wallet.txs.sort((a, b) => (!a.createdAt ? -1 : !b.createdAt ? 1 : b.createdAt - a.createdAt))
   const showTxs = short ? sorted.slice(0, showMax) : sorted
 
+  const key = (tx: Tx) => `${tx.createdAt}${tx.boardingTxid}${tx.roundTxid}${tx.redeemTxid}`
+
   return (
     <div className='mt-4'>
       <Label text={`${short ? 'Last' : 'All ' + showTxs.length} transactions`} />
       <div className='flex flex-col gap-2 h-60 overflow-auto'>
         {showTxs.map((tx) => (
-          <TransactionLine key={`${tx.createdAt}${tx.boardingTxid}${tx.roundTxid}`} tx={tx} />
+          <TransactionLine key={key(tx)} tx={tx} />
         ))}
         {short && transactions.length > showMax ? (
           <div
