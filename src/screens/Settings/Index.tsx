@@ -7,7 +7,6 @@ import { WalletContext } from '../../providers/wallet'
 import EncryptIcon from '../../icons/Encrypt'
 import Backup from './Backup'
 import BackupIcon from '../../icons/Backup'
-import Password from './Password'
 import OuterContainer from '../../components/OuterContainer'
 import ResetIcon from '../../icons/Reset'
 import Reset from './Reset'
@@ -95,7 +94,6 @@ export default function Settings() {
         {option === Options.Backup && <Backup />}
         {option === Options.Lock && <Lock />}
         {option === Options.Notifications && <Notifications />}
-        {option === Options.Password && <Password />}
         {option === Options.Reset && <Reset backup={() => setOption(Options.Backup)} />}
         {option === Options.Theme && <Theme />}
       </div>
