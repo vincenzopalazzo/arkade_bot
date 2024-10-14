@@ -41,8 +41,8 @@ export default function Wallet() {
       <Content>
         <Balance sats={wallet.balance} />
         <div className='flex flex-col'>
+          {wallet.vtxos.spendable?.length > 0 ? <NextRecycle /> : null}
           <TransactionsList short />
-          {wallet.vtxos.spendable?.length > 0 && false ? <NextRecycle /> : null}
         </div>
       </Content>
       <ButtonsOnBottom>
