@@ -6,10 +6,9 @@ import Label from './Label'
 interface InputPasswordProps {
   label: string
   onChange: (arg0: any) => void
-  onPaste?: (arg0: any) => void
 }
 
-export default function InputPassword({ label, onChange, onPaste }: InputPasswordProps) {
+export default function InputPassword({ label, onChange }: InputPasswordProps) {
   const [type, setType] = useState('password')
 
   const toggleVisibility = () => setType(type === 'text' ? 'password' : 'text')
@@ -22,7 +21,6 @@ export default function InputPassword({ label, onChange, onPaste }: InputPasswor
           autoComplete='new-password'
           className='w-full p-3 text-sm font-semibold rounded-l-md bg-gray-100 dark:bg-gray-800'
           onChange={onChange}
-          onPaste={onPaste}
           type={type}
         />
         <div
