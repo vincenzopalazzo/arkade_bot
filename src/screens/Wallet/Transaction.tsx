@@ -63,9 +63,9 @@ export default function Transaction() {
     ['When', prettyAgo(tx.createdAt)],
     ['State', tx.isPending ? 'Pending' : 'Settled'],
     ['Date', prettyDate(tx.createdAt)],
-    ['Amount', prettyNumber(tx.type === 'sent' ? tx.amount - defaultFees : tx.amount)],
-    ['Net fees', prettyNumber(tx.type === 'sent' ? defaultFees : 0)],
-    ['Total', prettyNumber(tx.amount)],
+    ['Amount', `${prettyNumber(tx.type === 'sent' ? tx.amount - defaultFees : tx.amount)} sats`],
+    ['Network fees', `${prettyNumber(tx.type === 'sent' ? defaultFees : 0)} sats`],
+    ['Total', `${prettyNumber(tx.amount)} sats`],
   ]
 
   return (
@@ -78,10 +78,12 @@ export default function Transaction() {
         ) : (
           <>
             <Table data={data} />
-            <div className='flex justify-center align-middle mt-4' onClick={() => setShowInfo(true)}>
-              <TipIcon small />
-              <p className='text-sm underline underline-offset-2 cursor-pointer'>What are pending transactions?</p>
-            </div>
+            {tx.isPending ? (
+              <div className='flex justify-center align-middle mt-4' onClick={() => setShowInfo(true)}>
+                <TipIcon small />
+                <p className='text-sm underline underline-offset-2 cursor-pointer'>What are pending transactions?</p>
+              </div>
+            ) : null}
           </>
         )}
       </Content>
