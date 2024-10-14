@@ -1,21 +1,21 @@
 export default function Table({ data }: { data: string[][] }) {
   if (data.length < 3) return <p>This transaction pays no fees</p>
   return (
-    <table className='w-full table-auto mt-0.5'>
-      <tbody>
-        {data.map((row, idx) => (
-          <tr key={row[0]} className={idx + 1 === data.length ? 'border-t' : ''}>
-            <td className='py-2 text-left font-semibold'>{row[0]}</td>
+    <>
+      <div className='w-full'>
+        {data.map((row) => (
+          <div key={row[0]} className={`flex justify-between py-2 ${row[0] === 'Total' ? 'border-t' : null}`}>
+            <p className='font-semibold'>{row[0]}</p>
             {row[1] === 'Pending' ? (
-              <td className='py-2 text-right text-red-600'>{row[1]}</td>
+              <p className='text-red-600'>{row[1]}</p>
             ) : row[1] === 'Settled' ? (
-              <td className='py-2 text-right text-green-600'>{row[1]}</td>
+              <p className='text-green-600'>{row[1]}</p>
             ) : (
-              <td className='py-2 text-right'>{row[1]}</td>
+              <p>{row[1]}</p>
             )}
-          </tr>
+          </div>
         ))}
-      </tbody>
-    </table>
+      </div>
+    </>
   )
 }
