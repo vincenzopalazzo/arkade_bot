@@ -29,36 +29,38 @@ import Transaction from './screens/Wallet/Transaction'
 import Vtxos from './screens/Wallet/Vtxos'
 
 export default function App() {
-  const { wasmLoaded } = useContext(WalletContext)
+  const { wasmLoaded, walletUnlocked } = useContext(WalletContext)
   const { configLoaded, showConfig } = useContext(ConfigContext)
   const { screen } = useContext(NavigationContext)
 
-  if (!configLoaded || !wasmLoaded) return <Loading />
   if (showConfig) return <Settings />
+
+  const page = !configLoaded || !wasmLoaded ? Pages.Loading : !walletUnlocked ? Pages.Unlock : screen
 
   return (
     <OuterContainer>
       <Header />
       <div className='grow'>
-        {screen === Pages.Init && <Init />}
-        {screen === Pages.InitNew && <InitNew />}
-        {screen === Pages.InitOld && <InitOld />}
-        {screen === Pages.InitPassword && <InitPassword />}
-        {screen === Pages.InitConnect && <InitConnect />}
-        {screen === Pages.ReceiveAmount && <ReceiveAmount />}
-        {screen === Pages.ReceiveInvoice && <ReceiveInvoice />}
-        {screen === Pages.ReceiveSuccess && <ReceiveSuccess />}
-        {screen === Pages.SendAmount && <SendAmount />}
-        {screen === Pages.SendInvoice && <SendInvoice />}
-        {screen === Pages.SendDetails && <SendDetails />}
-        {screen === Pages.SendFees && <SendFees />}
-        {screen === Pages.SendPayment && <SendPayment />}
-        {screen === Pages.SendSuccess && <SendSuccess />}
-        {screen === Pages.Transactions && <Transactions />}
-        {screen === Pages.Transaction && <Transaction />}
-        {screen === Pages.Unlock && <Unlock />}
-        {screen === Pages.Vtxos && <Vtxos />}
-        {screen === Pages.Wallet && <Wallet />}
+        {page === Pages.Init && <Init />}
+        {page === Pages.InitNew && <InitNew />}
+        {page === Pages.InitOld && <InitOld />}
+        {page === Pages.InitPassword && <InitPassword />}
+        {page === Pages.InitConnect && <InitConnect />}
+        {page === Pages.Loading && <Loading />}
+        {page === Pages.ReceiveAmount && <ReceiveAmount />}
+        {page === Pages.ReceiveInvoice && <ReceiveInvoice />}
+        {page === Pages.ReceiveSuccess && <ReceiveSuccess />}
+        {page === Pages.SendAmount && <SendAmount />}
+        {page === Pages.SendInvoice && <SendInvoice />}
+        {page === Pages.SendDetails && <SendDetails />}
+        {page === Pages.SendFees && <SendFees />}
+        {page === Pages.SendPayment && <SendPayment />}
+        {page === Pages.SendSuccess && <SendSuccess />}
+        {page === Pages.Transactions && <Transactions />}
+        {page === Pages.Transaction && <Transaction />}
+        {page === Pages.Unlock && <Unlock />}
+        {page === Pages.Vtxos && <Vtxos />}
+        {page === Pages.Wallet && <Wallet />}
       </div>
     </OuterContainer>
   )

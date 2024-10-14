@@ -6,6 +6,7 @@ export enum Pages {
   InitOld,
   InitPassword,
   InitConnect,
+  Loading,
   ReceiveAmount,
   ReceiveFees,
   ReceiveInvoice,
