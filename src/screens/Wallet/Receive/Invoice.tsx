@@ -53,8 +53,8 @@ export default function ReceiveInvoice() {
     try {
       poolAspIntervalId.current = setInterval(() => {
         getBalance().then((balance) => {
-          if (balance !== wallet.balance) {
-            clearTimeout(poolAspIntervalId.current)
+          if (balance > wallet.balance) {
+            clearInterval(poolAspIntervalId.current)
             onFinish('')
           }
         })
@@ -62,9 +62,11 @@ export default function ReceiveInvoice() {
     } catch (error) {
       setError(extractError(error))
     }
+    return () => clearInterval(poolAspIntervalId.current)
   }, [])
 
   const bip21uri = bip21.encode(boardingAddr, offchainAddr, satoshis)
+  if (firefox) console.log('bip21uri', bip21uri)
 
   return (
     <Container>
