@@ -18,9 +18,9 @@ export default function About() {
   const data = [
     ['Dust', `${aspInfo.dust} sats`],
     ['Min Relay Fee', `${aspInfo.minRelayFee} sats`],
-    ['Pubkey', prettyLongText(aspInfo.pubkey)],
     ['Round Interval', `${aspInfo.roundInterval} secs`],
     ['Round Lifetime', `${days} days`],
+    ['Server Pubkey', prettyLongText(aspInfo.pubkey, 10)],
     ['Unilateral Exit Delay', `${aspInfo.unilateralExitDelay} secs`],
     ['URL', aspInfo.url],
   ]
