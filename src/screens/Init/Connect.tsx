@@ -7,6 +7,7 @@ import Content from '../../components/Content'
 import { FlowContext } from '../../providers/flow'
 import Container from '../../components/Container'
 import { WalletContext } from '../../providers/wallet'
+import Loading from '../../components/Loading'
 
 export default function InitConnect() {
   const { navigate } = useContext(NavigationContext)
@@ -26,7 +27,7 @@ export default function InitConnect() {
     <Container>
       <Content>
         <Title text='Initializing' subtext='Connecting wallet to ASP' />
-        <p>This can take a few seconds.</p>
+        <Loading />
       </Content>
       <ButtonsOnBottom>
         <Button onClick={handleCancel} label='Cancel' secondary />

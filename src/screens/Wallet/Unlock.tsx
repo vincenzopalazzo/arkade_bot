@@ -45,7 +45,7 @@ export default function Unlock() {
       <Content>
         <Title text={label} subtext='Access your wallet' />
         {unlocking ? null : (
-          <div className='flex flex-col gap-4'>
+          <div className='flex flex-col gap-4 mt-10'>
             <Input label='Insert password' onChange={handleChange} type='password' />
             <Error error={Boolean(error)} text={error} />
           </div>

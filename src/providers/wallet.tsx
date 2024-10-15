@@ -19,6 +19,7 @@ import {
 } from '../lib/asp'
 import { AspContext } from './asp'
 import { NostrContext } from './nostr'
+import { ConfigContext } from './config'
 
 export interface Wallet {
   arkAddress: string
@@ -86,6 +87,7 @@ export const WalletContext = createContext<WalletContextProps>({
 
 export const WalletProvider = ({ children }: { children: ReactNode }) => {
   const { setAspInfo, aspInfo } = useContext(AspContext)
+  const { resetConfig } = useContext(ConfigContext)
   const { navigate } = useContext(NavigationContext)
   const { sendNotification } = useContext(NostrContext)
 
@@ -172,6 +174,8 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const resetWallet = async () => {
+    console.log('defaultWallet', defaultWallet)
+    resetConfig()
     updateWallet(defaultWallet)
     setWalletUnlocked(false)
     navigate(Pages.Init)

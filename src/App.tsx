@@ -29,13 +29,14 @@ import Transaction from './screens/Wallet/Transaction'
 import Vtxos from './screens/Wallet/Vtxos'
 
 export default function App() {
-  const { wasmLoaded, walletUnlocked } = useContext(WalletContext)
+  const { wasmLoaded, walletUnlocked, wallet } = useContext(WalletContext)
   const { configLoaded, showConfig } = useContext(ConfigContext)
   const { screen } = useContext(NavigationContext)
 
   if (showConfig) return <Settings />
 
-  const page = !configLoaded || !wasmLoaded ? Pages.Loading : !walletUnlocked ? Pages.Unlock : screen
+  const page =
+    !configLoaded || !wasmLoaded ? Pages.Loading : wallet.initialized && !walletUnlocked ? Pages.Unlock : screen
 
   return (
     <OuterContainer>
