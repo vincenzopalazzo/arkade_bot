@@ -10,7 +10,8 @@ import { prettyNumber } from '../../../lib/format'
 import { WalletContext } from '../../../providers/wallet'
 import Error from '../../../components/Error'
 import { extractError } from '../../../lib/error'
-import { sendAsync, sendOnChain } from '../../../lib/asp'
+import { collaborativeRedeem, sendAsync } from '../../../lib/asp'
+import Loading from '../../../components/Loading'
 
 export default function SendPayment() {
   const { navigate } = useContext(NavigationContext)
@@ -44,7 +45,7 @@ export default function SendPayment() {
             .then((txid) => onTxid(txid))
             .catch((error) => setError(extractError(error)))
         } else if (address) {
-          sendOnChain(satoshis, address)
+          collaborativeRedeem(satoshis, address)
             .then((txid) => onTxid(txid))
             .catch((error) => setError(extractError(error)))
         }
@@ -59,7 +60,7 @@ export default function SendPayment() {
     <Container>
       <Content>
         <Title text='Pay' subtext={`Paying ${prettyNumber(satoshis ?? 0)} sats`} />
-        {error ? <Error error={Boolean(error)} text={error} /> : null}
+        {error ? <Error error={Boolean(error)} text={error} /> : <Loading />}
       </Content>
       <ButtonsOnBottom>
         <Button onClick={goBackToWallet} label='Back to wallet' secondary />

@@ -33,6 +33,10 @@ export const claimVtxos = async () => {
   await window.claim()
 }
 
+export const collaborativeRedeem = async (amount: number, address: string): Promise<string> => {
+  return await window.collaborativeRedeem(address, amount, false)
+}
+
 export interface AspInfo {
   boardingDescriptorTemplate: string
   dust: number

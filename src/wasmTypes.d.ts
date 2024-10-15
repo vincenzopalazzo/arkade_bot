@@ -3,6 +3,7 @@ declare global {
     Go: any
     balance: (bool) => Promise<any>
     claim: () => Promise<any>
+    collaborativeRedeem: (addr: string, amount: number, withExpiryCoinselect: boolean) => Promise<string>
     dump: () => Promise<string>
     getTransactionHistory: () => Promise<any>
     init: (
