@@ -14,8 +14,13 @@ export const NostrContext = createContext<NostrContextProps>({
 export const NostrProvider = ({ children }: { children: ReactNode }) => {
   const relay = useRef<Relay>()
 
+  const connectRelay = async (): Promise<void> => {
+    relay.current = await Relay.connect('wss://relay.primal.net')
+  }
+
   const sendNotification = async (content: string) => {
     if (!relay.current) return
+    if (!relay.current.connected) await connectRelay()
     const seed = await getPrivateKey()
     const sk = hexToBytes(seed)
     const pk = getPublicKey(sk)
@@ -43,7 +48,7 @@ export const NostrProvider = ({ children }: { children: ReactNode }) => {
   }
 
   useEffect(() => {
-    Relay.connect('wss://relay.primal.net').then((r: Relay) => (relay.current = r))
+    connectRelay()
   }, [])
 
   return <NostrContext.Provider value={{ sendNotification }}>{children}</NostrContext.Provider>
