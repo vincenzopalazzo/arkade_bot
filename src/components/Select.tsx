@@ -13,7 +13,7 @@ export default function Select({ children, label, onChange, value }: SelectProps
     'bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-100 text-lg rounded-lg w-full p-2.5'
 
   return (
-    <div className='pt-10'>
+    <div>
       {label ? <Label text={label} /> : null}
       <select className={className} onChange={onChange} value={value}>
         {children}

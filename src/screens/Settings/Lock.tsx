@@ -49,7 +49,7 @@ export default function Lock() {
         {locking ? (
           <Loading />
         ) : (
-          <div className='flex flex-col gap-4'>
+          <div className='flex flex-col gap-4 mt-10'>
             <Input label='Insert password' onChange={handleChange} type='password' />
             <Error error={Boolean(error)} text={error} />
             <p className='mt-10 mb-4 mx-auto'>After locking you'll need to re-enter your password to unlock</p>

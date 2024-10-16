@@ -38,7 +38,7 @@ export default function Backup() {
     <Container>
       <Content>
         <Title text='Backup' />
-        <div className='flex flex-col gap-10'>
+        <div className='flex flex-col gap-10 mt-10'>
           <Textarea label='Private key' value={nsec} />
           <p>This is enough to restore your wallet</p>
         </div>

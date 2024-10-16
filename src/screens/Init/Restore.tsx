@@ -49,7 +49,7 @@ export default function InitOld() {
     <Container>
       <Content>
         <Title text='Restore wallet' subtext='Insert your private key' />
-        <div className='flex flex-col gap-2'>
+        <div className='flex flex-col gap-2 mt-10'>
           <Textarea label='Private key' onChange={handleChange} />
           <Error error={Boolean(error)} text={error} />
         </div>

@@ -41,7 +41,7 @@ export default function InitNew() {
     <Container>
       <Content>
         <Title text='Your new wallet' subtext='Write it in a secure place' />
-        <div className='flex flex-col gap-4'>
+        <div className='flex flex-col gap-4 mt-10'>
           <Textarea label='Private key' value={nsec} />
           <div className='flex justify-center align-middle mt-4'>
             <TipIcon small />

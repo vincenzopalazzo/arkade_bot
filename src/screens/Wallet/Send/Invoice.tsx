@@ -85,7 +85,7 @@ export default function SendInvoice() {
     <Container>
       <Content>
         <Title text='Send' subtext='Scan or paste address' />
-        <div className='flex flex-col gap-2'>
+        <div className='flex flex-col gap-2 mt-10'>
           <ShowError error={Boolean(error)} text={error} />
           {error ? null : (
             <div className='flex flex-col h-full justify-between'>
