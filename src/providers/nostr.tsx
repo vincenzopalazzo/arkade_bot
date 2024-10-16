@@ -1,7 +1,8 @@
-import { ReactNode, createContext, useEffect, useRef } from 'react'
+import { ReactNode, createContext, useContext, useEffect, useRef } from 'react'
 import { hexToBytes } from '@noble/hashes/utils'
 import { finalizeEvent, getPublicKey, Relay } from 'nostr-tools'
 import { getPrivateKey } from '../lib/asp'
+import { ConfigContext } from './config'
 
 interface NostrContextProps {
   sendNotification: (content: string) => void
@@ -12,6 +13,8 @@ export const NostrContext = createContext<NostrContextProps>({
 })
 
 export const NostrProvider = ({ children }: { children: ReactNode }) => {
+  const { config } = useContext(ConfigContext)
+
   const relay = useRef<Relay>()
 
   const connectRelay = async (): Promise<void> => {
@@ -19,6 +22,7 @@ export const NostrProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const sendNotification = async (content: string) => {
+    if (!config.nostr) return
     if (!relay.current) return
     if (!relay.current.connected) await connectRelay()
     const seed = await getPrivateKey()
@@ -48,8 +52,15 @@ export const NostrProvider = ({ children }: { children: ReactNode }) => {
   }
 
   useEffect(() => {
+    if (!config.nostr) {
+      if (relay.current) {
+        if (relay.current.connected) relay.current.close()
+        relay.current = undefined
+      }
+      return
+    }
     connectRelay()
-  }, [])
+  }, [config.nostr])
 
   return <NostrContext.Provider value={{ sendNotification }}>{children}</NostrContext.Provider>
 }
