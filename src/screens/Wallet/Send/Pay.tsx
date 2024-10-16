@@ -56,11 +56,13 @@ export default function SendPayment() {
     }
   }, [wallet.initialized])
 
+  const text = address ? 'Payments to mainnet require a round, which can take a few seconds' : undefined
+
   return (
     <Container>
       <Content>
         <Title text='Pay' subtext={`Paying ${prettyNumber(satoshis ?? 0)} sats`} />
-        {error ? <Error error={Boolean(error)} text={error} /> : <Loading />}
+        {error ? <Error error={Boolean(error)} text={error} /> : <Loading text={text} />}
       </Content>
       <ButtonsOnBottom>
         <Button onClick={goBackToWallet} label='Back to wallet' secondary />

@@ -35,7 +35,11 @@ export default function Transactions() {
     <Container>
       <Content>
         <Title text='Transactions' />
-        {settling ? <Loading /> : <TransactionsList />}
+        {settling ? (
+          <Loading text='Settling transactions require a round, which can take a few seconds' />
+        ) : (
+          <TransactionsList />
+        )}
       </Content>
       <ButtonsOnBottom>
         {showClaimButton ? <Button onClick={handleClaim} label={buttonLabel} disabled={settling} /> : null}

@@ -47,7 +47,6 @@ export default function Transaction() {
       await settlePending()
       if (tx) setTxInfo({ ...tx, isPending: false })
     } catch (err) {
-      console.log('error settling', typeof err, err)
       setError(extractError(err))
     }
     setSettling(false)
@@ -74,7 +73,7 @@ export default function Transaction() {
         <Title text='Transaction' />
         <Error error={Boolean(error)} text={error} />
         {settling ? (
-          <Loading />
+          <Loading text='Settling transactions require a round, which can take a few seconds' />
         ) : (
           <>
             <Table data={data} />

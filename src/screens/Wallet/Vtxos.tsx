@@ -35,7 +35,7 @@ export default function Vtxos() {
       <Content>
         <Title text='VTXOs' subtext={`Next recycle ${prettyDate(wallet.nextRecycle)}`} />
         {recycling ? (
-          <Loading />
+          <Loading text='Recycling your VTXOs require a round, which can take a few seconds' />
         ) : (
           <div className='mt-10'>
             <Label text='Amount and expiration' />
