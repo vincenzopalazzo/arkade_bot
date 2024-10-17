@@ -23,7 +23,7 @@ export default function ReceiveSuccess() {
   return (
     <Container>
       <Content>
-        <Title text='Success' subtext='Payment received' />
+        <Title text='Success' subtext={`${recvInfo.satoshis} sats received`} />
         <div className='flex h-60'>
           <div className='m-auto'>
             <SuccessIcon />
