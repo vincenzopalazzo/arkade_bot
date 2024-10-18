@@ -1,9 +1,22 @@
+import ArrowIcon from '../icons/Arrow'
+
 interface LabelProps {
-  pulse?: boolean
+  onClick?: () => void
   text: string
 }
 
-export default function Label({ pulse, text }: LabelProps) {
-  const className = 'block text-sm text-left font-medium mb-1' + (pulse ? ' animate-pulse' : '')
-  return <label className={className}>{text}</label>
+export default function Label({ onClick, text }: LabelProps) {
+  const className = 'block text-sm text-left font-medium'
+  if (onClick)
+    return (
+      <div className='flex items-center cursor-pointer gap-1 mb-1' onClick={onClick}>
+        <label className={className}>{text}</label>
+        <ArrowIcon tiny />
+      </div>
+    )
+  return (
+    <div className='mb-1'>
+      <label className={className}>{text}</label>
+    </div>
+  )
 }

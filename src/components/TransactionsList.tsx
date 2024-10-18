@@ -51,7 +51,7 @@ export default function TransactionsList({ short }: { short?: boolean }) {
   return (
     <div className='mt-4'>
       <Label text={`${short ? 'Last' : 'All ' + showTxs.length} transactions`} />
-      <div className='flex flex-col gap-2 h-60 overflow-auto'>
+      <div className='flex flex-col gap-2 max-h-80 overflow-auto'>
         {showTxs.map((tx) => (
           <TransactionLine key={key(tx)} tx={tx} />
         ))}
@@ -60,9 +60,9 @@ export default function TransactionsList({ short }: { short?: boolean }) {
             className='border bg-gray-100 dark:bg-gray-800 cursor-pointer p-2 flex justify-end w-full rounded-md'
             onClick={() => navigate(Pages.Transactions)}
           >
-            <div className='flex'>
+            <div className='flex items-center'>
               <p className='mr-2'>View all {transactions.length} transactions</p>
-              <ArrowIcon tiny />
+              <ArrowIcon small />
             </div>
           </div>
         ) : null}

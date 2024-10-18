@@ -13,10 +13,12 @@ import { copyToClipboard } from '../../../lib/clipboard'
 import * as bip21 from '../../../lib/bip21'
 import { getBalance } from '../../../lib/asp'
 import { WalletContext } from '../../../providers/wallet'
+import { NotificationsContext } from '../../../providers/notifications'
 
 export default function ReceiveInvoice() {
   const { recvInfo, setRecvInfo } = useContext(FlowContext)
   const { navigate } = useContext(NavigationContext)
+  const { notifyPaymentReceived } = useContext(NotificationsContext)
   const { wallet } = useContext(WalletContext)
 
   const label = 'Copy to clipboard'
@@ -33,6 +35,7 @@ export default function ReceiveInvoice() {
     console.log('satoshis received', satoshis)
     clearInterval(poolAspIntervalId.current)
     setRecvInfo({ ...recvInfo, satoshis })
+    notifyPaymentReceived(satoshis)
     navigate(Pages.ReceiveSuccess)
   }
 

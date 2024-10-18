@@ -18,7 +18,7 @@ import {
   walletLocked,
 } from '../lib/asp'
 import { AspContext } from './asp'
-import { NostrContext } from './nostr'
+import { NotificationsContext } from './notifications'
 import { ConfigContext } from './config'
 
 export interface Wallet {
@@ -89,7 +89,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   const { setAspInfo, aspInfo } = useContext(AspContext)
   const { resetConfig } = useContext(ConfigContext)
   const { navigate } = useContext(NavigationContext)
-  const { sendNotification } = useContext(NostrContext)
+  const { notifyVtxosRecycled, notifyTxSettled } = useContext(NotificationsContext)
 
   const [walletUnlocked, setWalletUnlocked] = useState(false)
   const [wasmLoaded, setWasmLoaded] = useState(false)
@@ -122,6 +122,14 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
       })
     }
   }, [wasmLoaded])
+
+  useEffect(() => {
+    if (!wallet.nextRecycle) return
+    const now = Math.floor(new Date().getTime() / 1000)
+    const threshold = 60 * 60 * 24 // one day in seconds
+    const urgent = wallet.nextRecycle - now < threshold
+    if (urgent) claimVtxos()
+  }, [wallet.nextRecycle])
 
   const initWallet = async (password: string, privateKey: string) => {
     const aspUrl = aspInfo.url
@@ -156,7 +164,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     const amount = wallet.vtxos.spendable.reduce((acc, cur) => acc + cur.amount, 0)
     await sendOffChain(amount, offchainAddr)
     await reloadWallet()
-    sendNotification('vtxos recycled')
+    notifyVtxosRecycled()
   }
 
   const reloadWallet = async () => {
@@ -174,7 +182,6 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const resetWallet = async () => {
-    console.log('defaultWallet', defaultWallet)
     resetConfig()
     updateWallet(defaultWallet)
     setWalletUnlocked(false)
@@ -184,7 +191,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   const settlePending = async () => {
     await claimVtxos()
     await reloadWallet()
-    sendNotification('pending transactions settled')
+    notifyTxSettled()
   }
 
   const setPrivateKey = (privateKey: string) => {

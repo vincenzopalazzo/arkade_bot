@@ -1,0 +1,122 @@
+import { ReactNode, createContext, useContext, useEffect, useRef } from 'react'
+import { hexToBytes } from '@noble/hashes/utils'
+import { finalizeEvent, getPublicKey, Relay } from 'nostr-tools'
+import { getPrivateKey } from '../lib/asp'
+import { ConfigContext } from './config'
+import { sendNotification } from '../lib/notifications'
+import { prettyNumber } from '../lib/format'
+
+interface NotificationsContextProps {
+  notifyNewUpdateAvailable: () => void
+  notifyPaymentReceived: (s: number) => void
+  notifyPaymentSent: (s: number) => void
+  notifyVtxosRecycled: () => void
+  notifyTxSettled: () => void
+}
+
+export const NotificationsContext = createContext<NotificationsContextProps>({
+  notifyNewUpdateAvailable: () => {},
+  notifyPaymentReceived: () => {},
+  notifyPaymentSent: () => {},
+  notifyVtxosRecycled: () => {},
+  notifyTxSettled: () => {},
+})
+
+export const NotificationsProvider = ({ children }: { children: ReactNode }) => {
+  const { config } = useContext(ConfigContext)
+
+  const relay = useRef<Relay>()
+
+  const connectRelay = async (): Promise<void> => {
+    relay.current = await Relay.connect('wss://relay.primal.net')
+  }
+
+  const sendNostrNotification = async (content: string) => {
+    if (!config.nostr) return
+    if (!relay.current) return
+    if (!relay.current.connected) await connectRelay()
+    const seed = await getPrivateKey()
+    const sk = hexToBytes(seed)
+    const pk = getPublicKey(sk)
+    relay.current.subscribe(
+      [
+        {
+          kinds: [1],
+          authors: [pk],
+        },
+      ],
+      {
+        onevent(event) {
+          console.log('got event:', event)
+        },
+      },
+    )
+    const eventTemplate = {
+      kind: 1,
+      created_at: Math.floor(Date.now() / 1000),
+      tags: [],
+      content,
+    }
+    const signedEvent = finalizeEvent(eventTemplate, sk)
+    await relay.current.publish(signedEvent)
+  }
+
+  const notifyNewUpdateAvailable = () => {
+    const body = 'Close all tabs and re-open to update'
+    const title = 'Update available'
+    sendNotification(title, body)
+  }
+
+  const notifyPaymentReceived = (sats: number) => {
+    const body = `You received ${prettyNumber(sats)} sats`
+    const title = 'Payment received'
+    sendNotification(title, body)
+    sendNostrNotification(body)
+  }
+
+  const notifyPaymentSent = (sats: number) => {
+    const body = `You sent ${prettyNumber(sats)} sats`
+    const title = 'Payment sent'
+    sendNotification(title, body)
+    sendNostrNotification(body)
+  }
+
+  const notifyTxSettled = () => {
+    const body = `All pending transactions were settled`
+    const title = 'Transactions settled'
+    sendNotification(title, body)
+    sendNostrNotification(body)
+  }
+
+  const notifyVtxosRecycled = () => {
+    const body = 'All VTXOs were recycled'
+    const title = 'Vtxos recycled'
+    sendNotification(title, body)
+    sendNostrNotification(body)
+  }
+
+  useEffect(() => {
+    if (!config.nostr) {
+      if (relay.current) {
+        if (relay.current.connected) relay.current.close()
+        relay.current = undefined
+      }
+      return
+    }
+    connectRelay()
+  }, [config.nostr])
+
+  return (
+    <NotificationsContext.Provider
+      value={{
+        notifyNewUpdateAvailable,
+        notifyPaymentReceived,
+        notifyPaymentSent,
+        notifyVtxosRecycled,
+        notifyTxSettled,
+      }}
+    >
+      {children}
+    </NotificationsContext.Provider>
+  )
+}

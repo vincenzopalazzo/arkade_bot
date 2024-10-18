@@ -26,7 +26,7 @@ import './wasm_exec.js'
 import './wasmTypes.d.ts'
 import InitConnect from './screens/Init/Connect'
 import Transaction from './screens/Wallet/Transaction'
-import Vtxos from './screens/Wallet/Vtxos'
+import Vtxos from './screens/Settings/Vtxos'
 
 export default function App() {
   const { wasmLoaded, walletUnlocked, wallet } = useContext(WalletContext)

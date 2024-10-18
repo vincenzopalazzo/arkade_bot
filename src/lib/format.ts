@@ -40,42 +40,33 @@ export const toSatoshis = (num: number): Satoshis => {
   return Decimal.mul(num, 100_000_000).toNumber()
 }
 
+export const prettyDelta = (seconds: number): string => {
+  const delta = Math.abs(seconds)
+  if (delta > 86_400) {
+    const days = Math.floor(delta / 86_400)
+    return `${days}d`
+  }
+  if (delta > 3_600) {
+    const hours = Math.floor(delta / 3_600)
+    return `${hours}h`
+  }
+  if (delta > 60) {
+    const minutes = Math.floor(delta / 60)
+    return `${minutes}m`
+  }
+  if (delta > 0) {
+    const seconds = delta
+    return `${seconds}s`
+  }
+  return ''
+}
+
 export const prettyAgo = (timestamp: number | string): string => {
   const unixts = typeof timestamp === 'string' ? Math.floor(new Date(timestamp).getTime() / 1000) : timestamp
   const now = Math.floor(Date.now() / 1000)
   const delta = Math.floor(now - unixts)
-  if (delta > 86_400) {
-    const days = Math.floor(delta / 86_400)
-    return `${days}d ago`
-  }
-  if (delta > 3_600) {
-    const hours = Math.floor(delta / 3_600)
-    return `${hours}h ago`
-  }
-  if (delta > 60) {
-    const minutes = Math.floor(delta / 60)
-    return `${minutes}m ago`
-  }
-  if (delta > 0) {
-    const seconds = delta
-    return `${seconds}s ago`
-  }
   if (delta === 0) return 'just now'
-  if (delta > -60) {
-    const seconds = -delta
-    return `in ${seconds}s`
-  }
-  if (delta > -3_600) {
-    const minutes = -Math.floor(delta / 60)
-    return `in ${minutes}m`
-  }
-  if (delta > -86_400) {
-    const hours = -Math.floor(delta / 3_600)
-    return `in ${hours}h`
-  }
-  if (delta <= -86_400) {
-    const days = -Math.floor(delta / 86_400)
-    return `in ${days}d`
-  }
+  if (delta > 0) return `${prettyDelta(delta)} ago`
+  if (delta < 0) return `in ${prettyDelta(delta)}`
   return ''
 }

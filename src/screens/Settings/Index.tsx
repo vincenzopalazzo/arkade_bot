@@ -16,6 +16,9 @@ import DarkThemeIcon from '../../icons/DarkTheme'
 import Theme from './Theme'
 import NostrIcon from '../../icons/Nostr'
 import Nostr from './Nostr'
+import ClockIcon from '../../icons/Clock'
+import Vtxos from './Vtxos'
+import NotificationIcon from '../../icons/Notification'
 
 enum Options {
   Menu = 'menu',
@@ -27,6 +30,7 @@ enum Options {
   Password = 'password',
   Reset = 'reset',
   Theme = 'theme',
+  Vtxos = 'vtxos',
 }
 
 interface Option {
@@ -59,6 +63,10 @@ export default function Settings() {
       option: Options.Nostr,
     },
     {
+      icon: <NotificationIcon />,
+      option: Options.Notifications,
+    },
+    {
       icon: <ResetIcon />,
       option: Options.Reset,
     },
@@ -66,12 +74,16 @@ export default function Settings() {
       icon: <DarkThemeIcon />,
       option: Options.Theme,
     },
+    {
+      icon: <ClockIcon />,
+      option: Options.Vtxos,
+    },
   ]
 
   const validOptions = (): Option[] => {
     if (wallet.initialized) return options
-    const hiddenOptions = [Options.Backup, Options.Lock, Options.Password, Options.Reset]
-    return options.filter((o) => !hiddenOptions.includes(o.option))
+    const commonOptions = [Options.About, Options.Theme]
+    return options.filter((o) => commonOptions.includes(o.option))
   }
 
   useEffect(() => console.log('wallet.initialized', wallet.initialized, [wallet.initialized]))
@@ -106,6 +118,7 @@ export default function Settings() {
         {option === Options.Nostr && <Nostr />}
         {option === Options.Reset && <Reset backup={() => setOption(Options.Backup)} />}
         {option === Options.Theme && <Theme />}
+        {option === Options.Vtxos && <Vtxos />}
       </div>
     </OuterContainer>
   )

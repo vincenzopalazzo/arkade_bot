@@ -7,7 +7,7 @@ import { ConfigProvider } from './providers/config'
 import { FiatProvider } from './providers/fiat'
 import { FlowProvider } from './providers/flow'
 import { NavigationProvider } from './providers/navigation'
-import { NostrProvider } from './providers/nostr'
+import { NotificationsProvider } from './providers/notifications'
 import { WalletProvider } from './providers/wallet'
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
@@ -16,7 +16,7 @@ root.render(
   <NavigationProvider>
     <ConfigProvider>
       <AspProvider>
-        <NostrProvider>
+        <NotificationsProvider>
           <FiatProvider>
             <WalletProvider>
               <FlowProvider>
@@ -24,7 +24,7 @@ root.render(
               </FlowProvider>
             </WalletProvider>
           </FiatProvider>
-        </NostrProvider>
+        </NotificationsProvider>
       </AspProvider>
     </ConfigProvider>
   </NavigationProvider>,

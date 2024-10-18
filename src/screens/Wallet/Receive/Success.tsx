@@ -6,18 +6,18 @@ import ButtonsOnBottom from '../../../components/ButtonsOnBottom'
 import { NavigationContext, Pages } from '../../../providers/navigation'
 import Content from '../../../components/Content'
 import Container from '../../../components/Container'
-import { NostrContext } from '../../../providers/nostr'
+import { NotificationsContext } from '../../../providers/notifications'
 import { FlowContext } from '../../../providers/flow'
 
 export default function ReceiveSuccess() {
   const { recvInfo } = useContext(FlowContext)
   const { navigate } = useContext(NavigationContext)
-  const { sendNotification } = useContext(NostrContext)
+  const { notifyPaymentReceived } = useContext(NotificationsContext)
 
   const goBackToWallet = () => navigate(Pages.Wallet)
 
   useEffect(() => {
-    sendNotification(`payment received: ${recvInfo.satoshis} sats`)
+    notifyPaymentReceived(recvInfo.satoshis)
   }, [])
 
   return (
