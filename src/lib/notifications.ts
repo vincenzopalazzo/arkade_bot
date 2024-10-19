@@ -1,9 +1,13 @@
+export const notificationApiSupport =
+  'Notification' in window && 'serviceWorker' in navigator && 'PushManager' in window
+
 export const requestPermission = async (): Promise<boolean> => {
   const result = await Notification.requestPermission()
   return result === 'granted'
 }
 
 export const sendNotification = (title: string, body: string) => {
+  if (!notificationApiSupport) return
   const options = { body, icon: '/favicon.png' }
   new Notification(title, options)
 }
