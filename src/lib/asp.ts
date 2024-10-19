@@ -2,7 +2,21 @@ import { defaultDust, defaultMinRelayFee, defaultNetwork, defaultRoundInterval }
 import { NetworkName } from './network'
 import { Satoshis, Tx, Vtxo } from './types'
 
-export const emptyAspInfo = {
+export interface AspInfo {
+  boardingDescriptorTemplate: string
+  dust: number
+  forfeitAddress: string
+  minRelayFee: number
+  network: NetworkName
+  pubkey: string
+  roundInterval: number
+  roundLifetime: number
+  unilateralExitDelay: number
+  unreachable: boolean
+  url: string
+}
+
+export const emptyAspInfo: AspInfo = {
   boardingDescriptorTemplate: '',
   dust: defaultDust,
   forfeitAddress: '',
@@ -12,6 +26,7 @@ export const emptyAspInfo = {
   roundInterval: 0,
   roundLifetime: 0,
   unilateralExitDelay: 0,
+  unreachable: false,
   url: '',
 }
 
@@ -35,19 +50,6 @@ export const claimVtxos = async () => {
 
 export const collaborativeRedeem = async (amount: number, address: string): Promise<string> => {
   return await window.collaborativeRedeem(address, amount, false)
-}
-
-export interface AspInfo {
-  boardingDescriptorTemplate: string
-  dust: number
-  forfeitAddress: string
-  minRelayFee: number
-  network: NetworkName
-  pubkey: string
-  roundInterval: number
-  roundLifetime: number
-  unilateralExitDelay: number
-  url: string
 }
 
 export const getAspInfo = async (net: NetworkName): Promise<AspInfo> => {
@@ -75,11 +77,12 @@ export const getAspInfo = async (net: NetworkName): Promise<AspInfo> => {
             roundInterval: roundInterval ? Number(roundInterval) : defaultRoundInterval,
             roundLifetime: Number(roundLifetime),
             unilateralExitDelay: Number(unilateralExitDelay),
+            unreachable: false,
             url: aspMap[net],
           })
         },
       )
-      .catch(() => resolve(emptyAspInfo))
+      .catch(() => resolve({ ...emptyAspInfo, unreachable: true }))
   })
 }
 

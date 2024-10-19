@@ -14,8 +14,8 @@ export default function Init() {
   const [error, setError] = useState(false)
 
   useEffect(() => {
-    setError(!(aspInfo.pubkey?.length > 0))
-  }, [aspInfo.pubkey])
+    setError(aspInfo.unreachable)
+  }, [aspInfo.unreachable])
 
   return (
     <Container>

@@ -24,8 +24,8 @@ export default function Wallet() {
   }, [])
 
   useEffect(() => {
-    setError(!(aspInfo.pubkey?.length > 0))
-  }, [aspInfo.pubkey])
+    setError(aspInfo.unreachable)
+  }, [aspInfo.unreachable])
 
   useEffect(() => {
     if (!aspInfo.dust) return
