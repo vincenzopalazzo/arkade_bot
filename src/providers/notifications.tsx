@@ -7,7 +7,6 @@ import { sendNotification } from '../lib/notifications'
 import { prettyNumber } from '../lib/format'
 
 interface NotificationsContextProps {
-  notifyNewUpdateAvailable: () => void
   notifyPaymentReceived: (s: number) => void
   notifyPaymentSent: (s: number) => void
   notifyVtxosRecycled: () => void
@@ -15,7 +14,6 @@ interface NotificationsContextProps {
 }
 
 export const NotificationsContext = createContext<NotificationsContextProps>({
-  notifyNewUpdateAvailable: () => {},
   notifyPaymentReceived: () => {},
   notifyPaymentSent: () => {},
   notifyVtxosRecycled: () => {},
@@ -61,12 +59,6 @@ export const NotificationsProvider = ({ children }: { children: ReactNode }) => 
     await relay.current.publish(signedEvent)
   }
 
-  const notifyNewUpdateAvailable = () => {
-    const body = 'Close all tabs and re-open to update'
-    const title = 'Update available'
-    sendNotification(title, body)
-  }
-
   const notifyPaymentReceived = (sats: number) => {
     const body = `You received ${prettyNumber(sats)} sats`
     const title = 'Payment received'
@@ -109,7 +101,6 @@ export const NotificationsProvider = ({ children }: { children: ReactNode }) => 
   return (
     <NotificationsContext.Provider
       value={{
-        notifyNewUpdateAvailable,
         notifyPaymentReceived,
         notifyPaymentSent,
         notifyVtxosRecycled,
