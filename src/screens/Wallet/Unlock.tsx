@@ -31,6 +31,7 @@ export default function Unlock() {
   }
 
   const handleUnlock = async (pass: string) => {
+    if (!pass) return
     setUnlocking(true)
     unlockWallet(pass)
       .then(() => navigate(Pages.Wallet))
