@@ -111,7 +111,7 @@ export default function Settings() {
                 </div>
               ))}
             </div>
-            <p className='font-semibold text-xs text-center'>v2024101901</p>
+            <p className='font-semibold text-xs text-center'>v2024101902</p>
           </div>
         )}
         {option === Options.About && <About />}

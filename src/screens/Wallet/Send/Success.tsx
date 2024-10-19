@@ -24,7 +24,7 @@ export default function SendSuccess() {
     <Container>
       <Content>
         <Title text='Success' subtext='Payment sent' />
-        <div className='flex h-60'>
+        <div className='flex h-60 mt-4'>
           <div className='m-auto'>
             <SuccessIcon />
           </div>

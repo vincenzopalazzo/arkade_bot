@@ -39,7 +39,9 @@ export default function Wallet() {
     <Container>
       <Content>
         <Balance sats={wallet.balance} />
-        <TransactionsList short />
+        <div className='mt-4'>
+          <TransactionsList short />
+        </div>
       </Content>
       <ButtonsOnBottom>
         <Button disabled={error || lowFunds} icon={<ScanIcon />} label='Send' onClick={handleSend} />

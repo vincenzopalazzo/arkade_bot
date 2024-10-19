@@ -63,7 +63,7 @@ export default function SendFees() {
     <Container>
       <Content>
         <Title text='Payment fees' subtext={`You pay ${prettyTotal} sats`} />
-        <div className='flex flex-col gap-2 mt-10'>
+        <div className='flex flex-col gap-2 mt-4'>
           <Error error={Boolean(error)} text={error} />
           <Table data={data} />
         </div>

@@ -40,7 +40,7 @@ export default function TransactionsList({ short }: { short?: boolean }) {
 
   const sortFunction = (a: Tx, b: Tx) => (!a.createdAt ? -1 : !b.createdAt ? 1 : b.createdAt - a.createdAt)
 
-  const showMax = 3
+  const showMax = 4
   const pending = wallet.txs.filter((tx) => tx.isPending).sort(sortFunction)
   const settled = wallet.txs.filter((tx) => !tx.isPending).sort(sortFunction)
   const ordered = [...pending, ...settled]
@@ -51,7 +51,7 @@ export default function TransactionsList({ short }: { short?: boolean }) {
   return (
     <div className='mt-4'>
       <Label text={`${short ? 'Last' : 'All ' + showTxs.length} transactions`} />
-      <div className='flex flex-col gap-2 max-h-80 overflow-auto'>
+      <div className='flex flex-col gap-2 max-h-72 overflow-auto'>
         {showTxs.map((tx) => (
           <TransactionLine key={key(tx)} tx={tx} />
         ))}
