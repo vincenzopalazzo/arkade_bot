@@ -40,7 +40,10 @@ export default function Notifications() {
               <p>You'll need to grant permission if asked</p>
             </>
           ) : (
-            <p>Your browser does not support the Notifications API</p>
+            <>
+              <p>Your browser does not support the Notifications API</p>
+              <p>If on iOS you'll need to 'Add to homescreen' and be running iOS 16.4 or higher</p>
+            </>
           )}
         </div>
       </Content>
