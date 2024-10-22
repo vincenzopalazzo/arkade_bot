@@ -4527,7 +4527,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vulpemventures/secp256k1-zkp@npm:3.2.1, @vulpemventures/secp256k1-zkp@npm:^3.2.1":
+"@vulpemventures/secp256k1-zkp@npm:^3.2.1":
   version: 3.2.1
   resolution: "@vulpemventures/secp256k1-zkp@npm:3.2.1"
   dependencies:
@@ -9043,7 +9043,6 @@ __metadata:
     "@types/react-dom": "npm:^18.0.0"
     "@typescript-eslint/eslint-plugin": "npm:^4.24.0"
     "@typescript-eslint/parser": "npm:^4.24.0"
-    "@vulpemventures/secp256k1-zkp": "npm:3.2.1"
     "@zxing/library": "npm:^0.20.0"
     axios: "npm:^1.6.7"
     bech32: "npm:^2.0.0"
