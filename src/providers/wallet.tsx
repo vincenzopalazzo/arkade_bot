@@ -124,12 +124,12 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   }, [wasmLoaded])
 
   useEffect(() => {
-    if (!wallet.nextRecycle) return
+    if (!wallet.nextRecycle || !walletUnlocked) return
     const now = Math.floor(new Date().getTime() / 1000)
     const threshold = 60 * 60 * 24 // one day in seconds
     const urgent = wallet.nextRecycle - now < threshold
-    if (urgent) claimVtxos()
-  }, [wallet.nextRecycle])
+    if (urgent) claimVtxos().then(() => recycleVtxos())
+  }, [wallet.nextRecycle, walletUnlocked])
 
   const initWallet = async (password: string, privateKey: string) => {
     const aspUrl = aspInfo.url
