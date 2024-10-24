@@ -9,7 +9,15 @@ export const requestPermission = async (): Promise<boolean> => {
 export const sendNotification = (title: string, body: string) => {
   if (!notificationApiSupport) return
   const options = { body, icon: '/arkade-icon-220.png' }
-  new Notification(title, options)
+  try {
+    new Notification(title, options)
+  } catch {
+    try {
+      navigator.serviceWorker.ready.then((registration) => {
+        registration.showNotification(title, options)
+      })
+    } catch {}
+  }
 }
 
 export const notifyNewUpdateAvailable = () => {
