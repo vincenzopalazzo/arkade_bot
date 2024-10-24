@@ -59,31 +59,36 @@ export const NotificationsProvider = ({ children }: { children: ReactNode }) => 
     await relay.current.publish(signedEvent)
   }
 
+  const sendSystemNotification = (title: string, body: string) => {
+    if (!config.notifications) return
+    sendNotification(title, body)
+  }
+
   const notifyPaymentReceived = (sats: number) => {
     const body = `You received ${prettyNumber(sats)} sats`
     const title = 'Payment received'
-    sendNotification(title, body)
+    sendSystemNotification(title, body)
     sendNostrNotification(body)
   }
 
   const notifyPaymentSent = (sats: number) => {
     const body = `You sent ${prettyNumber(sats)} sats`
     const title = 'Payment sent'
-    sendNotification(title, body)
+    sendSystemNotification(title, body)
     sendNostrNotification(body)
   }
 
   const notifyTxSettled = () => {
     const body = `All pending transactions were settled`
     const title = 'Transactions settled'
-    sendNotification(title, body)
+    sendSystemNotification(title, body)
     sendNostrNotification(body)
   }
 
   const notifyVtxosRecycled = () => {
     const body = 'All VTXOs were recycled'
     const title = 'Vtxos recycled'
-    sendNotification(title, body)
+    sendSystemNotification(title, body)
     sendNostrNotification(body)
   }
 
