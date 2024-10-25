@@ -6,7 +6,7 @@ import { Tx, Vtxo } from '../lib/types'
 import { ExplorerName } from '../lib/explorers'
 import { defaultExplorer, defaultNetwork } from '../lib/constants'
 import {
-  claimVtxos,
+  settleVtxos,
   getAspInfo,
   getBalance,
   getReceivingAddresses,
@@ -128,7 +128,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     const now = Math.floor(new Date().getTime() / 1000)
     const threshold = 60 * 60 * 24 // one day in seconds
     const urgent = wallet.nextRecycle - now < threshold
-    if (urgent) claimVtxos().then(() => recycleVtxos())
+    if (urgent) settleVtxos().then(() => recycleVtxos())
   }, [wallet.nextRecycle, walletUnlocked])
 
   const initWallet = async (password: string, privateKey: string) => {
@@ -189,7 +189,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const settlePending = async () => {
-    await claimVtxos()
+    await settleVtxos()
     await reloadWallet()
     notifyTxSettled()
   }

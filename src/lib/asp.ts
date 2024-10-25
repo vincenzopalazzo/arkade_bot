@@ -44,8 +44,8 @@ const get = async (endpoint: string, net: NetworkName) => {
   return await response.json()
 }
 
-export const claimVtxos = async () => {
-  await window.claim()
+export const settleVtxos = async () => {
+  await window.settle()
 }
 
 export const collaborativeRedeem = async (amount: number, address: string): Promise<string> => {

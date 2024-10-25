@@ -40,7 +40,7 @@ export default function Transaction() {
     setButtonLabel(settling ? 'Settling...' : defaultButtonLabel)
   }, [settling])
 
-  const handleClaim = async () => {
+  const handleSettle = async () => {
     setError('')
     setSettling(true)
     try {
@@ -87,7 +87,7 @@ export default function Transaction() {
         )}
       </Content>
       <ButtonsOnBottom>
-        {showButton ? <Button onClick={handleClaim} label={buttonLabel} disabled={settling} /> : null}
+        {showButton ? <Button onClick={handleSettle} label={buttonLabel} disabled={settling} /> : null}
         {tx.roundTxid ? <Button onClick={handleExplorer} label='View on explorer' /> : null}
         <Button onClick={goBackToWallet} label='Back to wallet' secondary />
       </ButtonsOnBottom>
