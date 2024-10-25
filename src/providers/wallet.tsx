@@ -3,8 +3,8 @@ import { readWalletFromStorage, saveWalletToStorage } from '../lib/storage'
 import { NavigationContext, Pages } from './navigation'
 import { NetworkName } from '../lib/network'
 import { Tx, Vtxo } from '../lib/types'
-import { ExplorerName } from '../lib/explorers'
-import { defaultExplorer, defaultNetwork } from '../lib/constants'
+import { ExplorerName, getDefaultExplorer, getRestApiExplorerURL } from '../lib/explorers'
+import { defaultNetwork } from '../lib/constants'
 import {
   settleVtxos,
   getAspInfo,
@@ -41,7 +41,7 @@ export interface Wallet {
 const defaultWallet: Wallet = {
   arkAddress: '',
   balance: 0,
-  explorer: defaultExplorer,
+  explorer: getDefaultExplorer(defaultNetwork),
   initialized: false,
   lastUpdate: 0,
   network: defaultNetwork,
@@ -98,14 +98,13 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (wasmLoaded) return
     const go = new window.Go()
-    WebAssembly.instantiateStreaming(fetch('https://arkadewasm.bordalix.workers.dev?21'), go.importObject).then(
-      (result) => {
-        // WebAssembly.instantiateStreaming(fetch('ark-sdk.wasm'), go.importObject).then((result) => {
-        go.run(result.instance)
-        setWasmLoaded(true)
-        console.log('wasm loaded')
-      },
-    )
+    const devMode = true
+    const url = devMode ? 'ark-sdk.wasm' : 'https://arkadewasm.bordalix.workers.dev?21'
+    WebAssembly.instantiateStreaming(fetch(url), go.importObject).then((result) => {
+      go.run(result.instance)
+      setWasmLoaded(true)
+      console.log('wasm loaded')
+    })
     getAspInfo(wallet.network).then(setAspInfo)
   }, [])
 
@@ -136,7 +135,8 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     const chain = 'bitcoin'
     const clientType = 'rest'
     const walletType = 'singlekey'
-    await window.init(walletType, clientType, aspUrl, privateKey, password, chain)
+    const explorerUrl = getRestApiExplorerURL(wallet) ?? ''
+    await window.init(walletType, clientType, aspUrl, privateKey, password, chain, explorerUrl)
     updateWallet({ ...wallet, initialized: true })
   }
 

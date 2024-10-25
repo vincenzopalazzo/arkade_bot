@@ -53,10 +53,12 @@ const explorers: Explorer[] = [
   },
 ]
 
+export const getDefaultExplorer = (network: NetworkName) => getExplorerNames(network)[0]
+
 export const getExplorerNames = (network: NetworkName) =>
   explorers.filter((e: Explorer) => e[network]).map((e) => e.name)
 
-const getRestApiExplorerURL = ({ explorer, network }: Wallet) => {
+export const getRestApiExplorerURL = ({ explorer, network }: Wallet) => {
   const exp = explorers.find((e) => e.name === explorer)
   if (exp?.[network]) return exp[network]?.restApiExplorerURL
 }

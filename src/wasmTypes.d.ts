@@ -12,6 +12,7 @@ declare global {
       privateKey: string,
       password: string,
       chain: string,
+      explorer: string,
     ) => Promise<void>
     listVtxos: () => Promise<any>
     lock: (password: string) => Promise<any>
