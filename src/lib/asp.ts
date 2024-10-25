@@ -107,19 +107,21 @@ export const getTxHistory = async (): Promise<Tx[]> => {
   const txs: Tx[] = []
   try {
     const res = await window.getTransactionHistory()
-    // console.log('res', res)
+    console.log('res', res)
     if (!res) return []
     for (const tx of JSON.parse(res)) {
       const date = new Date(tx.createdAt)
       const unix = Math.floor(date.getTime() / 1000)
+      const { boardingTxid, settled, redeemTxid, roundTxid, type } = tx
       txs.push({
         amount: parseInt(tx.amount, 10),
-        boardingTxid: tx.boardingTxid,
+        boardingTxid,
         createdAt: unix,
-        isPending: tx.isPending,
-        redeemTxid: tx.redeemTxid,
-        roundTxid: tx.roundTxid,
-        type: tx.type,
+        pending: !settled && boardingTxid,
+        settled,
+        redeemTxid,
+        roundTxid,
+        type,
       })
     }
   } catch (_) {

@@ -27,14 +27,14 @@ export default function Transaction() {
   const defaultButtonLabel = 'Settle pending'
 
   const [buttonLabel, setButtonLabel] = useState(defaultButtonLabel)
-  const [showButton, setShowButton] = useState(false)
+  const [showSettleButton, setShowSettleButton] = useState(false)
   const [showInfo, setShowInfo] = useState(false)
   const [settling, setSettling] = useState(false)
   const [error, setError] = useState('')
 
   useEffect(() => {
-    if (tx) setShowButton(tx.isPending)
-  }, [tx?.isPending])
+    if (tx) setShowSettleButton(tx.pending)
+  }, [tx?.pending])
 
   useEffect(() => {
     setButtonLabel(settling ? 'Settling...' : defaultButtonLabel)
@@ -45,7 +45,7 @@ export default function Transaction() {
     setSettling(true)
     try {
       await settlePending()
-      if (tx) setTxInfo({ ...tx, isPending: false })
+      if (tx) setTxInfo({ ...tx, pending: false, settled: true })
     } catch (err) {
       setError(extractError(err))
     }
@@ -60,7 +60,7 @@ export default function Transaction() {
 
   const data = [
     ['When', prettyAgo(tx.createdAt)],
-    ['State', tx.isPending ? 'Pending' : 'Settled'],
+    ['State', tx.pending ? 'Pending' : 'Settled'],
     ['Date', prettyDate(tx.createdAt)],
     ['Amount', `${prettyNumber(tx.type === 'sent' ? tx.amount - defaultFees : tx.amount)} sats`],
     ['Network fees', `${prettyNumber(tx.type === 'sent' ? defaultFees : 0)} sats`],
@@ -77,7 +77,7 @@ export default function Transaction() {
         ) : (
           <>
             <Table data={data} />
-            {tx.isPending ? (
+            {tx.pending ? (
               <div className='flex justify-center align-middle mt-4' onClick={() => setShowInfo(true)}>
                 <TipIcon small />
                 <p className='text-sm underline underline-offset-2 cursor-pointer'>What are pending transactions?</p>
@@ -87,7 +87,7 @@ export default function Transaction() {
         )}
       </Content>
       <ButtonsOnBottom>
-        {showButton ? <Button onClick={handleSettle} label={buttonLabel} disabled={settling} /> : null}
+        {showSettleButton ? <Button onClick={handleSettle} label={buttonLabel} disabled={settling} /> : null}
         {tx.roundTxid ? <Button onClick={handleExplorer} label='View on explorer' /> : null}
         <Button onClick={goBackToWallet} label='Back to wallet' secondary />
       </ButtonsOnBottom>

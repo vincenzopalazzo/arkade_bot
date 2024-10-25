@@ -19,7 +19,7 @@ export default function Transactions() {
 
   const goBackToWallet = () => navigate(Pages.Wallet)
 
-  const showSettleButton = wallet.txs.reduce((acc, tx) => tx.isPending || acc, false)
+  const showSettleButton = wallet.txs.reduce((acc, tx) => tx.pending || acc, false)
 
   const handleSettle = async () => {
     setSettling(true)

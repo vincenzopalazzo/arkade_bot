@@ -8,9 +8,10 @@ export type Tx = {
   amount: number
   boardingTxid: string
   createdAt: number
-  isPending: boolean
+  pending: boolean
   redeemTxid: string
   roundTxid: string
+  settled: boolean
   type: string
 }
 
