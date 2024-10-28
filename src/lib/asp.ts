@@ -113,10 +113,18 @@ export const getTxHistory = async (): Promise<Tx[]> => {
       const date = new Date(tx.createdAt)
       const unix = Math.floor(date.getTime() / 1000)
       const { boardingTxid, settled, redeemTxid, roundTxid, type } = tx
+      const explorable = boardingTxid
+        ? boardingTxid
+        : roundTxid
+        ? roundTxid === redeemTxid // TODO: remove after bug is fixed
+          ? undefined
+          : roundTxid
+        : undefined
       txs.push({
         amount: parseInt(tx.amount, 10),
         boardingTxid,
         createdAt: unix,
+        explorable,
         pending: !settled && boardingTxid,
         settled,
         redeemTxid,
