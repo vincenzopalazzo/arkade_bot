@@ -42,7 +42,7 @@ const explorers: Explorer[] = [
   {
     name: ExplorerName.Nigiri,
     [NetworkName.Regtest]: {
-      restApiExplorerURL: 'http://localhost:5001',
+      restApiExplorerURL: 'http://localhost:5000',
     },
   },
   {
