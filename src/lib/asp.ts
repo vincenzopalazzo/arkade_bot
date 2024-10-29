@@ -183,6 +183,11 @@ export const sendOnChain = async (sats: number, address: string): Promise<string
   return await window.sendOnChain([{ To: address, Amount: sats }])
 }
 
+export const startListenTransactionStream = async (callback: () => {}) => {
+  console.log('start listening')
+  return await window.getTransactionStream(callback)
+}
+
 export const unlock = async (password: string): Promise<void> => {
   await window.unlock(password)
 }

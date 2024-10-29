@@ -16,6 +16,7 @@ import {
   sendOffChain,
   unlock,
   walletLocked,
+  startListenTransactionStream,
 } from '../lib/asp'
 import { AspContext } from './asp'
 import { NotificationsContext } from './notifications'
@@ -130,6 +131,11 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     if (urgent) settleVtxos().then(() => recycleVtxos())
   }, [wallet.nextRecycle, walletUnlocked])
 
+  useEffect(() => {
+    if (!walletUnlocked) return
+    startListenTransactionStream(reloadWallet)
+  }, [walletUnlocked])
+
   const initWallet = async (password: string, privateKey: string) => {
     const aspUrl = aspInfo.url
     const chain = 'bitcoin'
@@ -168,6 +174,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const reloadWallet = async () => {
+    console.log('reloading wallet')
     const vtxos = await getVtxos()
     const balance = await getBalance()
     const txs = await getTxHistory()
