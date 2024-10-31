@@ -121,7 +121,7 @@ export const getTxHistory = async (): Promise<Tx[]> => {
           : roundTxid
         : undefined
       txs.push({
-        amount: parseInt(tx.amount, 10),
+        amount: Math.abs(parseInt(tx.amount, 10)),
         boardingTxid,
         createdAt: unix,
         explorable,
@@ -129,7 +129,7 @@ export const getTxHistory = async (): Promise<Tx[]> => {
         settled,
         redeemTxid,
         roundTxid,
-        type,
+        type: type.toLowerCase(),
       })
     }
   } catch (_) {
