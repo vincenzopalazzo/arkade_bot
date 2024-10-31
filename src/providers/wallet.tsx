@@ -132,6 +132,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   }, [wallet.nextRecycle, walletUnlocked])
 
   useEffect(() => {
+    return
     if (!walletUnlocked) return
     startListenTransactionStream(reloadWallet)
   }, [walletUnlocked])

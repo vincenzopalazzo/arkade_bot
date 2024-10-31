@@ -185,7 +185,7 @@ export const sendOnChain = async (sats: number, address: string): Promise<string
 
 export const startListenTransactionStream = async (callback: () => {}) => {
   console.log('start listening')
-  return await window.getTransactionStream(callback)
+  // return await window.getTransactionStream(callback)
 }
 
 export const unlock = async (password: string): Promise<void> => {
