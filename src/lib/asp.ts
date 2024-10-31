@@ -33,7 +33,7 @@ export const emptyAspInfo: AspInfo = {
 const aspMap = {
   [NetworkName.Liquid]: 'https://asp-liquid.arkdev.info',
   [NetworkName.Regtest]: 'http://localhost:7070',
-  [NetworkName.Signet]: 'https://insiders.signet.arklabs.to',
+  [NetworkName.Signet]: 'https://asp.voucher.signet.arklabs.to',
   [NetworkName.Testnet]: 'https://asp.arkdev.info',
 }
 
