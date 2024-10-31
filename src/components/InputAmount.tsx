@@ -13,15 +13,16 @@ const unitLabels = {
 }
 
 interface InputAmountProps {
-  label: string
+  amount?: number
+  label?: string
   onChange: (arg0: any) => void
 }
 
-export default function InputAmount({ label, onChange }: InputAmountProps) {
+export default function InputAmount({ amount, label, onChange }: InputAmountProps) {
   const { fromEuro, fromUSD, toEuro, toUSD } = useContext(FiatContext)
 
-  const [amount, setAmount] = useState('')
-  const [sats, setSats] = useState(0)
+  const [text, setText] = useState('')
+  const [sats, setSats] = useState(amount ?? 0)
   const [unit, setUnit] = useState(Unit.SAT)
   const [lock, setLock] = useState(false)
 
@@ -44,20 +45,26 @@ export default function InputAmount({ label, onChange }: InputAmountProps) {
     if (lock) return setLock(false)
     const value =
       unit === Unit.SAT
-        ? Number(amount)
+        ? Number(text)
         : unit === Unit.BTC
-        ? toSatoshis(parseFloat(amount))
+        ? toSatoshis(parseFloat(text))
         : unit === Unit.EUR
-        ? fromEuro(parseFloat(amount))
+        ? fromEuro(parseFloat(text))
         : unit === Unit.USD
-        ? fromUSD(parseFloat(amount))
+        ? fromUSD(parseFloat(text))
         : 0
     setSats(Math.floor(value))
-  }, [amount])
+  }, [text])
 
   useEffect(() => {
     onChange(sats)
   }, [sats])
+
+  useEffect(() => {
+    if (!amount) return
+    setSats(amount)
+    setText(amount.toString())
+  }, [amount])
 
   const className =
     'w-full p-3 pr-6 text-sm text-right font-semibold rounded-l-md -mr-4 bg-gray-100 dark:bg-gray-800 focus-visible:outline-none'
@@ -66,7 +73,7 @@ export default function InputAmount({ label, onChange }: InputAmountProps) {
 
   const handleUnitChange = (unit: Unit) => {
     setLock(true)
-    setAmount(
+    setText(
       sats === 0
         ? ''
         : unit === Unit.SAT
@@ -81,13 +88,13 @@ export default function InputAmount({ label, onChange }: InputAmountProps) {
   }
 
   const clickHandler = (key: string) => {
-    if (amount === '' && key === '.') return setAmount('0.')
-    if (amount === '' && key !== '<') return setAmount(key)
+    if (text === '' && key === '.') return setText('0.')
+    if (text === '' && key !== '<') return setText(key)
     if (key === '<') {
-      const aux = amount.split('')
-      return setAmount(aux.slice(0, aux.length - 1).join(''))
+      const aux = text.split('')
+      return setText(aux.slice(0, aux.length - 1).join(''))
     }
-    setAmount(amount + key)
+    setText(text + key)
   }
 
   const OtherAmounts = () => {
@@ -120,13 +127,13 @@ export default function InputAmount({ label, onChange }: InputAmountProps) {
       {label ? <Label text={label} /> : null}
       <div className='flex items-center h-12 rounded-l-md bg-gray-100 dark:bg-gray-800'>
         {isMobile ? (
-          <p className={className}>{amount}</p>
+          <p className={className}>{text}</p>
         ) : (
           <input
             type='text'
             placeholder='0'
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
+            value={text}
+            onChange={(e) => setText(e.target.value)}
             className={className}
           />
         )}
