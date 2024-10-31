@@ -135,7 +135,7 @@ export const getTxHistory = async (): Promise<Tx[]> => {
   } catch (_) {
     return []
   }
-  return txs
+  return txs.sort((a: Tx, b: Tx) => a.createdAt - b.createdAt)
 }
 
 export const getReceivingAddresses = async (): Promise<{ offchainAddr: string; boardingAddr: string }> => {
