@@ -99,7 +99,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (wasmLoaded) return
     const go = new window.Go()
-    const devMode = false
+    const devMode = true
     const url = devMode ? 'ark-sdk.wasm' : 'https://arkadewasm.bordalix.workers.dev?21'
     WebAssembly.instantiateStreaming(fetch(url), go.importObject).then((result) => {
       go.run(result.instance)
