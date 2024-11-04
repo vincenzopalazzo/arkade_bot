@@ -10,7 +10,7 @@ import Content from '../../../components/Content'
 import Title from '../../../components/Title'
 import Container from '../../../components/Container'
 import { pasteFromClipboard } from '../../../lib/clipboard'
-import { ArkNote } from '../../../lib/arknote'
+import { ArkNote, isArkNote } from '../../../lib/arknote'
 import { ConfigContext } from '../../../providers/config'
 
 export default function NoteScan() {
@@ -39,7 +39,7 @@ export default function NoteScan() {
   useEffect(() => {
     setError('')
     if (!pastedData) return
-    if (/^arknote/.test(pastedData.toLowerCase())) {
+    if (isArkNote(pastedData)) {
       try {
         const note = ArkNote.fromString(pastedData)
         setNoteInfo({ note: pastedData, satoshis: note.data.value })

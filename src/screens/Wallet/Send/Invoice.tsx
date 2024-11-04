@@ -13,7 +13,7 @@ import { pasteFromClipboard } from '../../../lib/clipboard'
 import { decodeArkAddress } from '../../../lib/address'
 import { AspContext } from '../../../providers/asp'
 import * as bip21 from '../../../lib/bip21'
-import { ArkNote } from '../../../lib/arknote'
+import { ArkNote, isArkNote } from '../../../lib/arknote'
 
 export default function SendInvoice() {
   const { aspInfo } = useContext(AspContext)
@@ -65,7 +65,7 @@ export default function SendInvoice() {
       setSendInfo({ address: lowerCaseData })
       return navigate(Pages.SendAmount)
     }
-    if (/^arknote/.test(lowerCaseData)) {
+    if (isArkNote(lowerCaseData)) {
       try {
         const anote = ArkNote.fromString(pastedData)
         setNoteInfo({ note: pastedData, satoshis: anote.data.value })

@@ -1,7 +1,6 @@
 import { Buffer } from 'buffer'
 import base58 from 'bs58'
-
-const NOTE_HRP = 'arknote'
+import { arknoteHRP } from './constants'
 
 export class NoteData {
   constructor(public id: bigint, public value: number) {}
@@ -44,11 +43,11 @@ export class ArkNote {
   }
 
   static fromString(noteStr: string): ArkNote {
-    if (!noteStr.startsWith(NOTE_HRP)) {
-      throw new Error(`invalid human-readable part: expected ${NOTE_HRP} prefix (note '${noteStr}')`)
+    if (!noteStr.startsWith(arknoteHRP)) {
+      throw new Error(`invalid human-readable part: expected ${arknoteHRP} prefix (note '${noteStr}')`)
     }
 
-    const encoded = noteStr.slice(NOTE_HRP.length)
+    const encoded = noteStr.slice(arknoteHRP.length)
     const decoded = base58.decode(encoded)
 
     if (decoded.length === 0) {
@@ -59,6 +58,16 @@ export class ArkNote {
   }
 
   toString(): string {
-    return NOTE_HRP + base58.encode(this.serialize())
+    return arknoteHRP + base58.encode(this.serialize())
   }
+}
+
+export const isArkNote = (input: string): boolean => {
+  const regex = new RegExp(`^${arknoteHRP}`, 'i')
+  return regex.test(input)
+}
+
+export const arkNoteInUrl = (): string => {
+  const fragment = window.location.hash.slice(1)
+  return isArkNote(fragment) ? fragment : ''
 }

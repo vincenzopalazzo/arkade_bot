@@ -16,14 +16,12 @@ import {
   sendOffChain,
   unlock,
   walletLocked,
-  startListenTransactionStream,
 } from '../lib/asp'
 import { AspContext } from './asp'
 import { NotificationsContext } from './notifications'
 import { ConfigContext } from './config'
 import { FlowContext } from './flow'
-import { ArkNote } from '../lib/arknote'
-import { arkNoteInUrl } from '../lib/url'
+import { ArkNote, arkNoteInUrl } from '../lib/arknote'
 
 export interface Wallet {
   arkAddress: string
