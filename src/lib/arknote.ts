@@ -1,8 +1,8 @@
-import { Buffer } from 'buffer'
 import base58 from 'bs58'
+import { Buffer } from 'buffer'
 import { arknoteHRP } from './constants'
 
-export class NoteData {
+export class ArkNoteData {
   constructor(public id: bigint, public value: number) {}
 
   serialize(): Buffer {
@@ -12,19 +12,19 @@ export class NoteData {
     return buffer
   }
 
-  static deserialize(data: Buffer): NoteData {
+  static deserialize(data: Buffer): ArkNoteData {
     if (data.length !== 12) {
       throw new Error(`invalid data length: expected 12 bytes, got ${data.length}`)
     }
 
     const id = data.readBigUInt64BE(0)
     const value = data.readUInt32BE(8)
-    return new NoteData(id, value)
+    return new ArkNoteData(id, value)
   }
 }
 
 export class ArkNote {
-  constructor(public data: NoteData, public signature: Buffer) {}
+  constructor(public data: ArkNoteData, public signature: Buffer) {}
 
   serialize(): Buffer {
     const detailsBytes = this.data.serialize()
@@ -32,12 +32,12 @@ export class ArkNote {
   }
 
   static deserialize(data: Buffer): ArkNote {
-    if (data.length < 13) {
-      throw new Error(`invalid data length: expected at least 13 bytes, got ${data.length}`)
+    if (data.length < 12) {
+      throw new Error(`invalid data length: expected at least 12 bytes, got ${data.length}`)
     }
 
-    const noteData = NoteData.deserialize(data.subarray(0, 12))
-    const signature = Buffer.from(data.subarray(13))
+    const noteData = ArkNoteData.deserialize(data.subarray(0, 12))
+    const signature = Buffer.from(data.subarray(12))
 
     return new ArkNote(noteData, signature)
   }
