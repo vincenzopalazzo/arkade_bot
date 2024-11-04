@@ -168,6 +168,11 @@ export const lock = async (password: string): Promise<void> => {
   await window.lock(password)
 }
 
+export const redeemNotes = async (notes: string[]): Promise<void> => {
+  console.log('redeeming notes', notes)
+  return await window.redeemNotes(notes)
+}
+
 export const sendAsync = async (sats: number, address: string): Promise<string> => {
   console.log('Sending async', sats, address)
   return await window.sendAsync(false, [{ To: address, Amount: sats }])
@@ -184,7 +189,7 @@ export const sendOnChain = async (sats: number, address: string): Promise<string
 }
 
 export const startListenTransactionStream = async (callback: () => {}) => {
-  console.log('start listening')
+  console.log('start listening', typeof callback)
   // return await window.getTransactionStream(callback)
 }
 
