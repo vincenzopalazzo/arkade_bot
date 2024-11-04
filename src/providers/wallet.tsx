@@ -21,6 +21,9 @@ import {
 import { AspContext } from './asp'
 import { NotificationsContext } from './notifications'
 import { ConfigContext } from './config'
+import { FlowContext } from './flow'
+import { ArkNote } from '../lib/arknote'
+import { arkNoteInUrl } from '../lib/url'
 
 export interface Wallet {
   arkAddress: string
@@ -89,6 +92,7 @@ export const WalletContext = createContext<WalletContextProps>({
 export const WalletProvider = ({ children }: { children: ReactNode }) => {
   const { setAspInfo, aspInfo } = useContext(AspContext)
   const { resetConfig } = useContext(ConfigContext)
+  const { noteInfo, setNoteInfo } = useContext(FlowContext)
   const { navigate } = useContext(NavigationContext)
   const { notifyVtxosRecycled, notifyTxSettled } = useContext(NotificationsContext)
 
@@ -134,9 +138,20 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   }, [wallet.nextRecycle, walletUnlocked])
 
   useEffect(() => {
-    return
-    if (!walletUnlocked) return
-    startListenTransactionStream(reloadWallet)
+    if (!walletUnlocked || !wallet.initialized) return
+    if (noteInfo.satoshis) navigate(Pages.NoteRedeem)
+    // startListenTransactionStream(reloadWallet)
+  }, [walletUnlocked, wallet.initialized])
+
+  useEffect(() => {
+    if (walletUnlocked || !arkNoteInUrl()) return
+    const note = arkNoteInUrl()
+    try {
+      const { value } = ArkNote.fromString(note).data
+      setNoteInfo({ note, satoshis: value })
+      window.location.hash = ''
+    } catch (_) {}
+    // startListenTransactionStream(reloadWallet)
   }, [walletUnlocked])
 
   const initWallet = async (password: string, privateKey: string) => {
