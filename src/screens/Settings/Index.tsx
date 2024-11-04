@@ -4,7 +4,6 @@ import Header from './Header'
 import ArrowIcon from '../../icons/Arrow'
 import Notifications from './Notifications'
 import { WalletContext } from '../../providers/wallet'
-import EncryptIcon from '../../icons/Encrypt'
 import Backup from './Backup'
 import BackupIcon from '../../icons/Backup'
 import OuterContainer from '../../components/OuterContainer'
@@ -16,9 +15,12 @@ import DarkThemeIcon from '../../icons/DarkTheme'
 import Theme from './Theme'
 import NostrIcon from '../../icons/Nostr'
 import Nostr from './Nostr'
-import ClockIcon from '../../icons/Clock'
+import VtxosIcon from '../../icons/Vtxos'
 import Vtxos from './Vtxos'
 import NotificationIcon from '../../icons/Notification'
+import NoteScan from '../Wallet/Vouchers/Scan'
+import VoucherIcon from '../../icons/Voucher'
+import LockIcon from '../../icons/Lock'
 
 enum Options {
   Menu = 'menu',
@@ -30,6 +32,7 @@ enum Options {
   Password = 'password',
   Reset = 'reset',
   Theme = 'theme',
+  Vouchers = 'vouchers',
   Vtxos = 'vtxos',
 }
 
@@ -55,7 +58,7 @@ export default function Settings() {
       option: Options.Backup,
     },
     {
-      icon: <EncryptIcon />,
+      icon: <LockIcon />,
       option: Options.Lock,
     },
     {
@@ -75,7 +78,11 @@ export default function Settings() {
       option: Options.Theme,
     },
     {
-      icon: <ClockIcon />,
+      icon: <VoucherIcon />,
+      option: Options.Vouchers,
+    },
+    {
+      icon: <VtxosIcon />,
       option: Options.Vtxos,
     },
   ]
@@ -122,6 +129,7 @@ export default function Settings() {
         {option === Options.Reset && <Reset backup={() => setOption(Options.Backup)} />}
         {option === Options.Theme && <Theme />}
         {option === Options.Vtxos && <Vtxos />}
+        {option === Options.Vouchers && <NoteScan />}
       </div>
     </OuterContainer>
   )
