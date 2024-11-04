@@ -25,7 +25,7 @@ export default function ReceiveInvoice() {
   const [buttonLabel, setButtonLabel] = useState(label)
   const [error, setError] = useState('')
 
-  const poolAspIntervalId = useRef<NodeJS.Timer>()
+  const poolAspIntervalId = useRef<NodeJS.Timeout>()
 
   const firefox = !navigator.clipboard || !('writeText' in navigator.clipboard)
 
