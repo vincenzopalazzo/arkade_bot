@@ -54,6 +54,9 @@ export default function App() {
         {page === Pages.ReceiveAmount && <ReceiveAmount />}
         {page === Pages.ReceiveInvoice && <ReceiveInvoice />}
         {page === Pages.ReceiveSuccess && <ReceiveSuccess />}
+        {page === Pages.NoteRedeem && <NoteRedeem />}
+        {page === Pages.NoteScan && <NoteScan />}
+        {page === Pages.NoteSuccess && <NoteSuccess />}
         {page === Pages.SendAmount && <SendAmount />}
         {page === Pages.SendInvoice && <SendInvoice />}
         {page === Pages.SendDetails && <SendDetails />}
