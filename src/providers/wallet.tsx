@@ -102,7 +102,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     if (wasmLoaded) return
     const go = new window.Go()
     const devMode = true
-    const sdkFile = 'ark-sdk-9a1a7e2.wasm'
+    const sdkFile = 'ark-sdk-8beaefc.wasm'
     const r2 = 'https://pub-2691569bbfd24a6a81b70001c8eb7506.r2.dev/'
     const url = devMode ? sdkFile : r2 + sdkFile
     WebAssembly.instantiateStreaming(fetch(url), go.importObject).then((result) => {
