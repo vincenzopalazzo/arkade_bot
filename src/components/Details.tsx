@@ -9,20 +9,22 @@ export const Item = ({ title, body }: { title: string; body: string }) => {
   )
 }
 
-export interface PaymentDetailsProps {
+export interface DetailsProps {
   address?: string
+  comment?: string
   invoice?: string
-  note?: string
+  arknote?: string
   satoshis: number
 }
 
-export default function PaymentDetails({ details }: { details?: PaymentDetailsProps }) {
+export default function Details({ details }: { details?: DetailsProps }) {
   if (!details) return <></>
-  const { address, invoice, note, satoshis } = details
+  const { address, comment, invoice, arknote, satoshis } = details
   return (
     <div>
       <Item title='Amount' body={`${prettyNumber(satoshis)} sats`} />
-      {note ? <Item title='Note' body={note} /> : null}
+      {comment ? <Item title='Comment' body={comment} /> : null}
+      {arknote ? <Item title='Arknote' body={prettyLongText(arknote)} /> : null}
       {invoice ? <Item title='Invoice' body={prettyLongText(invoice)} /> : null}
       {address ? <Item title='Address' body={prettyLongText(address)} /> : null}
     </div>
