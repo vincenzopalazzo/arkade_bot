@@ -13,11 +13,12 @@ import { pasteFromClipboard } from '../../../lib/clipboard'
 import { decodeArkAddress } from '../../../lib/address'
 import { AspContext } from '../../../providers/asp'
 import * as bip21 from '../../../lib/bip21'
+import { ArkNote } from '../../../lib/arknote'
 
 export default function SendInvoice() {
   const { aspInfo } = useContext(AspContext)
   const { navigate } = useContext(NavigationContext)
-  const { setSendInfo } = useContext(FlowContext)
+  const { setNoteInfo, setSendInfo } = useContext(FlowContext)
 
   const defaultLabel = 'Paste address or invoice'
   const [buttonLabel, setButtonLabel] = useState(defaultLabel)
@@ -35,10 +36,11 @@ export default function SendInvoice() {
   })
 
   useEffect(() => {
-    if (!pastedData) return
     setError('')
-    if (bip21.isBip21(pastedData)) {
-      const { address, amount, arkAddress } = bip21.decode(pastedData)
+    if (!pastedData) return
+    const lowerCaseData = pastedData.toLowerCase()
+    if (bip21.isBip21(lowerCaseData)) {
+      const { address, amount, arkAddress } = bip21.decode(lowerCaseData)
       if (arkAddress) {
         setSendInfo({ arkAddress, satoshis: amount ?? 0 })
         return navigate(amount ? Pages.SendDetails : Pages.SendAmount)
@@ -50,20 +52,27 @@ export default function SendInvoice() {
       setError('Unable to parse bip21')
       return
     }
-    if (/^t*ark1/.test(pastedData)) {
-      const { aspKey } = decodeArkAddress(pastedData)
+    if (/^t*ark1/.test(lowerCaseData)) {
+      const { aspKey } = decodeArkAddress(lowerCaseData)
       if (aspKey !== aspInfo.pubkey) {
         setError('Invalid ASP pubkey')
         return
       }
-      setSendInfo({ arkAddress: pastedData })
+      setSendInfo({ arkAddress: lowerCaseData })
       return navigate(Pages.SendAmount)
     }
-    if (/^bc1/.test(pastedData) || /^tb1/.test(pastedData)) {
-      setSendInfo({ address: pastedData })
+    if (/^bc1/.test(lowerCaseData) || /^tb1/.test(lowerCaseData)) {
+      setSendInfo({ address: lowerCaseData })
       return navigate(Pages.SendAmount)
     }
-    setError('Invalid address')
+    if (/^arknote/.test(lowerCaseData)) {
+      try {
+        const anote = ArkNote.fromString(pastedData)
+        setNoteInfo({ note: pastedData, satoshis: anote.data.value })
+        return navigate(Pages.NoteRedeem)
+      } catch (_) {}
+    }
+    setError('Invalid address or invoice')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pastedData])
 
@@ -71,7 +80,7 @@ export default function SendInvoice() {
     const pastedData = await pasteFromClipboard()
     setButtonLabel('Pasted')
     setTimeout(() => setButtonLabel(defaultLabel), 2100)
-    setPastedData(pastedData.toLowerCase())
+    setPastedData(pastedData)
   }
 
   const handleCancel = () => {
