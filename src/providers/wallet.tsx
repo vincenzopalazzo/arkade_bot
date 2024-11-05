@@ -31,8 +31,6 @@ export interface Wallet {
   lastUpdate: number
   network: NetworkName
   nextRecycle: number
-  password: string
-  privateKey: string
   txs: Tx[]
   vtxos: {
     spendable: Vtxo[]
@@ -48,8 +46,6 @@ const defaultWallet: Wallet = {
   lastUpdate: 0,
   network: defaultNetwork,
   nextRecycle: 0,
-  password: '',
-  privateKey: '',
   txs: [],
   vtxos: {
     spendable: [],
@@ -63,7 +59,6 @@ interface WalletContextProps {
   recycleVtxos: () => Promise<void>
   reloadWallet: () => void
   resetWallet: () => void
-  setPrivateKey: (key: string) => void
   settlePending: () => Promise<void>
   updateWallet: (w: Wallet) => void
   unlockWallet: (password: string) => Promise<void>
@@ -79,7 +74,6 @@ export const WalletContext = createContext<WalletContextProps>({
   reloadWallet: () => {},
   resetWallet: () => {},
   settlePending: () => Promise.resolve(),
-  setPrivateKey: () => {},
   unlockWallet: () => Promise.resolve(),
   updateWallet: () => {},
   walletUnlocked: false,
@@ -101,7 +95,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (wasmLoaded) return
     const go = new window.Go()
-    const devMode = false
+    const devMode = true
     const sdkFile = 'ark-sdk-8beaefc.wasm'
     const r2 = 'https://pub-2691569bbfd24a6a81b70001c8eb7506.r2.dev/'
     const url = devMode ? sdkFile : r2 + sdkFile
@@ -217,10 +211,6 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     notifyTxSettled()
   }
 
-  const setPrivateKey = (privateKey: string) => {
-    setWallet({ ...wallet, privateKey })
-  }
-
   const unlockWallet = async (password: string) => {
     try {
       await unlock(password)
@@ -244,7 +234,6 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
         recycleVtxos,
         reloadWallet,
         resetWallet,
-        setPrivateKey,
         settlePending,
         unlockWallet,
         updateWallet,
