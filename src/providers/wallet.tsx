@@ -1,13 +1,10 @@
 import { ReactNode, createContext, useContext, useEffect, useState } from 'react'
 import { readWalletFromStorage, saveWalletToStorage } from '../lib/storage'
 import { NavigationContext, Pages } from './navigation'
-import { NetworkName } from '../lib/network'
 import { Tx, Vtxo } from '../lib/types'
-import { ExplorerName, getDefaultExplorer, getRestApiExplorerURL } from '../lib/explorers'
-import { defaultNetwork } from '../lib/constants'
+import { getRestApiExplorerURL } from '../lib/explorers'
 import {
   settleVtxos,
-  getAspInfo,
   getBalance,
   getReceivingAddresses,
   getTxHistory,
@@ -16,6 +13,7 @@ import {
   sendOffChain,
   unlock,
   walletLocked,
+  getAspInfo,
 } from '../lib/asp'
 import { AspContext } from './asp'
 import { NotificationsContext } from './notifications'
@@ -26,10 +24,10 @@ import { ArkNote, arkNoteInUrl } from '../lib/arknote'
 export interface Wallet {
   arkAddress: string
   balance: number
-  explorer: ExplorerName
+  explorer: string
   initialized: boolean
   lastUpdate: number
-  network: NetworkName
+  network: string
   nextRecycle: number
   txs: Tx[]
   vtxos: {
@@ -41,10 +39,10 @@ export interface Wallet {
 const defaultWallet: Wallet = {
   arkAddress: '',
   balance: 0,
-  explorer: getDefaultExplorer(defaultNetwork),
+  explorer: '',
   initialized: false,
   lastUpdate: 0,
-  network: defaultNetwork,
+  network: '',
   nextRecycle: 0,
   txs: [],
   vtxos: {
@@ -83,7 +81,7 @@ export const WalletContext = createContext<WalletContextProps>({
 
 export const WalletProvider = ({ children }: { children: ReactNode }) => {
   const { setAspInfo, aspInfo } = useContext(AspContext)
-  const { resetConfig } = useContext(ConfigContext)
+  const { config, resetConfig } = useContext(ConfigContext)
   const { noteInfo, setNoteInfo } = useContext(FlowContext)
   const { navigate } = useContext(NavigationContext)
   const { notifyVtxosRecycled, notifyTxSettled } = useContext(NotificationsContext)
@@ -104,7 +102,6 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
       setWasmLoaded(true)
       console.log('wasm loaded')
     })
-    getAspInfo(wallet.network).then(setAspInfo)
   }, [])
 
   useEffect(() => {
@@ -121,6 +118,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [wasmLoaded])
 
+  // calculate next recycle date
   useEffect(() => {
     if (!wallet.nextRecycle || !walletUnlocked) return
     const now = Math.floor(new Date().getTime() / 1000)
@@ -129,12 +127,14 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     if (urgent) settleVtxos().then(() => recycleVtxos())
   }, [wallet.nextRecycle, walletUnlocked])
 
+  // if voucher present, go to redeem page
   useEffect(() => {
     if (!walletUnlocked || !wallet.initialized) return
     if (noteInfo.satoshis) navigate(Pages.NoteRedeem)
     // startListenTransactionStream(reloadWallet)
   }, [walletUnlocked, wallet.initialized])
 
+  // if voucher on url, add it to state and remove from url
   useEffect(() => {
     if (walletUnlocked || !arkNoteInUrl()) return
     const note = arkNoteInUrl()
@@ -146,12 +146,22 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     // startListenTransactionStream(reloadWallet)
   }, [walletUnlocked])
 
+  useEffect(() => {
+    console.log('config.aspUrl', config.aspUrl)
+    getAspInfo(config.aspUrl).then(setAspInfo)
+  }, [config.aspUrl])
+
+  useEffect(() => {
+    console.log('aspInfo.network', aspInfo.network)
+    updateWallet({ ...wallet, network: aspInfo.network })
+  }, [aspInfo.network])
+
   const initWallet = async (password: string, privateKey: string) => {
     const aspUrl = aspInfo.url
     const chain = 'bitcoin'
     const clientType = 'rest'
     const walletType = 'singlekey'
-    const explorerUrl = getRestApiExplorerURL(wallet) ?? ''
+    const explorerUrl = getRestApiExplorerURL(wallet.network) ?? ''
     await window.init(walletType, clientType, aspUrl, privateKey, password, chain, explorerUrl)
     updateWallet({ ...wallet, initialized: true })
   }

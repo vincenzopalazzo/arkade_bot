@@ -1,13 +1,10 @@
-import { defaultDust, defaultMinRelayFee, defaultNetwork, defaultRoundInterval } from './constants'
-import { NetworkName } from './network'
 import { Satoshis, Tx, Vtxo } from './types'
 
 export interface AspInfo {
   boardingDescriptorTemplate: string
   dust: number
   forfeitAddress: string
-  minRelayFee: number
-  network: NetworkName
+  network: string
   pubkey: string
   roundInterval: number
   roundLifetime: number
@@ -18,10 +15,9 @@ export interface AspInfo {
 
 export const emptyAspInfo: AspInfo = {
   boardingDescriptorTemplate: '',
-  dust: defaultDust,
+  dust: 0,
   forfeitAddress: '',
-  minRelayFee: 0,
-  network: defaultNetwork,
+  network: '',
   pubkey: '',
   roundInterval: 0,
   roundLifetime: 0,
@@ -30,17 +26,10 @@ export const emptyAspInfo: AspInfo = {
   url: '',
 }
 
-const aspMap = {
-  [NetworkName.Liquid]: 'https://asp-liquid.arkdev.info',
-  [NetworkName.Regtest]: 'http://localhost:7070',
-  [NetworkName.Signet]: 'https://asp.voucher.signet.arklabs.to',
-  [NetworkName.Testnet]: 'https://asp.arkdev.info',
-}
-
 const headers = { 'Content-Type': 'application/json' }
 
-const get = async (endpoint: string, net: NetworkName) => {
-  const response = await fetch(aspMap[net] + endpoint, { headers })
+const get = async (endpoint: string, url: string) => {
+  const response = await fetch(url + endpoint, { headers })
   return await response.json()
 }
 
@@ -52,15 +41,14 @@ export const collaborativeRedeem = async (amount: number, address: string): Prom
   return await window.collaborativeRedeem(address, amount, false)
 }
 
-export const getAspInfo = async (net: NetworkName): Promise<AspInfo> => {
+export const getAspInfo = async (url: string): Promise<AspInfo> => {
   return new Promise((resolve) => {
-    get('/v1/info', net)
+    get('/v1/info', url)
       .then(
         ({
           boardingDescriptorTemplate,
           dust,
           forfeitAddress,
-          minRelayFee,
           network,
           pubkey,
           roundInterval,
@@ -69,16 +57,15 @@ export const getAspInfo = async (net: NetworkName): Promise<AspInfo> => {
         }) => {
           resolve({
             boardingDescriptorTemplate,
-            dust: dust ? Number(dust) : defaultDust,
+            dust,
             forfeitAddress,
-            minRelayFee: minRelayFee ? Number(minRelayFee) : defaultMinRelayFee,
-            network: network ? (network as NetworkName) : defaultNetwork,
+            network,
             pubkey,
-            roundInterval: roundInterval ? Number(roundInterval) : defaultRoundInterval,
+            roundInterval,
             roundLifetime: Number(roundLifetime),
             unilateralExitDelay: Number(unilateralExitDelay),
             unreachable: false,
-            url: aspMap[net],
+            url,
           })
         },
       )
@@ -174,7 +161,7 @@ export const redeemNotes = async (notes: string[]): Promise<void> => {
 }
 
 export const sendAsync = async (sats: number, address: string): Promise<string> => {
-  console.log('Sending async', sats, address)
+  console.log('sending async', sats, address)
   return await window.sendAsync(false, [{ To: address, Amount: sats }])
 }
 
@@ -184,7 +171,7 @@ export const sendOffChain = async (sats: number, address: string): Promise<strin
 }
 
 export const sendOnChain = async (sats: number, address: string): Promise<string> => {
-  console.log('Sending onchain', sats, address)
+  console.log('sending onchain', sats, address)
   return await window.sendOnChain([{ To: address, Amount: sats }])
 }
 

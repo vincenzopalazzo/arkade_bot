@@ -21,6 +21,8 @@ import NotificationIcon from '../../icons/Notification'
 import NoteScan from '../Wallet/Vouchers/Scan'
 import VoucherIcon from '../../icons/Voucher'
 import LockIcon from '../../icons/Lock'
+import ServerIcon from '../../icons/Server'
+import Server from './Server'
 
 enum Options {
   Menu = 'menu',
@@ -31,6 +33,7 @@ enum Options {
   Nostr = 'nostr',
   Password = 'password',
   Reset = 'reset',
+  Server = 'server',
   Theme = 'theme',
   Vouchers = 'vouchers',
   Vtxos = 'vtxos',
@@ -72,6 +75,10 @@ export default function Settings() {
     {
       icon: <ResetIcon />,
       option: Options.Reset,
+    },
+    {
+      icon: <ServerIcon />,
+      option: Options.Server,
     },
     {
       icon: <DarkThemeIcon />,
@@ -127,6 +134,7 @@ export default function Settings() {
         {option === Options.Notifications && <Notifications />}
         {option === Options.Nostr && <Nostr />}
         {option === Options.Reset && <Reset backup={() => setOption(Options.Backup)} />}
+        {option === Options.Server && <Server backup={() => setOption(Options.Backup)} />}
         {option === Options.Theme && <Theme />}
         {option === Options.Vtxos && <Vtxos />}
         {option === Options.Vouchers && <NoteScan />}

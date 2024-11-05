@@ -8,7 +8,7 @@ import Container from '../../components/Container'
 import { WalletContext } from '../../providers/wallet'
 import { FlowContext } from '../../providers/flow'
 import { prettyAgo, prettyDate, prettyNumber } from '../../lib/format'
-import { defaultFees } from '../../lib/constants'
+import { defaultFee } from '../../lib/constants'
 import Table from '../../components/Table'
 import Error from '../../components/Error'
 import { extractError } from '../../lib/error'
@@ -63,8 +63,8 @@ export default function Transaction() {
     ['When', prettyAgo(tx.createdAt)],
     ['Date', prettyDate(tx.createdAt)],
     ['Origin', tx.boardingTxid ? 'Mainnet' : 'Ark'],
-    ['Amount', `${prettyNumber(tx.type === 'sent' ? tx.amount - defaultFees : tx.amount)} sats`],
-    ['Network fees', `${prettyNumber(tx.type === 'sent' ? defaultFees : 0)} sats`],
+    ['Amount', `${prettyNumber(tx.type === 'sent' ? tx.amount - defaultFee : tx.amount)} sats`],
+    ['Network fees', `${prettyNumber(tx.type === 'sent' ? defaultFee : 0)} sats`],
     ['Total', `${prettyNumber(tx.amount)} sats`],
   ]
 
