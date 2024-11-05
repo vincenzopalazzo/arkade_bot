@@ -62,7 +62,6 @@ export default function Transaction() {
     ['State', tx.pending ? 'Pending' : 'Settled'],
     ['When', prettyAgo(tx.createdAt)],
     ['Date', prettyDate(tx.createdAt)],
-    ['Origin', tx.boardingTxid ? 'Mainnet' : 'Ark'],
     ['Amount', `${prettyNumber(tx.type === 'sent' ? tx.amount - defaultFee : tx.amount)} sats`],
     ['Network fees', `${prettyNumber(tx.type === 'sent' ? defaultFee : 0)} sats`],
     ['Total', `${prettyNumber(tx.amount)} sats`],
@@ -88,8 +87,11 @@ export default function Transaction() {
         )}
       </Content>
       <ButtonsOnBottom>
-        {showSettleButton ? <Button onClick={handleSettle} label={buttonLabel} disabled={settling} /> : null}
-        {tx.explorable ? <Button onClick={handleExplorer} label='View on explorer' /> : null}
+        {showSettleButton ? (
+          <Button onClick={handleSettle} label={buttonLabel} disabled={settling} />
+        ) : tx.explorable ? (
+          <Button onClick={handleExplorer} label='View on explorer' />
+        ) : null}
         <Button onClick={goBackToWallet} label='Back to wallet' secondary />
       </ButtonsOnBottom>
       <Modal open={showInfo} onClose={() => setShowInfo(false)}>
