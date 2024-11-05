@@ -28,7 +28,7 @@ export default function BarcodeScanner({ setError, setPastedData }: BarcodeScann
         (result) => {
           if (result) {
             const aux = JSON.stringify(result)
-            setPastedData(JSON.parse(aux).text)
+            setPastedData(JSON.parse(aux).text.trim())
           }
         },
       )
