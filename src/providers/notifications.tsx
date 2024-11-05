@@ -86,8 +86,8 @@ export const NotificationsProvider = ({ children }: { children: ReactNode }) => 
   }
 
   const notifyVtxosRecycled = () => {
-    const body = 'All VTXOs were recycled'
-    const title = 'Vtxos recycled'
+    const body = 'All VTXOs were rolled over'
+    const title = 'Vtxos rolled over'
     sendSystemNotification(title, body)
     sendNostrNotification(body)
   }

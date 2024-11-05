@@ -52,8 +52,8 @@ export default function Vtxos() {
           <div className='flex flex-col gap-10'>
             <NextRecycle onClick={() => setShowList(true)} />
             <div className='flex flex-col gap-6'>
-              <p>Your VTXOs have a lifetime of 7 days and they need to be recycled prior to expiration.</p>
-              <p>The app will try to auto-recycle all VTXOs which expire in less than 24 hours.</p>
+              <p>Your VTXOs have a lifetime of 7 days and they need to be rolled over prior to expiration.</p>
+              <p>The app will try to auto roll over all VTXOs which expire in less than 24 hours.</p>
             </div>
           </div>
         )}
