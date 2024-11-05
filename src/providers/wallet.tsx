@@ -93,7 +93,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (wasmLoaded) return
     const go = new window.Go()
-    const devMode = true
+    const devMode = false
     const sdkFile = 'ark-sdk-8beaefc.wasm'
     const r2 = 'https://pub-2691569bbfd24a6a81b70001c8eb7506.r2.dev/'
     const url = devMode ? sdkFile : r2 + sdkFile
@@ -147,14 +147,13 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   }, [walletUnlocked])
 
   useEffect(() => {
-    console.log('config.aspUrl', config.aspUrl)
     getAspInfo(config.aspUrl).then(setAspInfo)
   }, [config.aspUrl])
 
   useEffect(() => {
-    console.log('aspInfo.network', aspInfo.network)
+    if (!wasmLoaded || !aspInfo.network) return
     updateWallet({ ...wallet, network: aspInfo.network })
-  }, [aspInfo.network])
+  }, [aspInfo.network, wasmLoaded])
 
   const initWallet = async (password: string, privateKey: string) => {
     const aspUrl = aspInfo.url
@@ -170,7 +169,6 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     try {
       return await walletLocked()
     } catch (err) {
-      console.log('err', err)
       return true
     }
   }
