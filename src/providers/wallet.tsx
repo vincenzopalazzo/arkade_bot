@@ -102,7 +102,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (wasmLoaded) return
-    const sdkFile = '/ark-sdk-62c7340.wasm'
+    const sdkFile = '/ark-sdk.wasm'
     const r2 = 'https://pub-2691569bbfd24a6a81b70001c8eb7506.r2.dev'
     fetchWasm(sdkFile)
       .then(instantiateWasm)
