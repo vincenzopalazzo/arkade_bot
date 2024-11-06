@@ -33,10 +33,6 @@ const get = async (endpoint: string, url: string) => {
   return await response.json()
 }
 
-export const settleVtxos = async () => {
-  await window.settle()
-}
-
 export const collaborativeRedeem = async (amount: number, address: string): Promise<string> => {
   return await window.collaborativeRedeem(address, amount, false)
 }
@@ -157,7 +153,11 @@ export const lock = async (password: string): Promise<void> => {
 
 export const redeemNotes = async (notes: string[]): Promise<void> => {
   console.log('redeeming notes', notes)
-  return await window.redeemNotes(notes)
+  try {
+    await window.redeemNotes(notes)
+  } catch {
+    await window.redeemNotes(notes)
+  }
 }
 
 export const sendAsync = async (sats: number, address: string): Promise<string> => {
@@ -173,6 +173,15 @@ export const sendOffChain = async (sats: number, address: string): Promise<strin
 export const sendOnChain = async (sats: number, address: string): Promise<string> => {
   console.log('sending onchain', sats, address)
   return await window.sendOnChain([{ To: address, Amount: sats }])
+}
+
+export const settleVtxos = async (): Promise<void> => {
+  console.log('settling vtxos')
+  try {
+    await window.settle()
+  } catch {
+    await window.settle()
+  }
 }
 
 export const startListenTransactionStream = async (callback: () => {}) => {
