@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { BrowserMultiFormatReader } from '@zxing/library'
 
 interface BarcodeScannerProps {
@@ -8,9 +8,19 @@ interface BarcodeScannerProps {
 
 export default function BarcodeScanner({ setError, setPastedData }: BarcodeScannerProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
-  const reader = useRef(new BrowserMultiFormatReader())
+
+  const [granted, setGranted] = useState(false)
 
   useEffect(() => {
+    navigator.mediaDevices
+      .getUserMedia({ video: true })
+      .then(() => setGranted(true))
+      .catch((err) => console.error(err))
+  }, [])
+
+  useEffect(() => {
+    if (!granted) return
+    const reader = useRef(new BrowserMultiFormatReader())
     const readerCurrent = reader.current
     reader.current.listVideoInputDevices().then((list) => {
       if (!videoRef.current || list.length === 0) {
@@ -37,8 +47,7 @@ export default function BarcodeScanner({ setError, setPastedData }: BarcodeScann
     return () => {
       readerCurrent.reset()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [videoRef])
+  }, [granted, videoRef])
 
   return <video className='aspect-[1/1] mx-auto mb-2' ref={videoRef} />
 }

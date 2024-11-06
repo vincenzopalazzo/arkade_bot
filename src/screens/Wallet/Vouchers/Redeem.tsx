@@ -52,7 +52,7 @@ export default function NoteRedeem() {
   return (
     <Container>
       <Content>
-        <Title text='Voucher' subtext='Redeem for a VTXO' />
+        <Title text='Note' subtext='Redeem for a VTXO' />
         <div className='flex flex-col gap-2 mt-4'>
           <Error error={Boolean(error)} text={error} />
           {redeeming ? (
