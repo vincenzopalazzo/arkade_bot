@@ -20,6 +20,7 @@ import { NotificationsContext } from './notifications'
 import { ConfigContext } from './config'
 import { FlowContext } from './flow'
 import { ArkNote, arkNoteInUrl } from '../lib/arknote'
+import { fetchWasm } from '../lib/fetch'
 
 export interface Wallet {
   arkAddress: string
@@ -90,18 +91,24 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   const [wasmLoaded, setWasmLoaded] = useState(false)
   const [wallet, setWallet] = useState(defaultWallet)
 
-  useEffect(() => {
-    if (wasmLoaded) return
+  const instantiateWasm = (wasm: any) => {
     const go = new window.Go()
-    const devMode = false
-    const sdkFile = 'ark-sdk-62c7340.wasm'
-    const r2 = 'https://pub-2691569bbfd24a6a81b70001c8eb7506.r2.dev/'
-    const url = devMode ? sdkFile : r2 + sdkFile
-    WebAssembly.instantiateStreaming(fetch(url), go.importObject).then((result) => {
+    WebAssembly.instantiateStreaming(wasm, go.importObject).then((result) => {
       go.run(result.instance)
       setWasmLoaded(true)
       console.log('wasm loaded')
     })
+  }
+
+  useEffect(() => {
+    if (wasmLoaded) return
+    const sdkFile = '/ark-sdk-62c7340.wasm'
+    const r2 = 'https://pub-2691569bbfd24a6a81b70001c8eb7506.r2.dev'
+    fetchWasm(sdkFile)
+      .then(instantiateWasm)
+      .catch(() => {
+        fetchWasm(r2 + sdkFile).then(instantiateWasm)
+      })
   }, [])
 
   useEffect(() => {

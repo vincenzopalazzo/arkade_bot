@@ -6,3 +6,13 @@ export const fetchURL = async (url: string): Promise<any> => {
   }
   return (await res.json()) as any
 }
+
+export const fetchWasm = async (url: string): Promise<any> => {
+  return new Promise((resolve, reject) => {
+    fetch(url).then((res) => {
+      const contentType = res.headers.get('Content-Type') ?? ''
+      if (!res.ok || !/wasm/.test(contentType)) reject()
+      resolve(res)
+    })
+  })
+}
