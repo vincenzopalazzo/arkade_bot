@@ -31,11 +31,11 @@ enum Options {
   Lock = 'lock wallet',
   Notifications = 'notifications',
   Nostr = 'nostr',
+  Notes = 'notes',
   Password = 'password',
   Reset = 'reset',
   Server = 'server',
   Theme = 'theme',
-  Vouchers = 'vouchers',
   Vtxos = 'vtxos',
 }
 
@@ -69,6 +69,10 @@ export default function Settings() {
       option: Options.Nostr,
     },
     {
+      icon: <VoucherIcon />,
+      option: Options.Notes,
+    },
+    {
       icon: <NotificationIcon />,
       option: Options.Notifications,
     },
@@ -83,10 +87,6 @@ export default function Settings() {
     {
       icon: <DarkThemeIcon />,
       option: Options.Theme,
-    },
-    {
-      icon: <VoucherIcon />,
-      option: Options.Vouchers,
     },
     {
       icon: <VtxosIcon />,
@@ -131,13 +131,13 @@ export default function Settings() {
         {option === Options.About && <About />}
         {option === Options.Backup && <Backup />}
         {option === Options.Lock && <Lock />}
-        {option === Options.Notifications && <Notifications />}
         {option === Options.Nostr && <Nostr />}
+        {option === Options.Notes && <NoteScan />}
+        {option === Options.Notifications && <Notifications />}
         {option === Options.Reset && <Reset backup={() => setOption(Options.Backup)} />}
         {option === Options.Server && <Server backup={() => setOption(Options.Backup)} />}
         {option === Options.Theme && <Theme />}
         {option === Options.Vtxos && <Vtxos />}
-        {option === Options.Vouchers && <NoteScan />}
       </div>
     </OuterContainer>
   )

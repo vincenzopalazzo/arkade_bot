@@ -68,13 +68,13 @@ export default function NoteScan() {
   return (
     <Container>
       <Content>
-        <Title text='Voucher' subtext='Scan or paste voucher' />
+        <Title text='Note' subtext='Scan or paste note' />
         <div className='flex flex-col gap-2'>
           <ShowError error={Boolean(error)} text={error} />
           {error ? null : (
             <>
               {firefox ? (
-                <Input label='Paste your invoice here' left='&#9889;' onChange={handleChange} />
+                <Input label='Paste your note here' left='&#9889;' onChange={handleChange} />
               ) : cameraAllowed ? (
                 <BarcodeScanner setPastedData={setPastedData} setError={setError} />
               ) : null}
