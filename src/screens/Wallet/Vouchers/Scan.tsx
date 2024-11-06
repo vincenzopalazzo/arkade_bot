@@ -20,21 +20,11 @@ export default function NoteScan() {
 
   const defaultLabel = 'Paste note'
   const [buttonLabel, setButtonLabel] = useState(defaultLabel)
-  const [cameraAllowed, setCameraAllowed] = useState(false)
   const [error, setError] = useState('')
   const [pastedData, setPastedData] = useState('')
 
   // Firefox doesn't support navigator.clipboard.readText()
   const firefox = !navigator.clipboard || !('readText' in navigator.clipboard)
-
-  useEffect(() => {
-    navigator.permissions
-      .query({ name: 'camera' as PermissionName })
-      .then((x) => {
-        if (x.state !== 'denied') setCameraAllowed(true)
-      })
-      .catch()
-  })
 
   useEffect(() => {
     setError('')
@@ -75,9 +65,9 @@ export default function NoteScan() {
             <>
               {firefox ? (
                 <Input label='Paste your note here' left='&#9889;' onChange={handleChange} />
-              ) : cameraAllowed ? (
+              ) : (
                 <BarcodeScanner setPastedData={setPastedData} setError={setError} />
-              ) : null}
+              )}
             </>
           )}
         </div>

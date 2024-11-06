@@ -22,18 +22,11 @@ export default function SendInvoice() {
 
   const defaultLabel = 'Paste address or invoice'
   const [buttonLabel, setButtonLabel] = useState(defaultLabel)
-  const [cameraAllowed, setCameraAllowed] = useState(false)
   const [error, setError] = useState('')
   const [pastedData, setPastedData] = useState('')
 
   // Firefox doesn't support navigator.clipboard.readText()
   const firefox = !navigator.clipboard || !('readText' in navigator.clipboard)
-
-  useEffect(() => {
-    navigator.permissions.query({ name: 'camera' as PermissionName }).then((x) => {
-      if (x.state !== 'denied') setCameraAllowed(true)
-    })
-  })
 
   useEffect(() => {
     setError('')
@@ -100,9 +93,9 @@ export default function SendInvoice() {
             <>
               {firefox ? (
                 <Input label='Paste your invoice here' left='&#9889;' onChange={handleChange} />
-              ) : cameraAllowed ? (
+              ) : (
                 <BarcodeScanner setPastedData={setPastedData} setError={setError} />
-              ) : null}
+              )}
             </>
           )}
         </div>
