@@ -39,6 +39,10 @@ export class ArkNote {
     const noteData = ArkNoteData.deserialize(data.subarray(0, 12))
     const signature = Buffer.from(data.subarray(12))
 
+    if (signature.length !== 64) {
+      throw new Error(`invalid signature length: expected 64 bytes, got ${signature.length}`)
+    }
+
     return new ArkNote(noteData, signature)
   }
 
@@ -48,8 +52,11 @@ export class ArkNote {
     }
 
     const encoded = noteStr.slice(arknoteHRP.length)
+    if (encoded.length !== 104) {
+      throw new Error(`invalid note length: expected 76 chars, got ${encoded.length}`)
+    }
+    
     const decoded = base58.decode(encoded)
-
     if (decoded.length === 0) {
       throw new Error('failed to decode base58 string')
     }
