@@ -8,6 +8,7 @@ interface BarcodeScannerProps {
 
 export default function BarcodeScanner({ setError, setPastedData }: BarcodeScannerProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
+  const reader = useRef(new BrowserMultiFormatReader())
 
   const [granted, setGranted] = useState(false)
 
@@ -20,7 +21,6 @@ export default function BarcodeScanner({ setError, setPastedData }: BarcodeScann
 
   useEffect(() => {
     if (!granted) return
-    const reader = useRef(new BrowserMultiFormatReader())
     const readerCurrent = reader.current
     reader.current.listVideoInputDevices().then((list) => {
       if (!videoRef.current || list.length === 0) {
