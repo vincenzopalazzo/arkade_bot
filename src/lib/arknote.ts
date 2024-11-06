@@ -55,7 +55,7 @@ export class ArkNote {
     if (encoded.length !== 104) {
       throw new Error(`invalid note length: expected 76 chars, got ${encoded.length}`)
     }
-    
+
     const decoded = base58.decode(encoded)
     if (decoded.length === 0) {
       throw new Error('failed to decode base58 string')
@@ -75,6 +75,6 @@ export const isArkNote = (input: string): boolean => {
 }
 
 export const arkNoteInUrl = (): string => {
-  const fragment = window.location.hash.slice(1)
+  const fragment = window.location.hash.slice(1).replace('web+arkade://', '')
   return isArkNote(fragment) ? fragment : ''
 }
