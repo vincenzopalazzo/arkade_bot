@@ -10,17 +10,14 @@ export default function BarcodeScanner({ setError, setPastedData }: BarcodeScann
   const videoRef = useRef<HTMLVideoElement>(null)
   const reader = useRef(new BrowserMultiFormatReader())
 
-  const [granted, setGranted] = useState(false)
+  const [stream, setStream] = useState<MediaStream>()
 
   useEffect(() => {
-    navigator.mediaDevices
-      .getUserMedia({ video: true })
-      .then(() => setGranted(true))
-      .catch((err) => console.error(err))
+    navigator.mediaDevices.getUserMedia({ video: true }).then(setStream).catch(console.error)
   }, [])
 
   useEffect(() => {
-    if (!granted) return
+    if (!stream || !videoRef) return
     const readerCurrent = reader.current
     reader.current.listVideoInputDevices().then((list) => {
       if (!videoRef.current || list.length === 0) {
@@ -45,9 +42,11 @@ export default function BarcodeScanner({ setError, setPastedData }: BarcodeScann
     })
 
     return () => {
+      console.log('closing')
       readerCurrent.reset()
+      if (stream) stream.getTracks().forEach((track) => track.stop())
     }
-  }, [granted, videoRef])
+  }, [stream, videoRef])
 
   return <video className='aspect-[1/1] mx-auto mb-2' ref={videoRef} />
 }
