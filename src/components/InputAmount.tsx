@@ -4,6 +4,8 @@ import Label from './Label'
 import { fromSatoshis, prettyNumber, toSatoshis } from '../lib/format'
 import { Unit } from '../providers/config'
 import { FiatContext } from '../providers/fiat'
+import { WalletContext } from '../providers/wallet'
+import { defaultFee } from '../lib/constants'
 
 const unitLabels = {
   [Unit.SAT]: 'Sats',
@@ -13,16 +15,17 @@ const unitLabels = {
 }
 
 interface InputAmountProps {
-  amount?: number
   label?: string
+  sendAll?: boolean
   onChange: (arg0: any) => void
 }
 
-export default function InputAmount({ amount, label, onChange }: InputAmountProps) {
+export default function InputAmount({ label, sendAll, onChange }: InputAmountProps) {
   const { fromEuro, fromUSD, toEuro, toUSD } = useContext(FiatContext)
+  const { wallet } = useContext(WalletContext)
 
   const [text, setText] = useState('')
-  const [sats, setSats] = useState(amount ?? 0)
+  const [sats, setSats] = useState(0)
   const [unit, setUnit] = useState(Unit.SAT)
   const [lock, setLock] = useState(false)
 
@@ -60,16 +63,24 @@ export default function InputAmount({ amount, label, onChange }: InputAmountProp
     onChange(sats)
   }, [sats])
 
-  useEffect(() => {
-    if (!amount) return
-    setSats(amount)
-    setText(amount.toString())
-  }, [amount])
-
   const className =
     'w-full p-3 pr-6 text-sm text-right font-semibold rounded-l-md -mr-4 bg-gray-100 dark:bg-gray-800 focus-visible:outline-none'
 
   const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints // TODO
+
+  const handleKeyClick = (key: string) => {
+    if (text === '' && key === '.') return setText('0.')
+    if (text === '' && key !== '<') return setText(key)
+    if (key === '<') {
+      const aux = text.split('')
+      return setText(aux.slice(0, aux.length - 1).join(''))
+    }
+    setText(text + key)
+  }
+
+  const handleSendAll = () => {
+    setText((wallet.balance - defaultFee).toString())
+  }
 
   const handleUnitChange = (unit: Unit) => {
     setLock(true)
@@ -85,16 +96,6 @@ export default function InputAmount({ amount, label, onChange }: InputAmountProp
         : prettyNumber(toEuro(sats), 2),
     )
     setUnit(unit)
-  }
-
-  const clickHandler = (key: string) => {
-    if (text === '' && key === '.') return setText('0.')
-    if (text === '' && key !== '<') return setText(key)
-    if (key === '<') {
-      const aux = text.split('')
-      return setText(aux.slice(0, aux.length - 1).join(''))
-    }
-    setText(text + key)
   }
 
   const OtherAmounts = () => {
@@ -122,10 +123,25 @@ export default function InputAmount({ amount, label, onChange }: InputAmountProp
     )
   }
 
+  const SideButton = ({ label, func, left }: { label: string; func: any; left?: boolean }) => {
+    const className =
+      'w-16 h-full flex items-center cursor-pointer ' +
+      'text-sm text-gray-100 dark:text-gray-800 ' +
+      'border-gray-200 dark:border-gray-700 ' +
+      'bg-gray-800 dark:bg-gray-100 ' +
+      (left ? 'rounded-l-md' : 'rounded-r-md')
+    return (
+      <div className={className} onClick={func}>
+        <div className='mx-auto font-semibold'>{label}</div>
+      </div>
+    )
+  }
+
   return (
     <fieldset className='text-left text-gray-800 dark:text-gray-100 w-full'>
       {label ? <Label text={label} /> : null}
       <div className='flex items-center h-12 rounded-l-md bg-gray-100 dark:bg-gray-800'>
+        {sendAll ? <SideButton label='All' func={handleSendAll} left /> : null}
         {isMobile ? (
           <p className={className}>{text}</p>
         ) : (
@@ -137,14 +153,9 @@ export default function InputAmount({ amount, label, onChange }: InputAmountProp
             className={className}
           />
         )}
-        <div
-          className='w-16 h-full flex items-center rounded-r-md cursor-pointer text-sm bg-gray-800 dark:bg-gray-100 text-gray-100 dark:text-gray-800 border-gray-200 dark:border-gray-700'
-          onClick={() => handleUnitChange(nextUnit())}
-        >
-          <div className='mx-auto font-semibold'>{unitLabels[unit]}</div>
-        </div>
+        <SideButton label={unitLabels[unit]} func={() => handleUnitChange(nextUnit())} />
       </div>
-      <div className='flex justify-between mb-4'>
+      <div className='flex justify-between mt-1 mb-4'>
         <OtherAmounts />
       </div>
       {isMobile ? (
@@ -153,7 +164,7 @@ export default function InputAmount({ amount, label, onChange }: InputAmountProp
             <p
               key={k}
               className='text-center p-3 sm:p-5 bg-gray-100 dark:bg-gray-800 select-none'
-              onClick={() => clickHandler(k)}
+              onClick={() => handleKeyClick(k)}
             >
               {k}
             </p>
