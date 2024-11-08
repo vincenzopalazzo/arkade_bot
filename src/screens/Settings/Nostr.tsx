@@ -57,6 +57,10 @@ export default function Nostr() {
       <Content>
         <Title text='Nostr' subtext='Receive notes on Nostr' />
         <div className='flex flex-col gap-10 mt-10'>
+          <p>
+            If you let your VTXOs expire, you will receive, on Nostr, via encrypted DM, an arknote with the same value,
+            that you will be able to redeem later.
+          </p>
           <Select onChange={handleAuth} value={value}>
             <option value='0'>Not allowed</option>
             <option value='1'>Allowed</option>
@@ -64,22 +68,7 @@ export default function Nostr() {
           {config.nostr ? (
             <>
               <Textarea label='Nostr public key (npub)' value={npub} onChange={handleChange} />
-              {error ? (
-                <Error error text={error} />
-              ) : (
-                <div className='flex justify-around'>
-                  <p className='underline underline-offset-2'>
-                    <a href={`https://njump.me/${npub}`} target='_blank'>
-                      Web view
-                    </a>
-                  </p>
-                  <p className='underline underline-offset-2'>
-                    <a href={`https://njump.me/${npub}.rss`} target='_blank'>
-                      RSS view
-                    </a>
-                  </p>
-                </div>
-              )}
+              <Error error={Boolean(error)} text={error} />
             </>
           ) : null}
         </div>
