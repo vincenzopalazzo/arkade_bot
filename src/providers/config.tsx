@@ -18,14 +18,16 @@ export interface Config {
   aspUrl: string
   nostr: boolean
   notifications: boolean
+  npub: string
   theme: Themes
   unit: Unit
 }
 
 const defaultConfig: Config = {
-  aspUrl: '',
+  aspUrl: defaultAsp,
   nostr: false,
   notifications: false,
+  npub: '',
   theme: Themes.Dark,
   unit: Unit.BTC,
 }
@@ -76,7 +78,7 @@ export const ConfigProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (configLoaded) return
-    const config = readConfigFromStorage() ?? { ...defaultConfig, aspUrl: defaultAsp, theme: preferredTheme() }
+    const config = readConfigFromStorage() ?? { ...defaultConfig, theme: preferredTheme() }
     updateConfig(config)
     setConfigLoaded(true)
   }, [configLoaded])
