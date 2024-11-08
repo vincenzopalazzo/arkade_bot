@@ -8,6 +8,18 @@ export const invalidPrivateKey = (key: string): string => {
   return ''
 }
 
+export const invalidNpub = (npub: string): string => {
+  if (!/^npub/.test(npub)) return 'Invalid prefix'
+  console.log(npub.length)
+  if (npub.length !== 63) return 'Invalid length, must be 63'
+  try {
+    nip19.decode(npub)
+  } catch {
+    return 'Invalid npub'
+  }
+  return ''
+}
+
 export const nsecToSeed = (nsec: string): string => {
   const { type, data } = nip19.decode(nsec)
   if (type !== 'nsec') throw 'invalid nsec'
