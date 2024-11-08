@@ -17,7 +17,7 @@ export default function NoteRedeem() {
   const { noteInfo } = useContext(FlowContext)
   const { navigate } = useContext(NavigationContext)
 
-  const defaultButtonLabel = 'Redeem voucher'
+  const defaultButtonLabel = 'Redeem note'
 
   const [details, setDetails] = useState<DetailsProps>()
   const [buttonLabel, setButtonLabel] = useState(defaultButtonLabel)
