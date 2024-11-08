@@ -19,11 +19,12 @@ declare global {
     lock: (password: string) => Promise<any>
     locked: () => Promise<bool>
     receive: () => Promise<any>
-    redeemNotes: (notes: string[]) => Promise<any>
+    redeemNotes: (notes: string[]) => Promise<void>
     sendAsync: (withExpiryCoinselect: boolean, recepients: any[]) => Promise<string>
     sendOffChain: (withExpiryCoinselect: boolean, recepients: any[]) => Promise<string>
     sendOnChain: (recepients: any[]) => Promise<string>
-    settle: () => Promise<any>
+    settle: () => Promise<void>
+    setNostrNotificationRecipient: (npub: string) => Promise<any>
     unlock: (password: string) => Promise<any>
   }
 }

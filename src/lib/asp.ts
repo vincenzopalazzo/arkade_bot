@@ -1,3 +1,4 @@
+import { invalidNpub } from './privateKey'
 import { Satoshis, Tx, Vtxo } from './types'
 
 export interface AspInfo {
@@ -182,6 +183,11 @@ export const settleVtxos = async (): Promise<void> => {
   } catch {
     await window.settle()
   }
+}
+
+export const setNostrNotificationRecipient = async (npub: string): Promise<void> => {
+  if (invalidNpub(npub)) return
+  return window.setNostrNotificationRecipient(npub)
 }
 
 export const startListenTransactionStream = async (callback: () => {}) => {
