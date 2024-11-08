@@ -14,7 +14,7 @@ export default function Textarea({ children, label, onChange, value }: TextareaP
 
   const readOnly = typeof onChange === 'undefined'
 
-  const rows = value ? Math.ceil(value.length / 30) : 2
+  const rows = value ? Math.ceil(value.length / 32) : 2
 
   return (
     <div>
