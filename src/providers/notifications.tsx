@@ -1,7 +1,4 @@
-import { ReactNode, createContext, useContext, useEffect, useRef } from 'react'
-import { hexToBytes } from '@noble/hashes/utils'
-import { finalizeEvent, getPublicKey, Relay } from 'nostr-tools'
-import { getPrivateKey } from '../lib/asp'
+import { ReactNode, createContext, useContext } from 'react'
 import { ConfigContext } from './config'
 import { sendNotification } from '../lib/notifications'
 import { prettyNumber } from '../lib/format'
@@ -23,42 +20,6 @@ export const NotificationsContext = createContext<NotificationsContextProps>({
 export const NotificationsProvider = ({ children }: { children: ReactNode }) => {
   const { config } = useContext(ConfigContext)
 
-  const relay = useRef<Relay>()
-
-  const connectRelay = async (): Promise<void> => {
-    relay.current = await Relay.connect('wss://relay.primal.net')
-  }
-
-  const sendNostrNotification = async (content: string) => {
-    if (!config.nostr) return
-    if (!relay.current) return
-    if (!relay.current.connected) await connectRelay()
-    const seed = await getPrivateKey()
-    const sk = hexToBytes(seed)
-    const pk = getPublicKey(sk)
-    relay.current.subscribe(
-      [
-        {
-          kinds: [1],
-          authors: [pk],
-        },
-      ],
-      {
-        onevent(event) {
-          console.log('got event:', event)
-        },
-      },
-    )
-    const eventTemplate = {
-      kind: 1,
-      created_at: Math.floor(Date.now() / 1000),
-      tags: [],
-      content,
-    }
-    const signedEvent = finalizeEvent(eventTemplate, sk)
-    await relay.current.publish(signedEvent)
-  }
-
   const sendSystemNotification = (title: string, body: string) => {
     if (!config.notifications) return
     sendNotification(title, body)
@@ -68,40 +29,25 @@ export const NotificationsProvider = ({ children }: { children: ReactNode }) => 
     const body = `You received ${prettyNumber(sats)} sats`
     const title = 'Payment received'
     sendSystemNotification(title, body)
-    sendNostrNotification(body)
   }
 
   const notifyPaymentSent = (sats: number) => {
     const body = `You sent ${prettyNumber(sats)} sats`
     const title = 'Payment sent'
     sendSystemNotification(title, body)
-    sendNostrNotification(body)
   }
 
   const notifyTxSettled = () => {
     const body = `All pending transactions were settled`
     const title = 'Transactions settled'
     sendSystemNotification(title, body)
-    sendNostrNotification(body)
   }
 
   const notifyVtxosRecycled = () => {
     const body = 'All VTXOs were rolled over'
     const title = 'Vtxos rolled over'
     sendSystemNotification(title, body)
-    sendNostrNotification(body)
   }
-
-  useEffect(() => {
-    if (!config.nostr) {
-      if (relay.current) {
-        if (relay.current.connected) relay.current.close()
-        relay.current = undefined
-      }
-      return
-    }
-    connectRelay()
-  }, [config.nostr])
 
   return (
     <NotificationsContext.Provider
