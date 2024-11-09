@@ -109,7 +109,7 @@ export const getTxHistory = async (): Promise<Tx[]> => {
         boardingTxid,
         createdAt: unix,
         explorable,
-        pending: !settled && boardingTxid,
+        pending: !settled,
         settled,
         redeemTxid,
         roundTxid,
