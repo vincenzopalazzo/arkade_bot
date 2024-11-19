@@ -46,9 +46,7 @@ export default function SendAmount() {
     <Container>
       <Content>
         <Title text='Send' subtext={`Balance ${prettyNumber(wallet.balance)} sats`} />
-        <div className='flex flex-col gap-4'>
-          <InputAmount label='Amount' onChange={setAmount} sendAll />
-        </div>
+        <InputAmount label='Amount' onChange={setAmount} />
       </Content>
       <ButtonsOnBottom>
         <Button onClick={handleProceed} label={label} disabled={disabled} />

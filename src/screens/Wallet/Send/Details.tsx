@@ -1,18 +1,18 @@
 import { useContext, useEffect, useState } from 'react'
 import Button from '../../../components/Button'
 import { NavigationContext, Pages } from '../../../providers/navigation'
-import { FlowContext, emptySendInfo } from '../../../providers/flow'
+import { FlowContext } from '../../../providers/flow'
 import Content from '../../../components/Content'
-import Title from '../../../components/Title'
 import Container from '../../../components/Container'
 import ButtonsOnBottom from '../../../components/ButtonsOnBottom'
 import Details, { DetailsProps } from '../../../components/Details'
 import Error from '../../../components/Error'
 import { WalletContext } from '../../../providers/wallet'
+import Header from '../../../components/Header'
 
 export default function SendDetails() {
   const { navigate } = useContext(NavigationContext)
-  const { sendInfo, setSendInfo } = useContext(FlowContext)
+  const { sendInfo } = useContext(FlowContext)
   const { wallet } = useContext(WalletContext)
 
   const [details, setDetails] = useState<DetailsProps>()
@@ -40,11 +40,6 @@ export default function SendDetails() {
 
   const handleContinue = () => navigate(Pages.SendFees)
 
-  const handleCancel = () => {
-    setSendInfo(emptySendInfo)
-    navigate(Pages.Wallet)
-  }
-
   const lowBalance = wallet.balance < (details?.satoshis ?? 0)
   const disabled = lowBalance || Boolean(error)
   const label = error ? 'Something went wrong' : lowBalance ? 'Insufficient funds' : 'Continue'
@@ -52,7 +47,7 @@ export default function SendDetails() {
   return (
     <Container>
       <Content>
-        <Title text='Payment details' />
+        <Header text='Payment details' back={() => navigate(Pages.SendInvoice)} />
         <div className='flex flex-col gap-2 mt-4'>
           <Error error={Boolean(error)} text={error} />
           <Details details={details} />
@@ -60,7 +55,6 @@ export default function SendDetails() {
       </Content>
       <ButtonsOnBottom>
         <Button onClick={handleContinue} label={label} disabled={disabled} />
-        <Button onClick={handleCancel} label='Cancel' secondary />
       </ButtonsOnBottom>
     </Container>
   )

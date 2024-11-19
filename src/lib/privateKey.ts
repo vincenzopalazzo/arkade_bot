@@ -11,7 +11,6 @@ export const invalidPrivateKey = (key: string): string => {
 export const invalidNpub = (npub: string): string => {
   if (!npub) return 'You must define a npub'
   if (!/^npub/.test(npub)) return 'Invalid prefix'
-  console.log(npub.length)
   if (npub.length !== 63) return 'Invalid length, must be 63'
   try {
     nip19.decode(npub)

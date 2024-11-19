@@ -10,6 +10,7 @@ import Container from '../../../components/Container'
 import Error from '../../../components/Error'
 import { getReceivingAddresses } from '../../../lib/asp'
 import { extractError } from '../../../lib/error'
+import { IonContent } from '@ionic/react'
 
 export default function ReceiveAmount() {
   const { setRecvInfo } = useContext(FlowContext)
@@ -44,16 +45,16 @@ export default function ReceiveAmount() {
   }
 
   return (
-    <Container>
-      <Content>
+    <>
+      <IonContent>
         <Title text='Receive' subtext='How much to receive on Ark' />
         <Error error={Boolean(error)} text={error} />
         <InputAmount label='Amount' onChange={handleChange} />
-      </Content>
+      </IonContent>
       <ButtonsOnBottom>
         <Button onClick={handleProceed} label={buttonLabel} />
         <Button onClick={handleCancel} label='Cancel' secondary />
       </ButtonsOnBottom>
-    </Container>
+    </>
   )
 }

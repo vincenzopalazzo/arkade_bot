@@ -1,25 +1,25 @@
 import { useContext } from 'react'
 import Button from '../../components/Button'
 import ButtonsOnBottom from '../../components/ButtonsOnBottom'
-import Title from '../../components/Title'
-import { ConfigContext } from '../../providers/config'
 import { WalletContext } from '../../providers/wallet'
 import Content from '../../components/Content'
 import Container from '../../components/Container'
+import Header from './Header'
+import { NavigationContext, Pages } from '../../providers/navigation'
 
 export default function Reset({ backup }: { backup: () => void }) {
-  const { toggleShowConfig } = useContext(ConfigContext)
+  const { navigate } = useContext(NavigationContext)
   const { resetWallet } = useContext(WalletContext)
 
   const handleReset = () => {
     resetWallet()
-    toggleShowConfig()
+    navigate(Pages.Init)
   }
 
   return (
     <Container>
       <Content>
-        <Title text='Reset wallet' />
+        <Header text='Reset wallet' back />
         <div className='flex flex-col gap-6 mt-10'>
           <p>
             Did you{' '}
@@ -33,7 +33,6 @@ export default function Reset({ backup }: { backup: () => void }) {
       </Content>
       <ButtonsOnBottom>
         <Button onClick={handleReset} label='Reset wallet' />
-        <Button onClick={toggleShowConfig} label='Cancel' secondary />
       </ButtonsOnBottom>
     </Container>
   )

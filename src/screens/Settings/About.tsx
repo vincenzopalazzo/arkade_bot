@@ -1,17 +1,12 @@
 import { useContext } from 'react'
-import Button from '../../components/Button'
-import ButtonsOnBottom from '../../components/ButtonsOnBottom'
-import Title from '../../components/Title'
-import { ConfigContext } from '../../providers/config'
-import Content from '../../components/Content'
-import Container from '../../components/Container'
+import { IonContent } from '@ionic/react'
 import { AspContext } from '../../providers/asp'
-import Table from '../../components/Table'
 import { prettyLongText } from '../../lib/format'
+import Header from './Header'
+import Table from '../../components/Table'
 
 export default function About() {
   const { aspInfo } = useContext(AspContext)
-  const { toggleShowConfig } = useContext(ConfigContext)
 
   const days = Math.round(aspInfo.roundLifetime / 60 / 60 / 24)
 
@@ -27,16 +22,9 @@ export default function About() {
   ]
 
   return (
-    <Container>
-      <Content>
-        <Title text='About' subtext='Ark wallet PoC' />
-        <div className='mt-10'>
-          <Table data={data} />
-        </div>
-      </Content>
-      <ButtonsOnBottom>
-        <Button onClick={toggleShowConfig} label='Back to wallet' secondary />
-      </ButtonsOnBottom>
-    </Container>
+    <IonContent>
+      <Header text='About' back />
+      <Table data={data} />
+    </IonContent>
   )
 }

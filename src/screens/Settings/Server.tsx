@@ -5,15 +5,15 @@ import Container from '../../components/Container'
 import Content from '../../components/Content'
 import Error from '../../components/Error'
 import Input from '../../components/Input'
-import Title from '../../components/Title'
 import { ConfigContext } from '../../providers/config'
 import { getAspInfo } from '../../lib/asp'
 import { clearStorage } from '../../lib/storage'
 import { WalletContext } from '../../providers/wallet'
 import { NavigationContext, Pages } from '../../providers/navigation'
+import Header from './Header'
 
 export default function Server({ backup }: { backup: () => void }) {
-  const { config, toggleShowConfig, updateConfig } = useContext(ConfigContext)
+  const { config, updateConfig } = useContext(ConfigContext)
   const { navigate } = useContext(NavigationContext)
   const { updateWallet, wallet } = useContext(WalletContext)
 
@@ -31,14 +31,13 @@ export default function Server({ backup }: { backup: () => void }) {
     clearStorage()
     updateConfig({ ...config, aspUrl })
     updateWallet({ ...wallet, initialized: false })
-    toggleShowConfig()
     navigate(Pages.Init)
   }
 
   return (
     <Container>
       <Content>
-        <Title text='Server' subtext='Change server' />
+        <Header text='Server' back />
         <div className='flex flex-col gap-4 mt-10'>
           <Input label='Server URL' onChange={setAspUrl} placeholder={config.aspUrl} />
           <Error error={Boolean(error)} text={error} />
@@ -57,7 +56,6 @@ export default function Server({ backup }: { backup: () => void }) {
       </Content>
       <ButtonsOnBottom>
         <Button onClick={handleNewServer} label='Connect to server' disabled={!found || Boolean(error)} />
-        <Button onClick={toggleShowConfig} label='Back to wallet' secondary />
       </ButtonsOnBottom>
     </Container>
   )

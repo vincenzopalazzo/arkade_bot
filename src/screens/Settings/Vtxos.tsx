@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
 import Button from '../../components/Button'
-import Title from '../../components/Title'
 import ButtonsOnBottom from '../../components/ButtonsOnBottom'
 import Content from '../../components/Content'
 import Container from '../../components/Container'
@@ -10,10 +9,9 @@ import { prettyAgo, prettyNumber } from '../../lib/format'
 import Loading from '../../components/Loading'
 import NextRecycle from '../../components/NextRecycle'
 import Error from '../../components/Error'
-import { ConfigContext } from '../../providers/config'
+import Header from './Header'
 
 export default function Vtxos() {
-  const { toggleShowConfig } = useContext(ConfigContext)
   const { recycleVtxos, wallet } = useContext(WalletContext)
 
   const defaultButtonLabel = 'Recycle VTXOs now'
@@ -34,7 +32,7 @@ export default function Vtxos() {
   return (
     <Container>
       <Content>
-        <Title text='VTXOs' />
+        <Header text='VTXOs' back />
         {recycling ? (
           <Loading text='Recycling your VTXOs require a round, which can take a few seconds' />
         ) : showList ? (
@@ -65,7 +63,6 @@ export default function Vtxos() {
         {wallet.vtxos.spendable?.length > 0 ? (
           <Button onClick={handleRecycle} label={buttonLabel} disabled={recycling} />
         ) : null}
-        <Button onClick={toggleShowConfig} label='Back to wallet' secondary />
       </ButtonsOnBottom>
     </Container>
   )

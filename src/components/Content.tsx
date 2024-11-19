@@ -1,3 +1,4 @@
+import { IonContent } from '@ionic/react'
 import { ReactNode } from 'react'
 
 interface ContentProps {
@@ -5,5 +6,5 @@ interface ContentProps {
 }
 
 export default function Content({ children }: ContentProps) {
-  return <div className='w-full'>{children}</div>
+  return <IonContent>{children}</IonContent>
 }

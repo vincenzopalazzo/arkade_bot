@@ -1,10 +1,8 @@
 import { useContext, useEffect, useState } from 'react'
 import Button from '../../components/Button'
-import Title from '../../components/Title'
 import ButtonsOnBottom from '../../components/ButtonsOnBottom'
 import { NavigationContext, Pages } from '../../providers/navigation'
 import Content from '../../components/Content'
-import Container from '../../components/Container'
 import { WalletContext } from '../../providers/wallet'
 import { FlowContext } from '../../providers/flow'
 import { prettyAgo, prettyDate, prettyNumber } from '../../lib/format'
@@ -16,6 +14,7 @@ import Loading from '../../components/Loading'
 import { openInNewTab } from '../../lib/explorers'
 import Modal from '../../components/Modal'
 import TipIcon from '../../icons/Tip'
+import Header from '../../components/Header'
 
 export default function Transaction() {
   const { txInfo, setTxInfo } = useContext(FlowContext)
@@ -68,9 +67,9 @@ export default function Transaction() {
   ]
 
   return (
-    <Container>
+    <>
       <Content>
-        <Title text='Transaction' />
+        <Header text='Transaction' back={() => navigate(Pages.Wallet)} />
         <Error error={Boolean(error)} text={error} />
         {settling ? (
           <Loading text='Settling transactions require a round, which can take a few seconds' />
@@ -103,6 +102,6 @@ export default function Transaction() {
           </p>
         </div>
       </Modal>
-    </Container>
+    </>
   )
 }

@@ -1,74 +1,74 @@
+import '@ionic/react/css/core.css'
+/* Basic CSS for apps built with Ionic */
+import '@ionic/react/css/normalize.css'
+import '@ionic/react/css/structure.css'
+import '@ionic/react/css/typography.css'
+
+/* Optional CSS utils that can be commented out */
+import '@ionic/react/css/padding.css'
+import '@ionic/react/css/float-elements.css'
+import '@ionic/react/css/text-alignment.css'
+import '@ionic/react/css/text-transformation.css'
+import '@ionic/react/css/flex-utils.css'
+import '@ionic/react/css/display.css'
+
 import { useContext } from 'react'
 import { ConfigContext } from './providers/config'
-import { NavigationContext, Pages } from './providers/navigation'
+import { NavigationContext, pageComponent, Pages, Tabs } from './providers/navigation'
 import { WalletContext } from './providers/wallet'
-import Init from './screens/Init/Init'
-import Wallet from './screens/Wallet/Index'
-import Header from './components/Header'
-import Settings from './screens/Settings/Index'
-import Loading from './components/Loading'
-import SendInvoice from './screens/Wallet/Send/Invoice'
-import SendDetails from './screens/Wallet/Send/Details'
-import SendPayment from './screens/Wallet/Send/Pay'
-import ReceiveAmount from './screens/Wallet/Receive/Amount'
-import ReceiveInvoice from './screens/Wallet/Receive/Invoice'
-import InitNew from './screens/Init/New'
-import InitOld from './screens/Init/Restore'
-import SendFees from './screens/Wallet/Send/Fees'
-import ReceiveSuccess from './screens/Wallet/Receive/Success'
-import InitPassword from './screens/Init/Password'
-import OuterContainer from './components/OuterContainer'
-import SendSuccess from './screens/Wallet/Send/Success'
-import Transactions from './screens/Wallet/Transactions'
-import SendAmount from './screens/Wallet/Send/Amount'
-import Unlock from './screens/Wallet/Unlock'
-import InitConnect from './screens/Init/Connect'
-import Transaction from './screens/Wallet/Transaction'
-import Vtxos from './screens/Settings/Vtxos'
-import NoteRedeem from './screens/Wallet/Vouchers/Redeem'
+
 import './wasm_exec.js'
 import './wasmTypes.d.ts'
-import NoteSuccess from './screens/Wallet/Vouchers/Success'
-import NoteScan from './screens/Wallet/Vouchers/Scan'
+
+import { arrowDownCircle, arrowUpCircle, home, settings } from 'ionicons/icons'
+import { IonIcon, IonPage, IonTab, IonTabBar, IonTabButton, IonTabs, setupIonicReact } from '@ionic/react'
+
+setupIonicReact()
 
 export default function App() {
   const { wasmLoaded, walletUnlocked, wallet } = useContext(WalletContext)
-  const { configLoaded, showConfig } = useContext(ConfigContext)
-  const { screen } = useContext(NavigationContext)
-
-  if (showConfig) return <Settings />
+  const { configLoaded } = useContext(ConfigContext)
+  const { navigate, screen, tab } = useContext(NavigationContext)
 
   const page =
     !configLoaded || !wasmLoaded ? Pages.Loading : wallet.initialized && !walletUnlocked ? Pages.Unlock : screen
 
+  const comp = pageComponent(page)
+
   return (
-    <OuterContainer>
-      <Header />
-      <div className='grow'>
-        {page === Pages.Init && <Init />}
-        {page === Pages.InitNew && <InitNew />}
-        {page === Pages.InitOld && <InitOld />}
-        {page === Pages.InitPassword && <InitPassword />}
-        {page === Pages.InitConnect && <InitConnect />}
-        {page === Pages.Loading && <Loading />}
-        {page === Pages.ReceiveAmount && <ReceiveAmount />}
-        {page === Pages.ReceiveInvoice && <ReceiveInvoice />}
-        {page === Pages.ReceiveSuccess && <ReceiveSuccess />}
-        {page === Pages.NoteRedeem && <NoteRedeem />}
-        {page === Pages.NoteScan && <NoteScan />}
-        {page === Pages.NoteSuccess && <NoteSuccess />}
-        {page === Pages.SendAmount && <SendAmount />}
-        {page === Pages.SendInvoice && <SendInvoice />}
-        {page === Pages.SendDetails && <SendDetails />}
-        {page === Pages.SendFees && <SendFees />}
-        {page === Pages.SendPayment && <SendPayment />}
-        {page === Pages.SendSuccess && <SendSuccess />}
-        {page === Pages.Transactions && <Transactions />}
-        {page === Pages.Transaction && <Transaction />}
-        {page === Pages.Unlock && <Unlock />}
-        {page === Pages.Vtxos && <Vtxos />}
-        {page === Pages.Wallet && <Wallet />}
-      </div>
-    </OuterContainer>
+    <IonPage>
+      {tab === Tabs.None ? (
+        comp
+      ) : (
+        <IonTabs>
+          <IonTab tab={Tabs.Home}>{comp}</IonTab>
+          <IonTab tab={Tabs.Send}>{comp}</IonTab>
+          <IonTab tab={Tabs.Receive}>{comp}</IonTab>
+          <IonTab tab={Tabs.Settings}>{comp}</IonTab>
+          <IonTabBar slot='bottom'>
+            <IonTabButton tab={Tabs.Home} selected={tab === Tabs.Home} onClick={() => navigate(Pages.Wallet)}>
+              <IonIcon icon={home} />
+              Home
+            </IonTabButton>
+            <IonTabButton tab={Tabs.Send} selected={tab === Tabs.Send} onClick={() => navigate(Pages.SendInvoice)}>
+              <IonIcon icon={arrowUpCircle} />
+              Send
+            </IonTabButton>
+            <IonTabButton
+              tab={Tabs.Receive}
+              selected={tab === Tabs.Receive}
+              onClick={() => navigate(Pages.ReceiveAmount)}
+            >
+              <IonIcon icon={arrowDownCircle} />
+              Receive
+            </IonTabButton>
+            <IonTabButton tab={Tabs.Settings} selected={tab === Tabs.Settings} onClick={() => navigate(Pages.Settings)}>
+              <IonIcon icon={settings} />
+              Settings
+            </IonTabButton>
+          </IonTabBar>
+        </IonTabs>
+      )}
+    </IonPage>
   )
 }

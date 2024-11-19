@@ -1,43 +1,22 @@
-import { useEffect, useRef } from 'react'
+import { IonInput } from '@ionic/react'
 import Label from './Label'
 
-interface InputProps {
+interface InputAmountProps {
   label?: string
-  left?: string
-  onChange: (event: any) => void
+  onChange: (arg0: any) => void
   placeholder?: string
-  right?: string
-  type?: string
 }
 
-export default function Input({ label, left, onChange, placeholder, right, type }: InputProps) {
-  const commonSidesClassName = 'w-16 pt-3 mx-auto text-sm bg-gray-700 dark:bg-gray-200 text-gray-100 dark:text-gray-800'
-
-  const inputClassName =
-    (!left ? 'rounded-l-md' : !right ? 'rounded-r-md' : '') +
-    ' w-full p-3 text-sm font-semibold bg-gray-100 dark:bg-gray-700'
-
-  const value = useRef('')
-
-  useEffect(() => {
-    const input = document.querySelector('#zInput') as HTMLInputElement
-    const intervalId = setInterval(() => {
-      if (input.value !== value.current) {
-        value.current = input.value
-        onChange(input.value)
-      }
-    }, 250)
-    return () => clearInterval(intervalId)
-  }, [])
+export default function Input({ label, onChange, placeholder }: InputAmountProps) {
+  const handleInput = (ev: Event) => {
+    const value = (ev.target as HTMLInputElement).value
+    onChange(value)
+  }
 
   return (
-    <fieldset className='w-full text-gray-800 dark:text-gray-100'>
+    <div className='inputContainer'>
       {label ? <Label text={label} /> : null}
-      <div className='flex'>
-        {left ? <p className={`${commonSidesClassName} rounded-l-md`}>{left}</p> : null}
-        <input className={inputClassName} id='zInput' placeholder={placeholder} type={type ?? 'text'} />
-        {right ? <p className={`${commonSidesClassName} rounded-r-md`}>{right}</p> : null}
-      </div>
-    </fieldset>
+      <IonInput onIonInput={handleInput} placeholder={placeholder} />
+    </div>
   )
 }

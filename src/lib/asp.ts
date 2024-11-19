@@ -91,7 +91,6 @@ export const getTxHistory = async (): Promise<Tx[]> => {
   const txs: Tx[] = []
   try {
     const res = await window.getTransactionHistory()
-    console.log('res', res)
     if (!res) return []
     for (const tx of JSON.parse(res)) {
       const date = new Date(tx.createdAt)

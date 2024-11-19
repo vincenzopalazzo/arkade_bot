@@ -7,8 +7,8 @@ import Content from '../../components/Content'
 import Container from '../../components/Container'
 import { WalletContext } from '../../providers/wallet'
 import Error from '../../components/Error'
-import Input from '../../components/Input'
 import { extractError } from '../../lib/error'
+import InputPassword from '../../components/InputPassword'
 
 export default function Unlock() {
   const { navigate } = useContext(NavigationContext)
@@ -23,7 +23,8 @@ export default function Unlock() {
     setLabel(unlocking ? 'Unlocking' : 'Unlock')
   }, [unlocking])
 
-  const handleChange = (pass: string) => {
+  const handleChange = (ev: Event) => {
+    const pass = (ev.target as HTMLInputElement).value
     setPassword(pass)
     unlockWallet(pass)
       .then(() => navigate(Pages.Wallet))
@@ -47,7 +48,7 @@ export default function Unlock() {
         <Title text={label} subtext='Access your wallet' />
         {unlocking ? null : (
           <div className='flex flex-col gap-4 mt-10'>
-            <Input label='Insert password' onChange={handleChange} type='password' />
+            <InputPassword label='Insert password' onChange={handleChange} />
             <Error error={Boolean(error)} text={error} />
           </div>
         )}

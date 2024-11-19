@@ -1,3 +1,4 @@
+import { IonFooter } from '@ionic/react'
 import { ReactNode } from 'react'
 
 interface ButtonsOnBottomProps {
@@ -5,5 +6,5 @@ interface ButtonsOnBottomProps {
 }
 
 export default function ButtonsOnBottom({ children }: ButtonsOnBottomProps) {
-  return <div className='flex flex-col gap-2 mb-4 w-full'>{children}</div>
+  return <IonFooter class='ion-padding ion-no-border'>{children}</IonFooter>
 }

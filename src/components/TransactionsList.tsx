@@ -1,37 +1,48 @@
 import { useContext } from 'react'
 import { WalletContext } from '../providers/wallet'
 import Label from './Label'
+import Text from './Text'
 import { Tx } from '../lib/types'
-import { prettyAgo, prettyNumber } from '../lib/format'
-import ArrowIcon from '../icons/Arrow'
-import { NavigationContext, Pages } from '../providers/navigation'
-import Pill from './Pill'
-import { FlowContext } from '../providers/flow'
+import { prettyDate, prettyNumber } from '../lib/format'
+import { IonCol, IonGrid, IonItem, IonList, IonRow } from '@ionic/react'
 
 const TransactionLine = ({ tx }: { tx: Tx }) => {
-  const { setTxInfo } = useContext(FlowContext)
-  const { navigate } = useContext(NavigationContext)
-
   const prefix = tx.type === 'sent' ? '-' : '+'
   const amount = `${prefix} ${prettyNumber(tx.amount)} sats`
-  const date = prettyAgo(tx.createdAt)
-
-  const handleClick = () => {
-    setTxInfo(tx)
-    navigate(Pages.Transaction)
-  }
+  const date = prettyDate(tx.createdAt)
 
   return (
-    <div className='border cursor-pointer p-2 flex justify-between w-full rounded-md' onClick={handleClick}>
-      <p className='text-left w-2/5'>{amount}</p>
-      {tx.pending ? <Pill text='Pending' /> : null}
-      <p className='text-right w-2/5'>{date}</p>
-    </div>
+    <IonGrid>
+      {tx.type === 'received' ? (
+        <IonRow>
+          <IonCol size='1'>Icon</IonCol>
+          <IonCol>
+            <Text>Received (xxx...xxx)</Text>
+            <Text secondary>{date}</Text>
+          </IonCol>
+          <IonCol class='ion-text-end'>
+            <Text green>{amount}</Text>
+            <Text green>Received</Text>
+          </IonCol>
+        </IonRow>
+      ) : (
+        <IonRow>
+          <IonCol size='1'>Icon</IonCol>
+          <IonCol>
+            <Text>Sent (xxx...xxx)</Text>
+            <Text secondary>{date}</Text>
+          </IonCol>
+          <IonCol class='ion-text-end'>
+            <Text>{amount}</Text>
+            <Text secondary>Sent</Text>
+          </IonCol>
+        </IonRow>
+      )}
+    </IonGrid>
   )
 }
 
 export default function TransactionsList({ short }: { short?: boolean }) {
-  const { navigate } = useContext(NavigationContext)
   const { wallet } = useContext(WalletContext)
 
   const transactions = wallet.txs
@@ -49,24 +60,15 @@ export default function TransactionsList({ short }: { short?: boolean }) {
   const key = (tx: Tx) => `${tx.createdAt}${tx.boardingTxid}${tx.roundTxid}${tx.redeemTxid}`
 
   return (
-    <div className='mt-4'>
-      <Label text={`${short ? 'Last' : 'All ' + showTxs.length} transactions`} />
-      <div className='flex flex-col gap-2 max-h-72 overflow-auto'>
+    <>
+      <Label text='Transaction history' />
+      <IonList>
         {showTxs.map((tx) => (
-          <TransactionLine key={key(tx)} tx={tx} />
+          <IonItem key={key(tx)}>
+            <TransactionLine tx={tx} />
+          </IonItem>
         ))}
-        {short && transactions.length > showMax ? (
-          <div
-            className='border bg-gray-100 dark:bg-gray-800 cursor-pointer p-2 flex justify-end w-full rounded-md'
-            onClick={() => navigate(Pages.Transactions)}
-          >
-            <div className='flex items-center'>
-              <p className='mr-2'>View all {transactions.length} transactions</p>
-              <ArrowIcon small />
-            </div>
-          </div>
-        ) : null}
-      </div>
-    </div>
+      </IonList>
+    </>
   )
 }

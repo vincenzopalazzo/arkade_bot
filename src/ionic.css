@@ -1,0 +1,27 @@
+.ion-page {
+  max-width: 640px;
+  margin: auto;
+}
+
+.inputContainer {
+  margin: 0.5rem;
+  & div {
+    background-color: bisque;
+    border-radius: 0.5rem;
+    padding: 8px;
+  }
+}
+
+.text-empahsys {
+  font-size: 28px;
+  line-height: 42px;
+}
+.text-minititle {
+  font-size: 12px;
+  line-height: 18px;
+}
+.text-secondary {
+  color: #888;
+  font-size: 16px;
+  line-height: 24px;
+}

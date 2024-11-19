@@ -14,9 +14,5 @@ export default function Label({ onClick, text }: LabelProps) {
         <ArrowIcon tiny />
       </div>
     )
-  return (
-    <div className='mb-1'>
-      <label className={className}>{text}</label>
-    </div>
-  )
+  return <label className={className}>{text}</label>
 }

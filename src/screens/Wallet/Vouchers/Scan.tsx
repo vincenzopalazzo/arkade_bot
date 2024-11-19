@@ -64,9 +64,9 @@ export default function NoteScan() {
           {error ? null : (
             <>
               {firefox ? (
-                <Input label='Paste your note here' left='&#9889;' onChange={handleChange} />
+                <Input label='Paste your note here' onChange={handleChange} />
               ) : (
-                <BarcodeScanner setPastedData={setPastedData} setError={setError} />
+                <BarcodeScanner setData={setPastedData} setError={setError} />
               )}
             </>
           )}

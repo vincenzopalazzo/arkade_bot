@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 import Button from '../../components/Button'
 import ButtonsOnBottom from '../../components/ButtonsOnBottom'
-import Title from '../../components/Title'
 import { ConfigContext } from '../../providers/config'
 import Content from '../../components/Content'
 import Textarea from '../../components/Textarea'
@@ -11,9 +10,10 @@ import { invalidNpub } from '../../lib/privateKey'
 import Select from '../../components/Select'
 import Error from '../../components/Error'
 import { setNostrNotificationRecipient } from '../../lib/asp'
+import Header from './Header'
 
 export default function Nostr() {
-  const { config, toggleShowConfig, updateConfig } = useContext(ConfigContext)
+  const { config, updateConfig } = useContext(ConfigContext)
 
   const label = 'Copy to clipboard'
 
@@ -55,7 +55,7 @@ export default function Nostr() {
   return (
     <Container>
       <Content>
-        <Title text='Nostr' subtext='Receive notes on Nostr' />
+        <Header text='Nostr' back />
         <div className='flex flex-col gap-10 mt-10'>
           <p>
             If you let your VTXOs expire, you will receive, on Nostr, via encrypted DM, an arknote with the same value,
@@ -76,7 +76,6 @@ export default function Nostr() {
       <ButtonsOnBottom>
         {showCopyButton ? <Button onClick={handleCopy} label={buttonLabel} /> : null}
         {showSaveButton ? <Button onClick={handleSave} label='Save new npub' /> : null}
-        <Button onClick={toggleShowConfig} label='Back to wallet' secondary />
       </ButtonsOnBottom>
     </Container>
   )

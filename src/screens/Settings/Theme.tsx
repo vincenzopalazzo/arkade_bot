@@ -1,14 +1,12 @@
 import { useContext } from 'react'
-import Button from '../../components/Button'
-import ButtonsOnBottom from '../../components/ButtonsOnBottom'
-import Title from '../../components/Title'
 import { ConfigContext, Themes } from '../../providers/config'
 import Select from '../../components/Select'
 import Container from '../../components/Container'
 import Content from '../../components/Content'
+import Header from './Header'
 
 export default function Theme() {
-  const { config, toggleShowConfig, updateConfig } = useContext(ConfigContext)
+  const { config, updateConfig } = useContext(ConfigContext)
 
   const handleChange = (e: any) => {
     updateConfig({ ...config, theme: e.target.value })
@@ -17,7 +15,7 @@ export default function Theme() {
   return (
     <Container>
       <Content>
-        <Title text='Theme' subtext='Choose your theme' />
+        <Header text='Theme' back />
         <div className='flex flex-col gap-10 mt-10'>
           <Select onChange={handleChange} value={config.theme}>
             <option value={Themes.Dark}>{Themes.Dark}</option>
@@ -26,9 +24,6 @@ export default function Theme() {
           <p>Dark theme is easier on the eyes</p>
         </div>
       </Content>
-      <ButtonsOnBottom>
-        <Button onClick={toggleShowConfig} label='Back to wallet' secondary />
-      </ButtonsOnBottom>
     </Container>
   )
 }

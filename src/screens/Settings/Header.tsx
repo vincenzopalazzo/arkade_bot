@@ -1,27 +1,14 @@
+import MainHeader from '../../components/Header'
 import { useContext } from 'react'
-import BackIcon from '../../icons/Back'
-import SettingsBlackIcon from '../../icons/SettingsBlack'
-import { ConfigContext } from '../../providers/config'
+import { OptionsContext } from '../../providers/options'
 
-export default function Header({ hideBack, setOption }: any) {
-  const { toggleShowConfig } = useContext(ConfigContext)
+interface HeaderProps {
+  back?: boolean
+  text: string
+}
 
-  return (
-    <header className='flex justify-between w-full mb-4 sm:mb-10'>
-      {hideBack ? (
-        <p />
-      ) : (
-        <button
-          onClick={() => setOption('menu')}
-          aria-label='Back'
-          className='p-2 rounded-full bg-gray-100 dark:bg-gray-800'
-        >
-          <BackIcon />
-        </button>
-      )}
-      <button onClick={toggleShowConfig} className='p-2 rounded-full bg-gray-800 dark:bg-gray-100'>
-        <SettingsBlackIcon />
-      </button>
-    </header>
-  )
+export default function Header({ back, text }: HeaderProps) {
+  const { goBack } = useContext(OptionsContext)
+
+  return <MainHeader text={text} back={back ? goBack : undefined} />
 }

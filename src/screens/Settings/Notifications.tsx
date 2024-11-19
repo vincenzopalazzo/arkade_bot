@@ -1,14 +1,12 @@
 import { useContext } from 'react'
-import Button from '../../components/Button'
-import ButtonsOnBottom from '../../components/ButtonsOnBottom'
-import Title from '../../components/Title'
 import { ConfigContext } from '../../providers/config'
 import Select from '../../components/Select'
 import Content from '../../components/Content'
 import { notificationApiSupport, requestPermission, sendTestNotification } from '../../lib/notifications'
+import Header from './Header'
 
 export default function Notifications() {
-  const { config, toggleShowConfig, updateConfig } = useContext(ConfigContext)
+  const { config, updateConfig } = useContext(ConfigContext)
 
   const handleChange = (e: any) => {
     if (!notificationApiSupport) return
@@ -28,7 +26,7 @@ export default function Notifications() {
   return (
     <div className='flex flex-col h-full justify-between'>
       <Content>
-        <Title text='Notifications' subtext='Allow to receive notifications' />
+        <Header text='Notifications' back />
         <Select onChange={handleChange} value={value} disabled={!notificationApiSupport}>
           <option value='0'>Not allowed</option>
           <option value='1'>Allowed</option>
@@ -47,9 +45,6 @@ export default function Notifications() {
           )}
         </div>
       </Content>
-      <ButtonsOnBottom>
-        <Button onClick={toggleShowConfig} label='Back to wallet' secondary />
-      </ButtonsOnBottom>
     </div>
   )
 }
