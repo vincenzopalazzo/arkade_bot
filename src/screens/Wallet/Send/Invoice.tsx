@@ -47,7 +47,11 @@ export default function SendInvoice() {
     }
     if (/^t*ark1/.test(lowerCaseData)) {
       const { aspKey } = decodeArkAddress(lowerCaseData)
-      if (aspKey !== aspInfo.pubkey) {
+      var ourAspPubkey = aspInfo.pubkey
+      if (aspInfo.pubkey.length === 66) {
+        ourAspPubkey = aspInfo.pubkey.slice(2)
+      }
+      if (aspKey !== ourAspPubkey) {
         setError('Invalid ASP pubkey')
         return
       }

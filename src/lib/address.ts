@@ -32,7 +32,7 @@ export const decodeArkAddress = (addr: string) => {
   const buf = convertbits(words, 5, 8, false)
   if (!buf) throw 'Error'
   return {
-    aspKey: Buffer.from(buf.slice(0, 33)).toString('hex'),
-    usrKey: Buffer.from(buf.slice(33, 66)).toString('hex'),
+    aspKey: Buffer.from(buf.slice(0, 32)).toString('hex'),
+    usrKey: Buffer.from(buf.slice(32)).toString('hex'),
   }
 }
