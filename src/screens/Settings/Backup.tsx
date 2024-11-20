@@ -8,6 +8,7 @@ import { copyToClipboard } from '../../lib/clipboard'
 import { getPrivateKey } from '../../lib/asp'
 import { seedToNsec } from '../../lib/privateKey'
 import Header from './Header'
+import { IonContent } from '@ionic/react'
 
 export default function Backup() {
   const label = 'Copy to clipboard'
@@ -28,7 +29,7 @@ export default function Backup() {
   }
 
   return (
-    <Container>
+    <IonContent>
       <Content>
         <Header text='Backup' back />
         <div className='flex flex-col gap-10 mt-10'>
@@ -39,6 +40,6 @@ export default function Backup() {
       <ButtonsOnBottom>
         <Button onClick={handleCopy} label={buttonLabel} />
       </ButtonsOnBottom>
-    </Container>
+    </IonContent>
   )
 }

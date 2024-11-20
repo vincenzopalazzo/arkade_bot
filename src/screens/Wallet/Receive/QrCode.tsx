@@ -1,15 +1,12 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 import Button from '../../../components/Button'
 import Content from '../../../components/Content'
-import Title from '../../../components/Title'
 import QrCode from '../../../components/QrCode'
-import Container from '../../../components/Container'
 import ButtonsOnBottom from '../../../components/ButtonsOnBottom'
 import Error from '../../../components/Error'
-import { FlowContext, emptyRecvInfo } from '../../../providers/flow'
+import { FlowContext } from '../../../providers/flow'
 import { NavigationContext, Pages } from '../../../providers/navigation'
 import { extractError } from '../../../lib/error'
-import { copyToClipboard } from '../../../lib/clipboard'
 import * as bip21 from '../../../lib/bip21'
 import { getBalance } from '../../../lib/asp'
 import { WalletContext } from '../../../providers/wallet'
@@ -23,34 +20,12 @@ export default function ReceiveQRCode() {
   const { notifyPaymentReceived } = useContext(NotificationsContext)
   const { wallet } = useContext(WalletContext)
 
-  const label = 'Copy to clipboard'
-  const [buttonLabel, setButtonLabel] = useState(label)
   const [error, setError] = useState('')
 
   const poolAspIntervalId = useRef<NodeJS.Timeout>()
 
-  const firefox = !navigator.clipboard || !('writeText' in navigator.clipboard)
-
   const { boardingAddr, offchainAddr, satoshis } = recvInfo
-
-  const onFinish = (satoshis: number) => {
-    clearInterval(poolAspIntervalId.current)
-    setRecvInfo({ ...recvInfo, satoshis })
-    notifyPaymentReceived(satoshis)
-    navigate(Pages.ReceiveSuccess)
-  }
-
-  const handleCancel = () => {
-    clearInterval(poolAspIntervalId.current)
-    setRecvInfo(emptyRecvInfo)
-    navigate(Pages.Wallet)
-  }
-
-  const handleCopy = async () => {
-    await copyToClipboard(bip21uri ?? '')
-    setButtonLabel('Copied')
-    setTimeout(() => setButtonLabel(label), 2100)
-  }
+  const bip21uri = bip21.encode(boardingAddr, offchainAddr, satoshis)
 
   useEffect(() => {
     if (!wallet) return
@@ -69,21 +44,28 @@ export default function ReceiveQRCode() {
     return () => clearInterval(poolAspIntervalId.current)
   }, [])
 
-  const bip21uri = bip21.encode(boardingAddr, offchainAddr, satoshis)
-  if (firefox) console.log('bip21uri', bip21uri)
+  const onFinish = (satoshis: number) => {
+    clearInterval(poolAspIntervalId.current)
+    setRecvInfo({ ...recvInfo, satoshis })
+    notifyPaymentReceived(satoshis)
+    navigate(Pages.ReceiveSuccess)
+  }
+
+  const handleShare = () => {
+    // TODO
+  }
 
   return (
     <>
       <IonContent>
-        <Header text='Receive' />
+        <Header text='Receive' back={() => navigate(Pages.ReceiveAmount)} />
         <Content>
           <Error error={Boolean(error)} text={error} />
           <QrCode short={offchainAddr} value={bip21uri ?? ''} />
         </Content>
       </IonContent>
       <ButtonsOnBottom>
-        {!firefox && <Button onClick={handleCopy} label={buttonLabel} />}
-        <Button onClick={handleCancel} label='Cancel' secondary />
+        <Button onClick={handleShare} label='Share' disabled />
       </ButtonsOnBottom>
     </>
   )

@@ -4,6 +4,7 @@ import { AspContext } from '../../providers/asp'
 import { prettyLongText } from '../../lib/format'
 import Header from './Header'
 import Table from '../../components/Table'
+import Content from '../../components/Content'
 
 export default function About() {
   const { aspInfo } = useContext(AspContext)
@@ -24,7 +25,9 @@ export default function About() {
   return (
     <IonContent>
       <Header text='About' back />
-      <Table data={data} />
+      <Content>
+        <Table data={data} />
+      </Content>
     </IonContent>
   )
 }

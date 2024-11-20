@@ -4,6 +4,7 @@ import Select from '../../components/Select'
 import Container from '../../components/Container'
 import Content from '../../components/Content'
 import Header from './Header'
+import { IonContent } from '@ionic/react'
 
 export default function Theme() {
   const { config, updateConfig } = useContext(ConfigContext)
@@ -13,7 +14,7 @@ export default function Theme() {
   }
 
   return (
-    <Container>
+    <IonContent>
       <Content>
         <Header text='Theme' back />
         <div className='flex flex-col gap-10 mt-10'>
@@ -24,6 +25,6 @@ export default function Theme() {
           <p>Dark theme is easier on the eyes</p>
         </div>
       </Content>
-    </Container>
+    </IonContent>
   )
 }

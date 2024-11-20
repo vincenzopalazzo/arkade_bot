@@ -4,14 +4,14 @@ import BarcodeScanner from '../../../components/BarcodeScanner'
 import ShowError from '../../../components/Error'
 import ButtonsOnBottom from '../../../components/ButtonsOnBottom'
 import { NavigationContext, Pages } from '../../../providers/navigation'
-import { FlowContext, emptyNoteInfo } from '../../../providers/flow'
+import { FlowContext } from '../../../providers/flow'
 import Input from '../../../components/Input'
 import Content from '../../../components/Content'
-import Title from '../../../components/Title'
 import Container from '../../../components/Container'
 import { pasteFromClipboard } from '../../../lib/clipboard'
 import { ArkNote, isArkNote } from '../../../lib/arknote'
 import { ConfigContext } from '../../../providers/config'
+import Header from '../../Settings/Header'
 
 export default function NoteScan() {
   const { showConfig, toggleShowConfig } = useContext(ConfigContext)
@@ -47,18 +47,12 @@ export default function NoteScan() {
     setPastedData(pastedData)
   }
 
-  const handleCancel = () => {
-    setNoteInfo(emptyNoteInfo)
-    if (showConfig) toggleShowConfig()
-    else navigate(Pages.Wallet)
-  }
-
   const handleChange = (invoice: string) => setPastedData(invoice)
 
   return (
     <Container>
+      <Header text='Note' back />
       <Content>
-        <Title text='Note' subtext='Scan or paste note' />
         <div className='flex flex-col gap-2'>
           <ShowError error={Boolean(error)} text={error} />
           {error ? null : (
@@ -72,10 +66,7 @@ export default function NoteScan() {
           )}
         </div>
       </Content>
-      <ButtonsOnBottom>
-        {!firefox && <Button onClick={handlePaste} label={buttonLabel} />}
-        <Button onClick={handleCancel} label='Cancel' secondary />
-      </ButtonsOnBottom>
+      <ButtonsOnBottom>{!firefox && <Button onClick={handlePaste} label={buttonLabel} />}</ButtonsOnBottom>
     </Container>
   )
 }

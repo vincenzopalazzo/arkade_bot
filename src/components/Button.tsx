@@ -7,11 +7,18 @@ interface ButtonProps {
   label: string
   onClick: (event: any) => void
   secondary?: boolean
+  short?: boolean
 }
 
-export default function Button({ disabled, icon, label, onClick, secondary }: ButtonProps) {
+export default function Button({ disabled, icon, label, onClick, secondary, short }: ButtonProps) {
   return (
-    <IonButton color='dark' disabled={disabled} expand='block' fill={secondary ? 'outline' : 'solid'} onClick={onClick}>
+    <IonButton
+      color='dark'
+      disabled={disabled}
+      expand={short ? undefined : 'block'}
+      fill={secondary ? 'outline' : 'solid'}
+      onClick={onClick}
+    >
       {icon}
       {label}
     </IonButton>

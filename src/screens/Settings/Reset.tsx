@@ -6,6 +6,7 @@ import Content from '../../components/Content'
 import Container from '../../components/Container'
 import Header from './Header'
 import { NavigationContext, Pages } from '../../providers/navigation'
+import { IonContent } from '@ionic/react'
 
 export default function Reset({ backup }: { backup: () => void }) {
   const { navigate } = useContext(NavigationContext)
@@ -17,7 +18,7 @@ export default function Reset({ backup }: { backup: () => void }) {
   }
 
   return (
-    <Container>
+    <IonContent>
       <Content>
         <Header text='Reset wallet' back />
         <div className='flex flex-col gap-6 mt-10'>
@@ -34,6 +35,6 @@ export default function Reset({ backup }: { backup: () => void }) {
       <ButtonsOnBottom>
         <Button onClick={handleReset} label='Reset wallet' />
       </ButtonsOnBottom>
-    </Container>
+    </IonContent>
   )
 }

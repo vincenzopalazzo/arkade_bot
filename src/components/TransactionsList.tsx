@@ -9,6 +9,7 @@ import Content from './Content'
 import PendingIcon from '../icons/Pending'
 import ReceivedIcon from '../icons/Received'
 import SentIcon from '../icons/Sent'
+import FlexRow from './FlexRow'
 
 const TransactionLine = ({ tx }: { tx: Tx }) => {
   const prefix = tx.type === 'sent' ? '-' : '+'
@@ -22,13 +23,15 @@ const TransactionLine = ({ tx }: { tx: Tx }) => {
 
   return (
     <IonGrid>
-      <IonRow>
-        <IonCol size='1'>
-          <Icon />
-        </IonCol>
-        <IonCol size='7'>
-          <Kind />
-          <Date />
+      <IonRow class='ion-align-items-center'>
+        <IonCol size='8'>
+          <FlexRow>
+            <Icon />
+            <div>
+              <Kind />
+              <Date />
+            </div>
+          </FlexRow>
         </IonCol>
         <IonCol class='ion-text-end'>
           <Sats />

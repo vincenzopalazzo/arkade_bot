@@ -22,8 +22,11 @@ import { WalletContext } from './providers/wallet'
 import './wasm_exec.js'
 import './wasmTypes.d.ts'
 
-import { arrowDownCircle, arrowUpCircle, home, settings } from 'ionicons/icons'
-import { IonIcon, IonPage, IonTab, IonTabBar, IonTabButton, IonTabs, setupIonicReact } from '@ionic/react'
+import { IonPage, IonTab, IonTabBar, IonTabButton, IonTabs, setupIonicReact } from '@ionic/react'
+import HomeIcon from './icons/Home'
+import ReceiveIcon from './icons/Receive'
+import SettingsIcon from './icons/Settings'
+import SendIcon from './icons/Send'
 
 setupIonicReact()
 
@@ -49,11 +52,11 @@ export default function App() {
           <IonTab tab={Tabs.Settings}>{comp}</IonTab>
           <IonTabBar slot='bottom'>
             <IonTabButton tab={Tabs.Home} selected={tab === Tabs.Home} onClick={() => navigate(Pages.Wallet)}>
-              <IonIcon icon={home} />
+              <HomeIcon />
               Home
             </IonTabButton>
             <IonTabButton tab={Tabs.Send} selected={tab === Tabs.Send} onClick={() => navigate(Pages.SendForm)}>
-              <IonIcon icon={arrowUpCircle} />
+              <SendIcon />
               Send
             </IonTabButton>
             <IonTabButton
@@ -61,11 +64,11 @@ export default function App() {
               selected={tab === Tabs.Receive}
               onClick={() => navigate(Pages.ReceiveAmount)}
             >
-              <IonIcon icon={arrowDownCircle} />
+              <ReceiveIcon />
               Receive
             </IonTabButton>
             <IonTabButton tab={Tabs.Settings} selected={tab === Tabs.Settings} onClick={() => navigate(Pages.Settings)}>
-              <IonIcon icon={settings} />
+              <SettingsIcon />
               Settings
             </IonTabButton>
           </IonTabBar>

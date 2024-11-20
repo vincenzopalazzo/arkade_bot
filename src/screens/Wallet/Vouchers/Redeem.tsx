@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from 'react'
 import { FlowContext } from '../../../providers/flow'
 import Container from '../../../components/Container'
 import Content from '../../../components/Content'
-import Title from '../../../components/Title'
 import Error from '../../../components/Error'
 import ButtonsOnBottom from '../../../components/ButtonsOnBottom'
 import Button from '../../../components/Button'
@@ -12,6 +11,7 @@ import { redeemNotes } from '../../../lib/asp'
 import Details, { DetailsProps } from '../../../components/Details'
 import { ArkNote } from '../../../lib/arknote'
 import Loading from '../../../components/Loading'
+import Header from '../../Settings/Header'
 
 export default function NoteRedeem() {
   const { noteInfo } = useContext(FlowContext)
@@ -51,20 +51,17 @@ export default function NoteRedeem() {
 
   return (
     <Container>
+      <Header text='Redeem note' back />
       <Content>
-        <Title text='Note' subtext='Redeem for a VTXO' />
-        <div className='flex flex-col gap-2 mt-4'>
-          <Error error={Boolean(error)} text={error} />
-          {redeeming ? (
-            <Loading text='Redeeming require a round, which can take a few seconds' />
-          ) : (
-            <Details details={details} />
-          )}
-        </div>
+        <Error error={Boolean(error)} text={error} />
+        {redeeming ? (
+          <Loading text='Redeeming require a round, which can take a few seconds' />
+        ) : (
+          <Details details={details} />
+        )}
       </Content>
       <ButtonsOnBottom>
         <Button onClick={handleRedeem} label={buttonLabel} disabled={redeeming} />
-        <Button onClick={() => navigate(Pages.Wallet)} label='Back to wallet' secondary />
       </ButtonsOnBottom>
     </Container>
   )

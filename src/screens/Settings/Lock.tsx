@@ -10,6 +10,7 @@ import Error from '../../components/Error'
 import Loading from '../../components/Loading'
 import InputPassword from '../../components/InputPassword'
 import Header from './Header'
+import { IonContent } from '@ionic/react'
 
 export default function Lock() {
   const { navigate } = useContext(NavigationContext)
@@ -43,7 +44,7 @@ export default function Lock() {
   }
 
   return (
-    <Container>
+    <IonContent>
       <Content>
         <Header text='Lock' back />
         {locking ? (
@@ -59,6 +60,6 @@ export default function Lock() {
       <ButtonsOnBottom>
         <Button onClick={handleLock} label={label} disabled={locking} />
       </ButtonsOnBottom>
-    </Container>
+    </IonContent>
   )
 }

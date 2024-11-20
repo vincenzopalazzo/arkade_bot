@@ -4,6 +4,7 @@ import Select from '../../components/Select'
 import Content from '../../components/Content'
 import { notificationApiSupport, requestPermission, sendTestNotification } from '../../lib/notifications'
 import Header from './Header'
+import { IonContent } from '@ionic/react'
 
 export default function Notifications() {
   const { config, updateConfig } = useContext(ConfigContext)
@@ -24,7 +25,7 @@ export default function Notifications() {
   const value = config.notifications ? '1' : '0'
 
   return (
-    <div className='flex flex-col h-full justify-between'>
+    <IonContent>
       <Content>
         <Header text='Notifications' back />
         <Select onChange={handleChange} value={value} disabled={!notificationApiSupport}>
@@ -45,6 +46,6 @@ export default function Notifications() {
           )}
         </div>
       </Content>
-    </div>
+    </IonContent>
   )
 }

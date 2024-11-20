@@ -1,34 +1,47 @@
 import { useContext } from 'react'
 import ArrowIcon from '../../icons/Arrow'
 import Header from '../../components/Header'
-import { OptionsContext } from '../../providers/options'
+import { Options, OptionsContext } from '../../providers/options'
+import Content from '../../components/Content'
+import Text from '../../components/Text'
+import { IonCol, IonContent, IonGrid, IonRow } from '@ionic/react'
+import FlexRow from '../../components/FlexRow'
 
 export default function Menu() {
   const { setOption, validOptions } = useContext(OptionsContext)
 
+  const rowStyle = (option: Options) => {
+    const backgroundColor = option === Options.Reset ? '#f33' : '#333'
+    return { backgroundColor, padding: '0.5rem' }
+  }
+
   return (
     <>
       <Header text='Settings' />
-      <div className='flex flex-col h-full justify-between'>
-        <div>
-          {validOptions().map(({ icon, option }) => (
-            <div
-              className='flex justify-between cursor-pointer px-2.5 py-2.5 first:border-t-2 border-b-2 dark:border-gray-700'
-              key={option}
-              onClick={() => setOption(option)}
-            >
-              <div className='flex items-center'>
-                {icon}
-                <p className='ml-4 text-xl capitalize'>{option}</p>
-              </div>
-              <div className='flex items-center'>
-                <ArrowIcon />
-              </div>
-            </div>
-          ))}
-        </div>
-        <p className='font-semibold text-xs text-center'>v2024110401</p>
-      </div>
+      <IonContent>
+        {validOptions().map((op) => (
+          <div key={op.section}>
+            <Content>
+              <Text secondary>{op.section}</Text>
+            </Content>
+            <IonGrid class='ion-no-padding'>
+              {op.options.map(({ icon, option }) => (
+                <IonRow class='ion-align-items-center' onClick={() => setOption(option)} style={rowStyle(option)}>
+                  <IonCol>
+                    <FlexRow>
+                      {icon}
+                      <Text capitalize>{option}</Text>
+                    </FlexRow>
+                  </IonCol>
+                  <IonCol size='1'>
+                    <ArrowIcon small />
+                  </IonCol>
+                </IonRow>
+              ))}
+            </IonGrid>
+          </div>
+        ))}
+      </IonContent>
     </>
   )
 }

@@ -11,6 +11,7 @@ import { clearStorage } from '../../lib/storage'
 import { WalletContext } from '../../providers/wallet'
 import { NavigationContext, Pages } from '../../providers/navigation'
 import Header from './Header'
+import { IonContent } from '@ionic/react'
 
 export default function Server({ backup }: { backup: () => void }) {
   const { config, updateConfig } = useContext(ConfigContext)
@@ -35,7 +36,7 @@ export default function Server({ backup }: { backup: () => void }) {
   }
 
   return (
-    <Container>
+    <IonContent>
       <Content>
         <Header text='Server' back />
         <div className='flex flex-col gap-4 mt-10'>
@@ -57,6 +58,6 @@ export default function Server({ backup }: { backup: () => void }) {
       <ButtonsOnBottom>
         <Button onClick={handleNewServer} label='Connect to server' disabled={!found || Boolean(error)} />
       </ButtonsOnBottom>
-    </Container>
+    </IonContent>
   )
 }

@@ -11,6 +11,7 @@ import Select from '../../components/Select'
 import Error from '../../components/Error'
 import { setNostrNotificationRecipient } from '../../lib/asp'
 import Header from './Header'
+import { IonContent } from '@ionic/react'
 
 export default function Nostr() {
   const { config, updateConfig } = useContext(ConfigContext)
@@ -53,7 +54,7 @@ export default function Nostr() {
   const showSaveButton = config.nostr && config.npub !== npub && !error
 
   return (
-    <Container>
+    <IonContent>
       <Content>
         <Header text='Nostr' back />
         <div className='flex flex-col gap-10 mt-10'>
@@ -77,6 +78,6 @@ export default function Nostr() {
         {showCopyButton ? <Button onClick={handleCopy} label={buttonLabel} /> : null}
         {showSaveButton ? <Button onClick={handleSave} label='Save new npub' /> : null}
       </ButtonsOnBottom>
-    </Container>
+    </IonContent>
   )
 }

@@ -44,7 +44,7 @@ export default function ReceiveAmount() {
         <Header text='Receive' />
         <Content>
           <Error error={Boolean(error)} text={error} />
-          <InputAmount label='Amount' onChange={handleChange} />
+          <InputAmount label='Amount' onChange={handleChange} value={amount} />
         </Content>
       </IonContent>
       <ButtonsOnBottom>

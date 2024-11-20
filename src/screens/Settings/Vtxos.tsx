@@ -10,6 +10,7 @@ import Loading from '../../components/Loading'
 import NextRecycle from '../../components/NextRecycle'
 import Error from '../../components/Error'
 import Header from './Header'
+import { IonContent } from '@ionic/react'
 
 export default function Vtxos() {
   const { recycleVtxos, wallet } = useContext(WalletContext)
