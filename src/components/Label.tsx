@@ -6,7 +6,7 @@ interface LabelProps {
 }
 
 export default function Label({ onClick, text }: LabelProps) {
-  const className = 'block text-sm text-left font-medium'
+  const className = 'block text-sm font-medium'
   if (onClick)
     return (
       <div className='flex items-center cursor-pointer gap-1 mb-1' onClick={onClick}>

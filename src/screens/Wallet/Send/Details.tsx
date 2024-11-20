@@ -3,59 +3,71 @@ import Button from '../../../components/Button'
 import { NavigationContext, Pages } from '../../../providers/navigation'
 import { FlowContext } from '../../../providers/flow'
 import Content from '../../../components/Content'
-import Container from '../../../components/Container'
 import ButtonsOnBottom from '../../../components/ButtonsOnBottom'
 import Details, { DetailsProps } from '../../../components/Details'
 import Error from '../../../components/Error'
 import { WalletContext } from '../../../providers/wallet'
 import Header from '../../../components/Header'
+import { IonContent } from '@ionic/react'
+import { defaultFee } from '../../../lib/constants'
+import { prettyNumber } from '../../../lib/format'
 
 export default function SendDetails() {
   const { navigate } = useContext(NavigationContext)
   const { sendInfo } = useContext(FlowContext)
   const { wallet } = useContext(WalletContext)
 
+  const [buttonLabel, setButtonLabel] = useState('')
   const [details, setDetails] = useState<DetailsProps>()
   const [error, setError] = useState('')
 
   const { address, arkAddress, satoshis } = sendInfo
+  const feeInSats = defaultFee
 
   useEffect(() => {
     if (!address && !arkAddress) return setError('Missing address')
-    if (arkAddress && satoshis) {
-      return setDetails({
-        address: arkAddress,
-        comment: 'Paying inside Ark',
-        satoshis,
-      })
-    }
-    if (address && satoshis) {
-      return setDetails({
+    if (!satoshis) return setError('Missing amount')
+    const total = satoshis + feeInSats
+    if (address) {
+      setDetails({
         address,
         comment: 'Paying to mainnet',
         satoshis,
+        fees: feeInSats,
+        total,
       })
+    }
+    if (arkAddress) {
+      setDetails({
+        address: arkAddress,
+        comment: 'Paying inside Ark',
+        satoshis,
+        fees: feeInSats,
+        total,
+      })
+    }
+    if (wallet.balance < total) {
+      setButtonLabel('Insufficient funds')
+      setError(`Insufficient funds, you just have ${prettyNumber(wallet.balance)} sats`)
+    } else {
+      setButtonLabel('Tap to Sign')
     }
   }, [sendInfo])
 
-  const handleContinue = () => navigate(Pages.SendFees)
-
-  const lowBalance = wallet.balance < (details?.satoshis ?? 0)
-  const disabled = lowBalance || Boolean(error)
-  const label = error ? 'Something went wrong' : lowBalance ? 'Insufficient funds' : 'Continue'
+  const handleContinue = () => navigate(Pages.SendPayment)
 
   return (
-    <Container>
-      <Content>
-        <Header text='Payment details' back={() => navigate(Pages.SendInvoice)} />
-        <div className='flex flex-col gap-2 mt-4'>
+    <>
+      <IonContent>
+        <Header text='Sign transaction' back={() => navigate(Pages.SendForm)} />
+        <Content>
           <Error error={Boolean(error)} text={error} />
           <Details details={details} />
-        </div>
-      </Content>
+        </Content>
+      </IonContent>
       <ButtonsOnBottom>
-        <Button onClick={handleContinue} label={label} disabled={disabled} />
+        <Button onClick={handleContinue} label={buttonLabel} disabled={Boolean(error)} />
       </ButtonsOnBottom>
-    </Container>
+    </>
   )
 }

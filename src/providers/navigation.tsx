@@ -9,10 +9,10 @@ import NoteRedeem from '../screens/Wallet/Vouchers/Redeem'
 import NoteScan from '../screens/Wallet/Vouchers/Scan'
 import NoteSuccess from '../screens/Wallet/Vouchers/Success'
 import ReceiveAmount from '../screens/Wallet/Receive/Amount'
-import ReceiveInvoice from '../screens/Wallet/Receive/Invoice'
+import ReceiveQRCode from '../screens/Wallet/Receive/Invoice'
 import ReceiveSuccess from '../screens/Wallet/Receive/Success'
 import SendAmount from '../screens/Wallet/Send/Amount'
-import SendInvoice from '../screens/Wallet/Send/Invoice'
+import SendForm from '../screens/Wallet/Send/Form'
 import SendDetails from '../screens/Wallet/Send/Details'
 import SendFees from '../screens/Wallet/Send/Fees'
 import SendPayment from '../screens/Wallet/Send/Pay'
@@ -35,10 +35,10 @@ export enum Pages {
   NoteScan,
   NoteSuccess,
   ReceiveAmount,
-  ReceiveInvoice,
+  ReceiveQRCode,
   ReceiveSuccess,
   SendAmount,
-  SendInvoice,
+  SendForm,
   SendDetails,
   SendFees,
   SendPayment,
@@ -70,10 +70,10 @@ const pageTab = {
   [Pages.NoteScan]: Tabs.Settings,
   [Pages.NoteSuccess]: Tabs.Settings,
   [Pages.ReceiveAmount]: Tabs.Receive,
-  [Pages.ReceiveInvoice]: Tabs.Receive,
+  [Pages.ReceiveQRCode]: Tabs.Receive,
   [Pages.ReceiveSuccess]: Tabs.Receive,
   [Pages.SendAmount]: Tabs.Send,
-  [Pages.SendInvoice]: Tabs.Send,
+  [Pages.SendForm]: Tabs.Send,
   [Pages.SendDetails]: Tabs.Send,
   [Pages.SendFees]: Tabs.Send,
   [Pages.SendPayment]: Tabs.Send,
@@ -108,14 +108,14 @@ export const pageComponent = (page: Pages): JSX.Element => {
       return <NoteSuccess />
     case Pages.ReceiveAmount:
       return <ReceiveAmount />
-    case Pages.ReceiveInvoice:
-      return <ReceiveInvoice />
+    case Pages.ReceiveQRCode:
+      return <ReceiveQRCode />
     case Pages.ReceiveSuccess:
       return <ReceiveSuccess />
     case Pages.SendAmount:
       return <SendAmount />
-    case Pages.SendInvoice:
-      return <SendInvoice />
+    case Pages.SendForm:
+      return <SendForm />
     case Pages.SendDetails:
       return <SendDetails />
     case Pages.SendFees:

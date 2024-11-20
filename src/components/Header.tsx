@@ -8,7 +8,7 @@ interface HeaderProps {
 
 export default function Header({ back, text }: HeaderProps) {
   return (
-    <IonHeader class='ion-no-border'>
+    <IonHeader>
       <IonGrid>
         <IonRow>
           <IonCol size='1'>
@@ -23,7 +23,7 @@ export default function Header({ back, text }: HeaderProps) {
           <IonCol size='10'>
             <IonTitle class='ion-text-center'>{text}</IonTitle>
           </IonCol>
-          <IonCol size='1' />
+          <IonCol size='1'>&nbsp;</IonCol>
         </IonRow>
       </IonGrid>
     </IonHeader>

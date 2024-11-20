@@ -6,6 +6,7 @@ import { WalletContext } from '../../providers/wallet'
 import { AspContext } from '../../providers/asp'
 import { IonContent } from '@ionic/react'
 import LogoIcon from '../../icons/Logo'
+import Content from '../../components/Content'
 
 export default function Wallet() {
   const { aspInfo } = useContext(AspContext)
@@ -23,9 +24,11 @@ export default function Wallet() {
 
   return (
     <IonContent>
-      <LogoIcon />
-      <Balance sats={wallet.balance} />
-      <Error error={error} text='Asp unreachable' />
+      <Content>
+        <LogoIcon />
+        <Balance sats={wallet.balance} />
+        <Error error={error} text='Asp unreachable' />
+      </Content>
       <TransactionsList />
     </IonContent>
   )

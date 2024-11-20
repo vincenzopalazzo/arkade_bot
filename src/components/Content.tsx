@@ -1,4 +1,4 @@
-import { IonContent } from '@ionic/react'
+import { IonCol, IonGrid, IonRow } from '@ionic/react'
 import { ReactNode } from 'react'
 
 interface ContentProps {
@@ -6,5 +6,11 @@ interface ContentProps {
 }
 
 export default function Content({ children }: ContentProps) {
-  return <IonContent>{children}</IonContent>
+  return (
+    <IonGrid>
+      <IonRow>
+        <IonCol>{children}</IonCol>
+      </IonRow>
+    </IonGrid>
+  )
 }

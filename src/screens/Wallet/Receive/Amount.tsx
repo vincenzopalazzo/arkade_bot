@@ -2,15 +2,14 @@ import { useContext, useState } from 'react'
 import Button from '../../../components/Button'
 import ButtonsOnBottom from '../../../components/ButtonsOnBottom'
 import { NavigationContext, Pages } from '../../../providers/navigation'
-import { FlowContext, emptyRecvInfo } from '../../../providers/flow'
-import Title from '../../../components/Title'
+import { FlowContext } from '../../../providers/flow'
 import Content from '../../../components/Content'
-import InputAmount from '../../../components/InputAmount'
-import Container from '../../../components/Container'
 import Error from '../../../components/Error'
 import { getReceivingAddresses } from '../../../lib/asp'
 import { extractError } from '../../../lib/error'
 import { IonContent } from '@ionic/react'
+import Header from '../../../components/Header'
+import InputAmount from '../../../components/InputAmount'
 
 export default function ReceiveAmount() {
   const { setRecvInfo } = useContext(FlowContext)
@@ -21,11 +20,6 @@ export default function ReceiveAmount() {
   const [amount, setAmount] = useState(0)
   const [buttonLabel, setButtonLabel] = useState(defaultButtonLabel)
   const [error, setError] = useState('')
-
-  const handleCancel = () => {
-    setRecvInfo(emptyRecvInfo)
-    navigate(Pages.Wallet)
-  }
 
   const handleChange = (sats: number) => {
     setAmount(sats)
@@ -38,7 +32,7 @@ export default function ReceiveAmount() {
       if (!offchainAddr) throw 'Unable to get offchain address'
       if (!boardingAddr) throw 'Unable to get boarding address'
       setRecvInfo({ boardingAddr, offchainAddr, satoshis: amount })
-      navigate(Pages.ReceiveInvoice)
+      navigate(Pages.ReceiveQRCode)
     } catch (err) {
       setError(extractError(err))
     }
@@ -47,13 +41,14 @@ export default function ReceiveAmount() {
   return (
     <>
       <IonContent>
-        <Title text='Receive' subtext='How much to receive on Ark' />
-        <Error error={Boolean(error)} text={error} />
-        <InputAmount label='Amount' onChange={handleChange} />
+        <Header text='Receive' />
+        <Content>
+          <Error error={Boolean(error)} text={error} />
+          <InputAmount label='Amount' onChange={handleChange} />
+        </Content>
       </IonContent>
       <ButtonsOnBottom>
         <Button onClick={handleProceed} label={buttonLabel} />
-        <Button onClick={handleCancel} label='Cancel' secondary />
       </ButtonsOnBottom>
     </>
   )

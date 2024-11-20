@@ -1,3 +1,4 @@
+import { IonButton } from '@ionic/react'
 import { prettyLongText } from '../lib/format'
 import QRCode from 'react-qr-code'
 
@@ -8,13 +9,16 @@ interface QrCodeProps {
 
 export default function QrCode({ short, value }: QrCodeProps) {
   return (
-    <div className='w-[300px] mx-auto select-none'>
+    <div className='w-[300px] mx-auto select-none text-center'>
       {value ? (
         <div className='bg-white p-[10px]'>
           <QRCode size={280} value={value} fgColor='#000000' />
         </div>
       ) : null}
-      <p className='mt-4'>{prettyLongText(short ?? value)}</p>
+      <p className='my-4'>{prettyLongText(short ?? value)}</p>
+      <p>
+        <IonButton>Copy</IonButton>
+      </p>
     </div>
   )
 }

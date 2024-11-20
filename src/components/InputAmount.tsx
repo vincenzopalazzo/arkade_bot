@@ -7,17 +7,16 @@ import InputContainer from './InputContainer'
 interface InputAmountProps {
   label?: string
   onChange: (arg0: any) => void
+  right?: string
   value?: number
 }
 
-export default function InputAmount({ label, onChange, value }: InputAmountProps) {
+export default function InputAmount({ label, onChange, right, value }: InputAmountProps) {
   const { toUSD } = useContext(FiatContext)
 
   const [error, setError] = useState('')
   const [fiat, setFiat] = useState('')
   const [text, setText] = useState('')
-
-  console.log('inputAmount', value)
 
   useEffect(() => {
     if (value) setText(value.toString())
@@ -35,7 +34,7 @@ export default function InputAmount({ label, onChange, value }: InputAmountProps
   }
 
   return (
-    <InputContainer label={label} error={error}>
+    <InputContainer error={error} label={label} right={right}>
       <IonInput onIonInput={handleInput} type='number' value={value}>
         <IonText slot='end'>{`$${fiat}`}</IonText>
       </IonInput>

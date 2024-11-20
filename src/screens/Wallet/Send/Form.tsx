@@ -12,11 +12,15 @@ import { ArkNote, isArkNote } from '../../../lib/arknote'
 import InputAmount from '../../../components/InputAmount'
 import InputAddress from '../../../components/InputAddress'
 import Header from '../../../components/Header'
+import { WalletContext } from '../../../providers/wallet'
+import { prettyNumber } from '../../../lib/format'
+import { IonContent } from '@ionic/react'
 
-export default function SendInvoice() {
+export default function SendForm() {
   const { aspInfo } = useContext(AspContext)
   const { navigate } = useContext(NavigationContext)
   const { sendInfo, setNoteInfo, setSendInfo } = useContext(FlowContext)
+  const { wallet } = useContext(WalletContext)
 
   const [destination, setDestination] = useState('')
   const [disabled, setDisabled] = useState(true)
@@ -75,14 +79,18 @@ export default function SendInvoice() {
     navigate(Pages.SendDetails)
   }
 
+  const balance = `${prettyNumber(wallet.balance)} sats available`
+
   return (
     <>
-      <Content>
+      <IonContent>
         <Header text='Send' />
-        <ShowError error={Boolean(error)} text={error} />
-        <InputAddress label='Address' onChange={setAddress} value={address} />
-        <InputAmount label='Amount' onChange={setAmount} value={satoshis} />
-      </Content>
+        <Content>
+          <ShowError error={Boolean(error)} text={error} />
+          <InputAddress label='Recipient address' onChange={setAddress} value={address} />
+          <InputAmount label='Amount' onChange={setAmount} right={balance} value={satoshis} />
+        </Content>
+      </IonContent>
       <ButtonsOnBottom>
         <Button onClick={handleContinue} label='Continue' disabled={disabled} />
       </ButtonsOnBottom>

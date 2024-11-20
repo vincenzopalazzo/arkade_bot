@@ -14,8 +14,10 @@ import * as bip21 from '../../../lib/bip21'
 import { getBalance } from '../../../lib/asp'
 import { WalletContext } from '../../../providers/wallet'
 import { NotificationsContext } from '../../../providers/notifications'
+import Header from '../../../components/Header'
+import { IonContent } from '@ionic/react'
 
-export default function ReceiveInvoice() {
+export default function ReceiveQRCode() {
   const { recvInfo, setRecvInfo } = useContext(FlowContext)
   const { navigate } = useContext(NavigationContext)
   const { notifyPaymentReceived } = useContext(NotificationsContext)
@@ -32,7 +34,6 @@ export default function ReceiveInvoice() {
   const { boardingAddr, offchainAddr, satoshis } = recvInfo
 
   const onFinish = (satoshis: number) => {
-    console.log('satoshis received', satoshis)
     clearInterval(poolAspIntervalId.current)
     setRecvInfo({ ...recvInfo, satoshis })
     notifyPaymentReceived(satoshis)
@@ -72,20 +73,18 @@ export default function ReceiveInvoice() {
   if (firefox) console.log('bip21uri', bip21uri)
 
   return (
-    <Container>
-      <Content>
-        <Title text='Invoice' subtext='Scan or copy to clipboard' />
-        <div className='flex flex-col gap-2'>
+    <>
+      <IonContent>
+        <Header text='Receive' />
+        <Content>
           <Error error={Boolean(error)} text={error} />
-          <div>
-            <QrCode short={offchainAddr} value={bip21uri ?? ''} />
-          </div>
-        </div>
-      </Content>
+          <QrCode short={offchainAddr} value={bip21uri ?? ''} />
+        </Content>
+      </IonContent>
       <ButtonsOnBottom>
         {!firefox && <Button onClick={handleCopy} label={buttonLabel} />}
         <Button onClick={handleCancel} label='Cancel' secondary />
       </ButtonsOnBottom>
-    </Container>
+    </>
   )
 }

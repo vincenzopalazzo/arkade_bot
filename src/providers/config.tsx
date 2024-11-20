@@ -67,9 +67,10 @@ export const ConfigProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const updateTheme = ({ theme }: Config) => {
-    if (theme === Themes.Dark) document.body.classList.add('dark')
-    else document.body.classList.remove('dark')
-    document.body.classList.remove('dark') // TODO remove
+    const className = 'ion-palette-dark'
+    const root = document.documentElement
+    if (theme === Themes.Dark) root.classList.add(className)
+    else root.classList.remove(className)
   }
 
   const resetConfig = () => {

@@ -4,14 +4,13 @@ import ButtonsOnBottom from '../../../components/ButtonsOnBottom'
 import { NavigationContext, Pages } from '../../../providers/navigation'
 import { FlowContext, emptySendInfo } from '../../../providers/flow'
 import Content from '../../../components/Content'
-import Title from '../../../components/Title'
-import Container from '../../../components/Container'
-import { prettyNumber } from '../../../lib/format'
 import { WalletContext } from '../../../providers/wallet'
 import Error from '../../../components/Error'
 import { extractError } from '../../../lib/error'
 import { collaborativeRedeem, sendAsync } from '../../../lib/asp'
 import Loading from '../../../components/Loading'
+import { IonContent } from '@ionic/react'
+import Header from '../../../components/Header'
 
 export default function SendPayment() {
   const { navigate } = useContext(NavigationContext)
@@ -26,7 +25,6 @@ export default function SendPayment() {
   if (!satoshis) return <Error error text='Send amount not specified' />
 
   const onTxid = (txid: string) => {
-    console.log('onTxid', txid)
     if (!txid) return setError('Error sending transaction')
     setSendInfo({ ...sendInfo, txid })
     navigate(Pages.SendSuccess)
@@ -59,14 +57,14 @@ export default function SendPayment() {
   const text = address ? 'Payments to mainnet require a round, which can take a few seconds' : undefined
 
   return (
-    <Container>
-      <Content>
-        <Title text='Pay' subtext={`Paying ${prettyNumber(satoshis ?? 0)} sats`} />
-        {error ? <Error error={Boolean(error)} text={error} /> : <Loading text={text} />}
-      </Content>
+    <>
+      <IonContent>
+        <Header text='Sending' back={() => navigate(Pages.SendDetails)} />
+        <Content>{error ? <Error error={Boolean(error)} text={error} /> : <Loading text={text} />}</Content>
+      </IonContent>
       <ButtonsOnBottom>
         <Button onClick={goBackToWallet} label='Back to wallet' secondary />
       </ButtonsOnBottom>
-    </Container>
+    </>
   )
 }
