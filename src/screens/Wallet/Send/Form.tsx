@@ -18,6 +18,7 @@ import Content from '../../../components/Content'
 import Paste from '../../../components/Paste'
 import FlexCol from '../../../components/flexCol'
 import { pasteFromClipboard } from '../../../lib/clipboard'
+import Keyboard from '../../../components/Keyboard'
 
 export default function SendForm() {
   const { aspInfo } = useContext(AspContext)
@@ -25,11 +26,12 @@ export default function SendForm() {
   const { sendInfo, setNoteInfo, setSendInfo } = useContext(FlowContext)
   const { wallet } = useContext(WalletContext)
 
+  const [clipboard, setClipboard] = useState('')
   const [destination, setDestination] = useState('')
   const [disabled, setDisabled] = useState(true)
   const [error, setError] = useState('')
   const [satoshis, setSatoshis] = useState(0)
-  const [clipboard, setClipboard] = useState('')
+  const [showKeys, setShowKeys] = useState(false)
 
   const [address, setAddress] = useState('')
   const [amount, setAmount] = useState(0)
@@ -97,6 +99,10 @@ export default function SendForm() {
     navigate(Pages.SendDetails)
   }
 
+  const handleFocus = () => {
+    if (!amount) setShowKeys(true)
+  }
+
   const handlePaste = () => {
     setAddress(clipboard)
     setClipboard('')
@@ -106,22 +112,42 @@ export default function SendForm() {
 
   return (
     <>
-      <Header text='Send' />
-      <Content>
-        <Padded>
-          <FlexCol gap='2rem'>
-            <Error error={Boolean(error)} text={error} />
-            <FlexCol gap='0.5rem'>
-              <InputAddress label='Recipient address' onChange={setAddress} value={address} />
-              {clipboard ? <Paste data={clipboard} onClick={handlePaste} /> : null}
-            </FlexCol>
-            <InputAmount label='Amount' onChange={setAmount} right={balance} value={satoshis} />
-          </FlexCol>
-        </Padded>
-      </Content>
-      <ButtonsOnBottom>
-        <Button onClick={handleContinue} label='Continue' disabled={disabled} />
-      </ButtonsOnBottom>
+      {showKeys ? (
+        <>
+          <Header text='Amount' back={() => setShowKeys(false)} />
+          <Content>
+            <Padded>
+              <Keyboard onChange={setAmount} />
+            </Padded>
+          </Content>
+        </>
+      ) : (
+        <>
+          <Header text='Send' />
+          <Content>
+            <Padded>
+              <FlexCol gap='2rem'>
+                <Error error={Boolean(error)} text={error} />
+                <FlexCol gap='0.5rem'>
+                  <InputAddress label='Recipient address' onChange={setAddress} value={address} />
+                  {clipboard ? <Paste data={clipboard} onClick={handlePaste} /> : null}
+                </FlexCol>
+                <InputAmount
+                  label='Amount'
+                  onChange={setAmount}
+                  onFocus={handleFocus}
+                  right={balance}
+                  value={satoshis}
+                />
+                <Button label='Open keyboard' onClick={() => setShowKeys(true)} />
+              </FlexCol>
+            </Padded>
+          </Content>
+          <ButtonsOnBottom>
+            <Button onClick={handleContinue} label='Continue' disabled={disabled} />
+          </ButtonsOnBottom>
+        </>
+      )}
     </>
   )
 }

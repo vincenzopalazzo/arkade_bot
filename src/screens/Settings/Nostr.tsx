@@ -11,7 +11,7 @@ import Select from '../../components/Select'
 import Error from '../../components/Error'
 import { setNostrNotificationRecipient } from '../../lib/asp'
 import Header from './Header'
-import Checkbox from '../../components/Checkbox'
+import Toggle from '../../components/Toggle'
 import { TextLabel, TextSecondary } from '../../components/Text'
 import FlexCol from '../../components/flexCol'
 import InputAddress from '../../components/InputAddress'
@@ -57,7 +57,7 @@ export default function Nostr() {
       <Header text='Nostr' back />
       <Content>
         <TextLabel>Nostr</TextLabel>
-        <Checkbox checked={config.nostr} onClick={handleCheck} text='Allow Nostr' />
+        <Toggle checked={config.nostr} onClick={handleCheck} text='Allow Nostr' />
         <Padded>
           <FlexCol gap='3rem'>
             <TextSecondary wrap>

@@ -24,7 +24,7 @@ export default function Settings() {
       {option === Options.Nostr && <Nostr />}
       {option === Options.Notes && <NoteScan />}
       {option === Options.Notifications && <Notifications />}
-      {option === Options.Reset && <Reset backup={() => setOption(Options.Backup)} />}
+      {option === Options.Reset && <Reset />}
       {option === Options.Server && <Server backup={() => setOption(Options.Backup)} />}
       {option === Options.Appearance && <Appearance />}
       {option === Options.Vtxos && <Vtxos />}

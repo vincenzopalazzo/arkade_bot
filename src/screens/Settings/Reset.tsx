@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import Button from '../../components/Button'
 import ButtonsOnBottom from '../../components/ButtonsOnBottom'
 import { WalletContext } from '../../providers/wallet'
@@ -7,10 +7,17 @@ import Content from '../../components/Content'
 import Header from './Header'
 import { NavigationContext, Pages } from '../../providers/navigation'
 import { TextEmphasys, TextNormal } from '../../components/Text'
+import Checkbox from '../../components/Checkbox'
 
-export default function Reset({ backup }: { backup: () => void }) {
+export default function Reset() {
   const { navigate } = useContext(NavigationContext)
   const { resetWallet } = useContext(WalletContext)
+
+  const [disabled, setDisabled] = useState(true)
+
+  const handleCheck = () => {
+    setDisabled(!disabled)
+  }
 
   const handleReset = () => {
     resetWallet()
@@ -27,7 +34,8 @@ export default function Reset({ backup }: { backup: () => void }) {
         </Padded>
       </Content>
       <ButtonsOnBottom>
-        <Button onClick={handleReset} label='Reset wallet' />
+        <Checkbox onChange={handleCheck} text='I have backed up my wallet' />
+        <Button disabled={disabled} label='Reset wallet' onClick={handleReset} red />
       </ButtonsOnBottom>
     </>
   )

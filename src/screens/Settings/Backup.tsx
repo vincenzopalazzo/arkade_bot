@@ -8,9 +8,7 @@ import { copyToClipboard } from '../../lib/clipboard'
 import { getPrivateKey } from '../../lib/asp'
 import { seedToNsec } from '../../lib/privateKey'
 import Header from './Header'
-import FlexCol from '../../components/flexCol'
-import { TextLabel, TextNormal, TextSecondary } from '../../components/Text'
-import { IonTextarea } from '@ionic/react'
+import { TextSecondary } from '../../components/Text'
 
 export default function Backup() {
   const label = 'Copy to clipboard'

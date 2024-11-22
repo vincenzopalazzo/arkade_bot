@@ -7,15 +7,16 @@ import InputContainer from './InputContainer'
 interface InputAmountProps {
   label?: string
   onChange: (arg0: any) => void
+  onFocus?: () => void
   right?: string
   value?: number
 }
 
-export default function InputAmount({ label, onChange, right, value }: InputAmountProps) {
+export default function InputAmount({ label, onChange, onFocus, right, value }: InputAmountProps) {
   const { toUSD } = useContext(FiatContext)
 
   const [error, setError] = useState('')
-  const [fiat, setFiat] = useState('')
+  const [fiatValue, setFiatValue] = useState('')
   const [text, setText] = useState('')
 
   useEffect(() => {
@@ -24,7 +25,7 @@ export default function InputAmount({ label, onChange, right, value }: InputAmou
 
   useEffect(() => {
     const sats = Math.floor(Number(text))
-    setFiat(prettyNumber(toUSD(sats), 2))
+    setFiatValue(prettyNumber(toUSD(sats), 2))
     setError(sats < 0 ? 'Invalid amount' : '')
     onChange(sats)
   }, [text])
@@ -34,10 +35,12 @@ export default function InputAmount({ label, onChange, right, value }: InputAmou
   }
 
   return (
-    <InputContainer error={error} label={label} right={right}>
-      <IonInput onIonInput={handleInput} type='number' value={value}>
-        <IonText slot='end' style={{ color: 'var(--dark50)', fontSize: '13px' }}>{`$${fiat}`}</IonText>
-      </IonInput>
-    </InputContainer>
+    <>
+      <InputContainer error={error} label={label} right={right}>
+        <IonInput onIonFocus={onFocus} onIonInput={handleInput} type='number' value={value}>
+          <IonText slot='end' style={{ color: 'var(--dark50)', fontSize: '13px' }}>{`$${fiatValue}`}</IonText>
+        </IonInput>
+      </InputContainer>
+    </>
   )
 }

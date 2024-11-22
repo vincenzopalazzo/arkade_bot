@@ -1,24 +1,25 @@
-import { TextNormal } from './Text'
-import { IonToggle } from '@ionic/react'
+import { IonCheckbox } from '@ionic/react'
 import FlexRow from './FlexRow'
-import Padded from './Padded'
-import Shadow from './Shadow'
+import { TextSecondary } from './Text'
 
 interface CheckboxProps {
-  checked: boolean
-  onClick: () => void
+  onChange: () => void
   text: string
 }
 
-export default function Checkbox({ checked, onClick, text }: CheckboxProps) {
+export default function Checkbox({ onChange, text }: CheckboxProps) {
+  const style = {
+    border: '1px solid var(--dark50)',
+    borderRadius: '0.5rem',
+    padding: '1rem',
+    width: '100%',
+  }
   return (
-    <Shadow squared>
-      <Padded>
-        <FlexRow between>
-          <TextNormal>{text}</TextNormal>
-          <IonToggle checked={checked} onClick={onClick} />
-        </FlexRow>
-      </Padded>
-    </Shadow>
+    <div style={style}>
+      <FlexRow>
+        <IonCheckbox onIonChange={onChange} />
+        <TextSecondary>{text}</TextSecondary>
+      </FlexRow>
+    </div>
   )
 }

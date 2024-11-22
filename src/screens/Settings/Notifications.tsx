@@ -6,7 +6,7 @@ import { notificationApiSupport, requestPermission, sendTestNotification } from 
 import Header from './Header'
 import Content from '../../components/Content'
 import { TextLabel, TextNormal, TextSecondary } from '../../components/Text'
-import Checkbox from '../../components/Checkbox'
+import Toggle from '../../components/Toggle'
 import FlexCol from '../../components/flexCol'
 
 export default function Notifications() {
@@ -29,7 +29,7 @@ export default function Notifications() {
       <Header text='Notifications' back />
       <Content>
         <TextLabel>Notifications</TextLabel>
-        <Checkbox checked={config.notifications} onClick={handleChange} text='Allow notifications' />
+        <Toggle checked={config.notifications} onClick={handleChange} text='Allow notifications' />
         <Padded>
           {notificationApiSupport ? (
             <>

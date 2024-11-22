@@ -4,7 +4,7 @@ import Content from '../../components/Content'
 import Padded from '../../components/Padded'
 import Header from './Header'
 import { TextLabel, TextSecondary } from '../../components/Text'
-import Checkbox from '../../components/Checkbox'
+import Toggle from '../../components/Toggle'
 
 export default function Theme() {
   const { config, updateConfig } = useContext(ConfigContext)
@@ -19,7 +19,7 @@ export default function Theme() {
       <Header text='Theme' back />
       <Content>
         <TextLabel>Theme</TextLabel>
-        <Checkbox checked={config.theme === Themes.Dark} onClick={handleChange} text='Dark theme' />
+        <Toggle checked={config.theme === Themes.Dark} onClick={handleChange} text='Dark theme' />
         <Padded>
           <TextSecondary>Dark theme is easier on the eyes</TextSecondary>
         </Padded>
