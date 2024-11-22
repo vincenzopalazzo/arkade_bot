@@ -4,9 +4,9 @@ import ButtonsOnBottom from '../../../components/ButtonsOnBottom'
 import { NavigationContext, Pages } from '../../../providers/navigation'
 import { FlowContext, emptySendInfo } from '../../../providers/flow'
 import Title from '../../../components/Title'
-import Content from '../../../components/Content'
+import Padded from '../../../components/Padded'
 import InputAmount from '../../../components/InputAmount'
-import Container from '../../../components/Container'
+import Content from '../../../components/Content'
 import { WalletContext } from '../../../providers/wallet'
 import { AspContext } from '../../../providers/asp'
 import { prettyNumber } from '../../../lib/format'
@@ -43,15 +43,15 @@ export default function SendAmount() {
   const disabled = label !== ButtonLabel.Ok
 
   return (
-    <Container>
-      <Content>
+    <Content>
+      <Padded>
         <Title text='Send' subtext={`Balance ${prettyNumber(wallet.balance)} sats`} />
         <InputAmount label='Amount' onChange={setAmount} />
-      </Content>
+      </Padded>
       <ButtonsOnBottom>
         <Button onClick={handleProceed} label={label} disabled={disabled} />
         <Button onClick={handleCancel} label='Cancel' secondary />
       </ButtonsOnBottom>
-    </Container>
+    </Content>
   )
 }

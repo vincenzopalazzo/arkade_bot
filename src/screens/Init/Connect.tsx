@@ -3,9 +3,9 @@ import Button from '../../components/Button'
 import ButtonsOnBottom from '../../components/ButtonsOnBottom'
 import Title from '../../components/Title'
 import { NavigationContext, Pages } from '../../providers/navigation'
-import Content from '../../components/Content'
+import Padded from '../../components/Padded'
 import { FlowContext } from '../../providers/flow'
-import Container from '../../components/Container'
+import Content from '../../components/Content'
 import { WalletContext } from '../../providers/wallet'
 import Loading from '../../components/Loading'
 
@@ -24,14 +24,14 @@ export default function InitConnect() {
   const handleCancel = () => navigate(Pages.Init)
 
   return (
-    <Container>
-      <Content>
+    <Content>
+      <Padded>
         <Title text='Initializing' subtext='Connecting wallet to ASP' />
         <Loading />
-      </Content>
+      </Padded>
       <ButtonsOnBottom>
         <Button onClick={handleCancel} label='Cancel' secondary />
       </ButtonsOnBottom>
-    </Container>
+    </Content>
   )
 }

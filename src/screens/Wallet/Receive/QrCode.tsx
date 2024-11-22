@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 import Button from '../../../components/Button'
-import Content from '../../../components/Content'
+import Padded from '../../../components/Padded'
 import QrCode from '../../../components/QrCode'
 import ButtonsOnBottom from '../../../components/ButtonsOnBottom'
 import Error from '../../../components/Error'
@@ -12,7 +12,7 @@ import { getBalance } from '../../../lib/asp'
 import { WalletContext } from '../../../providers/wallet'
 import { NotificationsContext } from '../../../providers/notifications'
 import Header from '../../../components/Header'
-import { IonContent } from '@ionic/react'
+import Content from '../../../components/Content'
 
 export default function ReceiveQRCode() {
   const { recvInfo, setRecvInfo } = useContext(FlowContext)
@@ -57,13 +57,13 @@ export default function ReceiveQRCode() {
 
   return (
     <>
-      <IonContent>
-        <Header text='Receive' back={() => navigate(Pages.ReceiveAmount)} />
-        <Content>
+      <Header text='Receive' back={() => navigate(Pages.ReceiveAmount)} />
+      <Content>
+        <Padded>
           <Error error={Boolean(error)} text={error} />
           <QrCode short={offchainAddr} value={bip21uri ?? ''} />
-        </Content>
-      </IonContent>
+        </Padded>
+      </Content>
       <ButtonsOnBottom>
         <Button onClick={handleShare} label='Share' disabled />
       </ButtonsOnBottom>

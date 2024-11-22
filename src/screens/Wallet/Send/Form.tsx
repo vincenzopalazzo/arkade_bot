@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from 'react'
 import Button from '../../../components/Button'
-import ShowError from '../../../components/Error'
+import Error from '../../../components/Error'
 import ButtonsOnBottom from '../../../components/ButtonsOnBottom'
 import { NavigationContext, Pages } from '../../../providers/navigation'
 import { FlowContext } from '../../../providers/flow'
-import Content from '../../../components/Content'
-import { decodeArkAddress } from '../../../lib/address'
+import Padded from '../../../components/Padded'
+import { decodeArkAddress, isArkAddress, isBTCAddress } from '../../../lib/address'
 import { AspContext } from '../../../providers/asp'
 import * as bip21 from '../../../lib/bip21'
 import { ArkNote, isArkNote } from '../../../lib/arknote'
@@ -14,7 +14,10 @@ import InputAddress from '../../../components/InputAddress'
 import Header from '../../../components/Header'
 import { WalletContext } from '../../../providers/wallet'
 import { prettyNumber } from '../../../lib/format'
-import { IonContent } from '@ionic/react'
+import Content from '../../../components/Content'
+import Paste from '../../../components/Paste'
+import FlexCol from '../../../components/flexCol'
+import { pasteFromClipboard } from '../../../lib/clipboard'
 
 export default function SendForm() {
   const { aspInfo } = useContext(AspContext)
@@ -26,9 +29,24 @@ export default function SendForm() {
   const [disabled, setDisabled] = useState(true)
   const [error, setError] = useState('')
   const [satoshis, setSatoshis] = useState(0)
+  const [clipboard, setClipboard] = useState('')
 
   const [address, setAddress] = useState('')
   const [amount, setAmount] = useState(0)
+
+  useEffect(() => {
+    pasteFromClipboard().then((value) => {
+      const lowerCaseData = value.toLowerCase()
+      if (
+        bip21.isBip21(lowerCaseData) ||
+        isArkAddress(lowerCaseData) ||
+        isBTCAddress(lowerCaseData) ||
+        isArkNote(lowerCaseData)
+      ) {
+        setClipboard(value)
+      }
+    })
+  }, [])
 
   useEffect(() => {
     const { address, arkAddress, satoshis } = sendInfo
@@ -48,12 +66,12 @@ export default function SendForm() {
       if (address) return setDestination(address)
       return setError('Unable to parse bip21')
     }
-    if (/^t*ark1/.test(lowerCaseData)) {
+    if (isArkAddress(lowerCaseData)) {
       const { aspKey } = decodeArkAddress(lowerCaseData)
-      if (aspKey !== aspInfo.pubkey) return setError('Invalid ASP pubkey')
+      if (aspKey !== aspInfo.pubkey.slice(2)) return setError('Invalid ASP pubkey')
       return setDestination(lowerCaseData)
     }
-    if (/^bc1/.test(lowerCaseData) || /^tb1/.test(lowerCaseData)) {
+    if (isBTCAddress(lowerCaseData)) {
       return setDestination(lowerCaseData)
     }
     if (isArkNote(lowerCaseData)) {
@@ -79,18 +97,28 @@ export default function SendForm() {
     navigate(Pages.SendDetails)
   }
 
+  const handlePaste = () => {
+    setAddress(clipboard)
+    setClipboard('')
+  }
+
   const balance = `${prettyNumber(wallet.balance)} sats available`
 
   return (
     <>
-      <IonContent>
-        <Header text='Send' />
-        <Content>
-          <ShowError error={Boolean(error)} text={error} />
-          <InputAddress label='Recipient address' onChange={setAddress} value={address} />
-          <InputAmount label='Amount' onChange={setAmount} right={balance} value={satoshis} />
-        </Content>
-      </IonContent>
+      <Header text='Send' />
+      <Content>
+        <Padded>
+          <FlexCol gap='2rem'>
+            <Error error={Boolean(error)} text={error} />
+            <FlexCol gap='0.5rem'>
+              <InputAddress label='Recipient address' onChange={setAddress} value={address} />
+              {clipboard ? <Paste data={clipboard} onClick={handlePaste} /> : null}
+            </FlexCol>
+            <InputAmount label='Amount' onChange={setAmount} right={balance} value={satoshis} />
+          </FlexCol>
+        </Padded>
+      </Content>
       <ButtonsOnBottom>
         <Button onClick={handleContinue} label='Continue' disabled={disabled} />
       </ButtonsOnBottom>

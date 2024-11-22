@@ -3,8 +3,8 @@ import Button from '../../../components/Button'
 import Title from '../../../components/Title'
 import ButtonsOnBottom from '../../../components/ButtonsOnBottom'
 import { NavigationContext, Pages } from '../../../providers/navigation'
+import Padded from '../../../components/Padded'
 import Content from '../../../components/Content'
-import Container from '../../../components/Container'
 import { FlowContext, emptySendInfo } from '../../../providers/flow'
 import { prettyNumber } from '../../../lib/format'
 import { WalletContext } from '../../../providers/wallet'
@@ -60,18 +60,18 @@ export default function SendFees() {
   ].filter((row) => row[0] !== 'Boltz fees')
 
   return (
-    <Container>
-      <Content>
+    <Content>
+      <Padded>
         <Title text='Payment fees' subtext={`You pay ${prettyTotal} sats`} />
         <div className='flex flex-col gap-2 mt-4'>
           <Error error={Boolean(error)} text={error} />
           <Table data={data} />
         </div>
-      </Content>
+      </Padded>
       <ButtonsOnBottom>
         <Button onClick={handlePay} label={label} disabled={Boolean(error)} />
         <Button onClick={handleCancel} label='Cancel' secondary />
       </ButtonsOnBottom>
-    </Container>
+    </Content>
   )
 }

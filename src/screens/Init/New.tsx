@@ -4,9 +4,9 @@ import ButtonsOnBottom from '../../components/ButtonsOnBottom'
 import Title from '../../components/Title'
 import { generateMnemonic } from 'bip39'
 import { NavigationContext, Pages } from '../../providers/navigation'
-import Content from '../../components/Content'
+import Padded from '../../components/Padded'
 import { FlowContext } from '../../providers/flow'
-import Container from '../../components/Container'
+import Content from '../../components/Content'
 import { getPrivateKeyFromMnemonic } from '../../lib/wallet'
 import TipIcon from '../../icons/Tip'
 import { seedToNsec } from '../../lib/privateKey'
@@ -38,8 +38,8 @@ export default function InitNew() {
   }
 
   return (
-    <Container>
-      <Content>
+    <Content>
+      <Padded>
         <Title text='Your new wallet' subtext='Write it in a secure place' />
         <div className='flex flex-col gap-4 mt-10'>
           <Textarea label='Private key' value={nsec} />
@@ -48,11 +48,11 @@ export default function InitNew() {
             <p className='text-sm'>You can see it later on Settings &gt; Backup</p>
           </div>
         </div>
-      </Content>
+      </Padded>
       <ButtonsOnBottom>
         <Button onClick={handleProceed} label='Continue' />
         <Button onClick={handleCancel} label='Cancel' secondary />
       </ButtonsOnBottom>
-    </Container>
+    </Content>
   )
 }

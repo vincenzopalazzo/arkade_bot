@@ -1,14 +1,13 @@
 import { useContext, useEffect } from 'react'
 import Button from '../../../components/Button'
 import SuccessIcon from '../../../icons/Success'
-import Title from '../../../components/Title'
 import ButtonsOnBottom from '../../../components/ButtonsOnBottom'
 import { NavigationContext, Pages } from '../../../providers/navigation'
+import Padded from '../../../components/Padded'
 import Content from '../../../components/Content'
-import Container from '../../../components/Container'
 import { NotificationsContext } from '../../../providers/notifications'
 import { FlowContext } from '../../../providers/flow'
-import { prettyNumber } from '../../../lib/format'
+import Header from '../../../components/Header'
 
 export default function ReceiveSuccess() {
   const { recvInfo } = useContext(FlowContext)
@@ -22,18 +21,20 @@ export default function ReceiveSuccess() {
   }, [])
 
   return (
-    <Container>
+    <>
+      <Header text='Received' />
       <Content>
-        <Title text='Success' subtext={`${prettyNumber(recvInfo.satoshis)} sats received`} />
-        <div className='flex h-60'>
-          <div className='m-auto'>
-            <SuccessIcon />
+        <Padded>
+          <div className='flex h-60'>
+            <div className='m-auto'>
+              <SuccessIcon />
+            </div>
           </div>
-        </div>
+        </Padded>
       </Content>
       <ButtonsOnBottom>
         <Button onClick={goBackToWallet} label='Back to wallet' secondary />
       </ButtonsOnBottom>
-    </Container>
+    </>
   )
 }

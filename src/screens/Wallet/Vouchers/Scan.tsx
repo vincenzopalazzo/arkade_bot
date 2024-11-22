@@ -6,8 +6,8 @@ import ButtonsOnBottom from '../../../components/ButtonsOnBottom'
 import { NavigationContext, Pages } from '../../../providers/navigation'
 import { FlowContext } from '../../../providers/flow'
 import Input from '../../../components/Input'
+import Padded from '../../../components/Padded'
 import Content from '../../../components/Content'
-import Container from '../../../components/Container'
 import { pasteFromClipboard } from '../../../lib/clipboard'
 import { ArkNote, isArkNote } from '../../../lib/arknote'
 import { ConfigContext } from '../../../providers/config'
@@ -50,23 +50,25 @@ export default function NoteScan() {
   const handleChange = (invoice: string) => setPastedData(invoice)
 
   return (
-    <Container>
+    <>
       <Header text='Note' back />
       <Content>
-        <div className='flex flex-col gap-2'>
-          <ShowError error={Boolean(error)} text={error} />
-          {error ? null : (
-            <>
-              {firefox ? (
-                <Input label='Paste your note here' onChange={handleChange} />
-              ) : (
-                <BarcodeScanner setData={setPastedData} setError={setError} />
-              )}
-            </>
-          )}
-        </div>
+        <Padded>
+          <div className='flex flex-col gap-2'>
+            <ShowError error={Boolean(error)} text={error} />
+            {error ? null : (
+              <>
+                {firefox ? (
+                  <Input label='Paste your note here' onChange={handleChange} />
+                ) : (
+                  <BarcodeScanner setData={setPastedData} setError={setError} />
+                )}
+              </>
+            )}
+          </div>
+        </Padded>
       </Content>
       <ButtonsOnBottom>{!firefox && <Button onClick={handlePaste} label={buttonLabel} />}</ButtonsOnBottom>
-    </Container>
+    </>
   )
 }

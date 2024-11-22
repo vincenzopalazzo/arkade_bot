@@ -3,10 +3,10 @@ import Button from '../../components/Button'
 import ButtonsOnBottom from '../../components/ButtonsOnBottom'
 import Title from '../../components/Title'
 import { NavigationContext, Pages } from '../../providers/navigation'
-import Content from '../../components/Content'
+import Padded from '../../components/Padded'
 import NewPassword from '../../components/NewPassword'
 import { FlowContext } from '../../providers/flow'
-import Container from '../../components/Container'
+import Content from '../../components/Content'
 
 export default function InitPassword() {
   const { navigate } = useContext(NavigationContext)
@@ -23,15 +23,15 @@ export default function InitPassword() {
   }
 
   return (
-    <Container>
-      <Content>
+    <Content>
+      <Padded>
         <Title text='Password' subtext='Define your password' />
         <NewPassword onNewPassword={setPassword} setLabel={setLabel} />
-      </Content>
+      </Padded>
       <ButtonsOnBottom>
         <Button onClick={handleProceed} label={label} disabled={!password} />
         <Button onClick={handleCancel} label='Cancel' secondary />
       </ButtonsOnBottom>
-    </Container>
+    </Content>
   )
 }

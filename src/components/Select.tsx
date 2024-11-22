@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import Label from './Label'
+import { TextLabel } from './Text'
 
 interface SelectProps {
   children: ReactNode
@@ -15,7 +15,7 @@ export default function Select({ children, disabled, label, onChange, value }: S
 
   return (
     <div>
-      {label ? <Label text={label} /> : null}
+      {label ? <TextLabel>{label}</TextLabel> : null}
       <select className={className} onChange={onChange} value={value} disabled={disabled}>
         {children}
       </select>

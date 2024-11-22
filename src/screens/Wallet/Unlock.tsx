@@ -1,14 +1,14 @@
 import { useContext, useEffect, useState } from 'react'
 import Button from '../../components/Button'
-import Title from '../../components/Title'
 import ButtonsOnBottom from '../../components/ButtonsOnBottom'
 import { NavigationContext, Pages } from '../../providers/navigation'
+import Padded from '../../components/Padded'
 import Content from '../../components/Content'
-import Container from '../../components/Container'
 import { WalletContext } from '../../providers/wallet'
 import Error from '../../components/Error'
 import { extractError } from '../../lib/error'
 import InputPassword from '../../components/InputPassword'
+import Header from '../../components/Header'
 
 export default function Unlock() {
   const { navigate } = useContext(NavigationContext)
@@ -43,19 +43,17 @@ export default function Unlock() {
   }
 
   return (
-    <Container>
+    <>
+      <Header text='Unlock' />
       <Content>
-        <Title text={label} subtext='Access your wallet' />
-        {unlocking ? null : (
-          <div className='flex flex-col gap-4 mt-10'>
-            <InputPassword label='Insert password' onChange={handleChange} />
-            <Error error={Boolean(error)} text={error} />
-          </div>
-        )}
+        <Padded>
+          {unlocking ? null : <InputPassword label='Insert password' onChange={handleChange} />}
+          <Error error={Boolean(error)} text={error} />
+        </Padded>
       </Content>
       <ButtonsOnBottom>
-        <Button onClick={() => handleUnlock(password)} label='Unlock' disabled={unlocking} />
+        <Button onClick={() => handleUnlock(password)} label={label} disabled={unlocking} />
       </ButtonsOnBottom>
-    </Container>
+    </>
   )
 }

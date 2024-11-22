@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react'
 import { FlowContext } from '../../../providers/flow'
-import Container from '../../../components/Container'
 import Content from '../../../components/Content'
+import Padded from '../../../components/Padded'
 import Error from '../../../components/Error'
 import ButtonsOnBottom from '../../../components/ButtonsOnBottom'
 import Button from '../../../components/Button'
@@ -50,19 +50,21 @@ export default function NoteRedeem() {
   }
 
   return (
-    <Container>
+    <>
       <Header text='Redeem note' back />
       <Content>
-        <Error error={Boolean(error)} text={error} />
-        {redeeming ? (
-          <Loading text='Redeeming require a round, which can take a few seconds' />
-        ) : (
-          <Details details={details} />
-        )}
+        <Padded>
+          <Error error={Boolean(error)} text={error} />
+          {redeeming ? (
+            <Loading text='Redeeming require a round, which can take a few seconds' />
+          ) : (
+            <Details details={details} />
+          )}
+        </Padded>
       </Content>
       <ButtonsOnBottom>
         <Button onClick={handleRedeem} label={buttonLabel} disabled={redeeming} />
       </ButtonsOnBottom>
-    </Container>
+    </>
   )
 }

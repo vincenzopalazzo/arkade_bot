@@ -1,10 +1,9 @@
 import { useContext } from 'react'
 import { ConfigContext, Themes } from '../../providers/config'
 import Select from '../../components/Select'
-import Container from '../../components/Container'
 import Content from '../../components/Content'
+import Padded from '../../components/Padded'
 import Header from './Header'
-import { IonContent } from '@ionic/react'
 
 export default function Theme() {
   const { config, updateConfig } = useContext(ConfigContext)
@@ -14,17 +13,19 @@ export default function Theme() {
   }
 
   return (
-    <IonContent>
+    <>
+      <Header text='Theme' back />
       <Content>
-        <Header text='Theme' back />
-        <div className='flex flex-col gap-10 mt-10'>
-          <Select onChange={handleChange} value={config.theme}>
-            <option value={Themes.Dark}>{Themes.Dark}</option>
-            <option value={Themes.Light}>{Themes.Light}</option>
-          </Select>
-          <p>Dark theme is easier on the eyes</p>
-        </div>
+        <Padded>
+          <div className='flex flex-col gap-10 mt-10'>
+            <Select onChange={handleChange} value={config.theme}>
+              <option value={Themes.Dark}>{Themes.Dark}</option>
+              <option value={Themes.Light}>{Themes.Light}</option>
+            </Select>
+            <p>Dark theme is easier on the eyes</p>
+          </div>
+        </Padded>
       </Content>
-    </IonContent>
+    </>
   )
 }

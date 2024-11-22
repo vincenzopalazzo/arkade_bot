@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react'
 import Button from '../../components/Button'
 import ButtonsOnBottom from '../../components/ButtonsOnBottom'
-import Content from '../../components/Content'
+import Padded from '../../components/Padded'
 import Textarea from '../../components/Textarea'
-import Container from '../../components/Container'
+import Content from '../../components/Content'
 import { copyToClipboard } from '../../lib/clipboard'
 import { getPrivateKey } from '../../lib/asp'
 import { seedToNsec } from '../../lib/privateKey'
 import Header from './Header'
-import { IonContent } from '@ionic/react'
+import FlexCol from '../../components/flexCol'
+import { TextNormal } from '../../components/Text'
 
 export default function Backup() {
   const label = 'Copy to clipboard'
@@ -29,17 +30,19 @@ export default function Backup() {
   }
 
   return (
-    <IonContent>
+    <>
+      <Header text='Backup' back />
       <Content>
-        <Header text='Backup' back />
-        <div className='flex flex-col gap-10 mt-10'>
-          <Textarea label='Private key' value={nsec} />
-          <p>This is enough to restore your wallet</p>
-        </div>
+        <Padded>
+          <FlexCol>
+            <Textarea label='Private key' value={nsec} />
+            <TextNormal>This is enough to restore your wallet</TextNormal>
+          </FlexCol>
+        </Padded>
       </Content>
       <ButtonsOnBottom>
         <Button onClick={handleCopy} label={buttonLabel} />
       </ButtonsOnBottom>
-    </IonContent>
+    </>
   )
 }

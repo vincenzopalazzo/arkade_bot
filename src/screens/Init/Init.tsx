@@ -8,7 +8,7 @@ import Error from '../../components/Error'
 import { generateMnemonic } from 'bip39'
 import { getPrivateKeyFromMnemonic } from '../../lib/wallet'
 import { FlowContext } from '../../providers/flow'
-import { IonContent } from '@ionic/react'
+import Content from '../../components/Content'
 
 export default function Init() {
   const { aspInfo } = useContext(AspContext)
@@ -32,7 +32,7 @@ export default function Init() {
   const handleOldWallet = () => navigate(Pages.InitOld)
 
   return (
-    <IonContent>
+    <Content>
       <div className='mt-24 max-w-80 md:max-w-full mx-auto'>
         <Title text='Arkade' subtext='Ark wallet PoC' />
         <div className='flex flex-col gap-1 mb-4'>
@@ -46,6 +46,6 @@ export default function Init() {
         <Button disabled={error} onClick={handleNewWallet} label='New wallet' />
         <Button disabled={error} onClick={handleOldWallet} label='Restore wallet' />
       </ButtonsOnBottom>
-    </IonContent>
+    </Content>
   )
 }

@@ -2,15 +2,16 @@ import { useContext, useEffect, useState } from 'react'
 import Button from '../../../components/Button'
 import { NavigationContext, Pages } from '../../../providers/navigation'
 import { FlowContext } from '../../../providers/flow'
-import Content from '../../../components/Content'
+import Padded from '../../../components/Padded'
 import ButtonsOnBottom from '../../../components/ButtonsOnBottom'
 import Details, { DetailsProps } from '../../../components/Details'
 import Error from '../../../components/Error'
 import { WalletContext } from '../../../providers/wallet'
 import Header from '../../../components/Header'
-import { IonContent } from '@ionic/react'
 import { defaultFee } from '../../../lib/constants'
 import { prettyNumber } from '../../../lib/format'
+import Content from '../../../components/Content'
+import FlexCol from '../../../components/flexCol'
 
 export default function SendDetails() {
   const { navigate } = useContext(NavigationContext)
@@ -58,13 +59,15 @@ export default function SendDetails() {
 
   return (
     <>
-      <IonContent>
-        <Header text='Sign transaction' back={() => navigate(Pages.SendForm)} />
-        <Content>
-          <Error error={Boolean(error)} text={error} />
-          <Details details={details} />
-        </Content>
-      </IonContent>
+      <Header text='Sign transaction' back={() => navigate(Pages.SendForm)} />
+      <Content>
+        <Padded>
+          <FlexCol>
+            <Error error={Boolean(error)} text={error} />
+            <Details details={details} />
+          </FlexCol>
+        </Padded>
+      </Content>
       <ButtonsOnBottom>
         <Button onClick={handleContinue} label={buttonLabel} disabled={Boolean(error)} />
       </ButtonsOnBottom>

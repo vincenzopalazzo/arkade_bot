@@ -4,8 +4,8 @@ import SuccessIcon from '../../../icons/Success'
 import Title from '../../../components/Title'
 import ButtonsOnBottom from '../../../components/ButtonsOnBottom'
 import { NavigationContext, Pages } from '../../../providers/navigation'
+import Padded from '../../../components/Padded'
 import Content from '../../../components/Content'
-import Container from '../../../components/Container'
 import { NotificationsContext } from '../../../providers/notifications'
 import { FlowContext } from '../../../providers/flow'
 import { prettyNumber } from '../../../lib/format'
@@ -22,18 +22,18 @@ export default function NoteSuccess() {
   }, [])
 
   return (
-    <Container>
-      <Content>
+    <Content>
+      <Padded>
         <Title text='Success' subtext={`${prettyNumber(noteInfo.satoshis)} sats redeemed`} />
         <div className='flex h-60'>
           <div className='m-auto'>
             <SuccessIcon />
           </div>
         </div>
-      </Content>
+      </Padded>
       <ButtonsOnBottom>
         <Button onClick={goBackToWallet} label='Back to wallet' secondary />
       </ButtonsOnBottom>
-    </Container>
+    </Content>
   )
 }

@@ -5,8 +5,8 @@ import ButtonsOnBottom from '../../../components/ButtonsOnBottom'
 import { NavigationContext, Pages } from '../../../providers/navigation'
 import { FlowContext } from '../../../providers/flow'
 import { NotificationsContext } from '../../../providers/notifications'
-import { IonContent } from '@ionic/react'
 import Header from '../../../components/Header'
+import Content from '../../../components/Content'
 
 export default function SendSuccess() {
   const { sendInfo } = useContext(FlowContext)
@@ -21,14 +21,14 @@ export default function SendSuccess() {
 
   return (
     <>
-      <IonContent>
-        <Header text='Sending' back={() => navigate(Pages.SendDetails)} />
+      <Header text='Sending' back={() => navigate(Pages.SendDetails)} />
+      <Content>
         <div className='flex h-60 mt-4'>
           <div className='m-auto'>
             <SuccessIcon />
           </div>
         </div>
-      </IonContent>
+      </Content>
       <ButtonsOnBottom>
         <Button onClick={goBackToWallet} label='Back to wallet' secondary />
       </ButtonsOnBottom>

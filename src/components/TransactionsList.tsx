@@ -1,44 +1,63 @@
 import { useContext } from 'react'
 import { WalletContext } from '../providers/wallet'
-import Label from './Label'
-import Text from './Text'
+import Text, { TextGreen, TextLabel, TextSecondary } from './Text'
 import { Tx } from '../lib/types'
 import { prettyDate, prettyNumber } from '../lib/format'
-import { IonCol, IonGrid, IonRow } from '@ionic/react'
-import Content from './Content'
 import PendingIcon from '../icons/Pending'
 import ReceivedIcon from '../icons/Received'
 import SentIcon from '../icons/Sent'
 import FlexRow from './FlexRow'
+import { FlowContext } from '../providers/flow'
+import { NavigationContext, Pages } from '../providers/navigation'
+import { IonGrid, IonRow, IonCol } from '@ionic/react'
+
+const border = '1px solid #FBFBFB33'
 
 const TransactionLine = ({ tx }: { tx: Tx }) => {
+  const { setTxInfo } = useContext(FlowContext)
+  const { navigate } = useContext(NavigationContext)
+
   const prefix = tx.type === 'sent' ? '-' : '+'
   const amount = `${prefix} ${prettyNumber(tx.amount)} sats`
 
   const Icon = () => (tx.pending ? <PendingIcon /> : tx.type === 'sent' ? <SentIcon /> : <ReceivedIcon />)
   const Kind = () => (tx.type === 'sent' ? <Text>Sent (xxx...xxx)</Text> : <Text>Received (xxx...xxx)</Text>)
-  const Date = () => <Text secondary>{prettyDate(tx.createdAt)}</Text>
-  const Sats = () => (tx.type === 'sent' ? <Text>{amount}</Text> : <Text green>{amount}</Text>)
-  const Last = () => (tx.type === 'sent' ? <Text>Sent</Text> : <Text green>Received</Text>)
+  const Date = () => <TextSecondary>{prettyDate(tx.createdAt)}</TextSecondary>
+  const Sats = () => (tx.type === 'sent' ? <Text>{amount}</Text> : <TextGreen>{amount}</TextGreen>)
+  const Last = () => (tx.type === 'sent' ? <Text>Sent</Text> : <TextGreen>Received</TextGreen>)
+
+  const handleClick = () => {
+    setTxInfo(tx)
+    navigate(Pages.Transaction)
+  }
+
+  const rowStyle = {
+    alignItems: 'center',
+    borderTop: border,
+    cursor: 'pointer',
+    padding: '0.5rem 1rem',
+  }
 
   return (
-    <IonGrid>
-      <IonRow class='ion-align-items-center'>
-        <IonCol size='8'>
-          <FlexRow>
-            <Icon />
-            <div>
-              <Kind />
-              <Date />
-            </div>
-          </FlexRow>
-        </IonCol>
-        <IonCol class='ion-text-end'>
-          <Sats />
-          <Last />
-        </IonCol>
-      </IonRow>
-    </IonGrid>
+    <div style={{ marginTop: '1px solid #000' }} onClick={handleClick}>
+      <IonGrid class='ion-no-padding'>
+        <IonRow style={rowStyle}>
+          <IonCol size='8'>
+            <FlexRow>
+              <Icon />
+              <div>
+                <Kind />
+                <Date />
+              </div>
+            </FlexRow>
+          </IonCol>
+          <IonCol class='ion-text-end'>
+            <Sats />
+            <Last />
+          </IonCol>
+        </IonRow>
+      </IonGrid>
+    </div>
   )
 }
 
@@ -61,12 +80,12 @@ export default function TransactionsList({ short }: { short?: boolean }) {
 
   return (
     <>
-      <Content>
-        <Label text='Transaction history' />
-      </Content>
-      {showTxs.map((tx) => (
-        <TransactionLine key={key(tx)} tx={tx} />
-      ))}
+      <TextLabel>Transaction history</TextLabel>
+      <div style={{ borderBottom: border }}>
+        {showTxs.map((tx) => (
+          <TransactionLine key={key(tx)} tx={tx} />
+        ))}
+      </div>
     </>
   )
 }

@@ -1,9 +1,12 @@
 export default function BackIcon() {
   return (
-    <svg className='w-8 h-8' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'>
+    <svg width='32' height='32' viewBox='0 0 32 32' fill='none' xmlns='http://www.w3.org/2000/svg'>
       <path
-        fill='currentColor'
-        d='M13.83 19a1 1 0 0 1-.78-.37l-4.83-6a1 1 0 0 1 0-1.27l5-6a1 1 0 0 1 1.54 1.28L10.29 12l4.32 5.36a1 1 0 0 1-.78 1.64'
+        d='M11.334 16L20.6673 16M11.334 16L13.8438 13.3333L15.0987 12M11.334 16L13.8438 18.6667L15.0987 20'
+        stroke='#FBFBFB'
+        strokeWidth='2'
+        strokeLinecap='round'
+        strokeLinejoin='round'
       />
     </svg>
   )

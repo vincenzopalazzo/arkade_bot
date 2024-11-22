@@ -1,5 +1,5 @@
 import { IonInput } from '@ionic/react'
-import Label from './Label'
+import { TextLabel } from './Text'
 
 interface InputAmountProps {
   label?: string
@@ -14,9 +14,9 @@ export default function Input({ label, onChange, placeholder }: InputAmountProps
   }
 
   return (
-    <div className='inputContainer'>
-      {label ? <Label text={label} /> : null}
+    <>
+      {label ? <TextLabel>{label}</TextLabel> : null}
       <IonInput onIonInput={handleInput} placeholder={placeholder} />
-    </div>
+    </>
   )
 }

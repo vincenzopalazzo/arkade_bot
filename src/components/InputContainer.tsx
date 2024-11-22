@@ -1,7 +1,9 @@
 import { ReactNode } from 'react'
-import Label from './Label'
+import Text from './Text'
 import Error from './Error'
-import { IonCol, IonGrid, IonRow } from '@ionic/react'
+import FlexRow from './FlexRow'
+import Shadow from './Shadow'
+import FlexCol from './flexCol'
 
 interface InputContainerProps {
   children: ReactNode
@@ -11,24 +13,22 @@ interface InputContainerProps {
 }
 
 export default function InputContainer({ children, error, label, right }: InputContainerProps) {
-  const topLabel = () => (
-    <IonGrid class='ion-no-padding' style={{ marginBottom: '8px' }}>
-      <IonRow>
-        <IonCol>
-          <Label text={label ?? ''} />
-        </IonCol>
-        <IonCol class='ion-text-end'>
-          <Label text={right ?? ''} />
-        </IonCol>
-      </IonRow>
-    </IonGrid>
+  const TopLabel = () => (
+    <FlexRow between>
+      <Text size='smaller'>{label}</Text>
+      <Text size='smaller' color='white50'>
+        {right}
+      </Text>
+    </FlexRow>
   )
 
   return (
-    <div className='inputContainer'>
-      {label || right ? topLabel() : null}
-      <div>{children}</div>
+    <FlexCol>
+      <FlexCol gap='0.25rem'>
+        {label || right ? <TopLabel /> : null}
+        <Shadow>{children}</Shadow>
+      </FlexCol>
       <Error error={Boolean(error)} text={error ?? ''} />
-    </div>
+    </FlexCol>
   )
 }

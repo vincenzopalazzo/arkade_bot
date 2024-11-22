@@ -1,15 +1,19 @@
 import { ReactNode } from 'react'
 
 interface FlexRowProps {
+  between?: boolean
   children: ReactNode
   onClick?: () => void
 }
 
-export default function FlexRow({ children, onClick }: FlexRowProps) {
+export default function FlexRow({ between, children, onClick }: FlexRowProps) {
+  const justifyContent = between ? 'space-between' : 'start'
   const style = {
     alignItems: 'center',
     display: 'flex',
     gap: '.5rem',
+    justifyContent,
+    width: '100%',
   }
   return (
     <div style={style} onClick={onClick}>

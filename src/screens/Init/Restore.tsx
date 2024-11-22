@@ -4,9 +4,9 @@ import Title from '../../components/Title'
 import ButtonsOnBottom from '../../components/ButtonsOnBottom'
 import Error from '../../components/Error'
 import { NavigationContext, Pages } from '../../providers/navigation'
-import Content from '../../components/Content'
+import Padded from '../../components/Padded'
 import { FlowContext } from '../../providers/flow'
-import Container from '../../components/Container'
+import Content from '../../components/Content'
 import { invalidPrivateKey, nsecToSeed } from '../../lib/privateKey'
 import Textarea from '../../components/Textarea'
 
@@ -46,18 +46,18 @@ export default function InitOld() {
   const disabled = privateKey.length > 0 && error.length > 0
 
   return (
-    <Container>
-      <Content>
+    <Content>
+      <Padded>
         <Title text='Restore wallet' subtext='Insert your private key' />
         <div className='flex flex-col gap-2 mt-10'>
           <Textarea label='Private key' onChange={handleChange} />
           <Error error={Boolean(error)} text={error} />
         </div>
-      </Content>
+      </Padded>
       <ButtonsOnBottom>
         <Button onClick={handleProceed} label={label} disabled={disabled} />
         <Button onClick={handleCancel} label='Cancel' secondary />
       </ButtonsOnBottom>
-    </Container>
+    </Content>
   )
 }

@@ -2,15 +2,14 @@ import { useContext, useEffect, useState } from 'react'
 import Button from '../../components/Button'
 import ButtonsOnBottom from '../../components/ButtonsOnBottom'
 import { WalletContext } from '../../providers/wallet'
-import Content from '../../components/Content'
+import Padded from '../../components/Padded'
 import { NavigationContext, Pages } from '../../providers/navigation'
 import { extractError } from '../../lib/error'
-import Container from '../../components/Container'
+import Content from '../../components/Content'
 import Error from '../../components/Error'
 import Loading from '../../components/Loading'
 import InputPassword from '../../components/InputPassword'
 import Header from './Header'
-import { IonContent } from '@ionic/react'
 
 export default function Lock() {
   const { navigate } = useContext(NavigationContext)
@@ -44,22 +43,24 @@ export default function Lock() {
   }
 
   return (
-    <IonContent>
+    <>
+      <Header text='Lock' back />
       <Content>
-        <Header text='Lock' back />
-        {locking ? (
-          <Loading />
-        ) : (
-          <div className='flex flex-col gap-4 mt-10'>
-            <InputPassword label='Insert password' onChange={handleChange} />
-            <Error error={Boolean(error)} text={error} />
-            <p className='mt-10 mb-4 mx-auto'>After locking you'll need to re-enter your password to unlock</p>
-          </div>
-        )}
+        <Padded>
+          {locking ? (
+            <Loading />
+          ) : (
+            <div className='flex flex-col gap-4 mt-10'>
+              <InputPassword label='Insert password' onChange={handleChange} />
+              <Error error={Boolean(error)} text={error} />
+              <p className='mt-10 mb-4 mx-auto'>After locking you'll need to re-enter your password to unlock</p>
+            </div>
+          )}
+        </Padded>
       </Content>
       <ButtonsOnBottom>
         <Button onClick={handleLock} label={label} disabled={locking} />
       </ButtonsOnBottom>
-    </IonContent>
+    </>
   )
 }

@@ -1,9 +1,9 @@
 import { useContext } from 'react'
-import { IonContent } from '@ionic/react'
 import { AspContext } from '../../providers/asp'
 import { prettyLongText } from '../../lib/format'
 import Header from './Header'
 import Table from '../../components/Table'
+import Padded from '../../components/Padded'
 import Content from '../../components/Content'
 
 export default function About() {
@@ -23,11 +23,13 @@ export default function About() {
   ]
 
   return (
-    <IonContent>
+    <>
       <Header text='About' back />
       <Content>
-        <Table data={data} />
+        <Padded>
+          <Table data={data} />
+        </Padded>
       </Content>
-    </IonContent>
+    </>
   )
 }

@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react'
 import Button from '../../components/Button'
 import ButtonsOnBottom from '../../components/ButtonsOnBottom'
 import { NavigationContext, Pages } from '../../providers/navigation'
-import Content from '../../components/Content'
+import Padded from '../../components/Padded'
 import { WalletContext } from '../../providers/wallet'
 import { FlowContext } from '../../providers/flow'
 import { prettyAgo, prettyDate, prettyNumber } from '../../lib/format'
@@ -15,6 +15,7 @@ import { openInNewTab } from '../../lib/explorers'
 import Modal from '../../components/Modal'
 import TipIcon from '../../icons/Tip'
 import Header from '../../components/Header'
+import Content from '../../components/Content'
 
 export default function Transaction() {
   const { txInfo, setTxInfo } = useContext(FlowContext)
@@ -22,7 +23,6 @@ export default function Transaction() {
   const { settlePending, wallet } = useContext(WalletContext)
 
   const tx = txInfo
-  const goBackToWallet = () => navigate(Pages.Wallet)
   const defaultButtonLabel = 'Settle pending'
 
   const [buttonLabel, setButtonLabel] = useState(defaultButtonLabel)
@@ -68,22 +68,24 @@ export default function Transaction() {
 
   return (
     <>
+      <Header text='Transaction' back={() => navigate(Pages.Wallet)} />
       <Content>
-        <Header text='Transaction' back={() => navigate(Pages.Wallet)} />
-        <Error error={Boolean(error)} text={error} />
-        {settling ? (
-          <Loading text='Settling transactions require a round, which can take a few seconds' />
-        ) : (
-          <>
-            <Table data={data} />
-            {tx.pending ? (
-              <div className='flex justify-center align-middle mt-4' onClick={() => setShowInfo(true)}>
-                <TipIcon small />
-                <p className='text-sm underline underline-offset-2 cursor-pointer'>What are pending transactions?</p>
-              </div>
-            ) : null}
-          </>
-        )}
+        <Padded>
+          <Error error={Boolean(error)} text={error} />
+          {settling ? (
+            <Loading text='Settling transactions require a round, which can take a few seconds' />
+          ) : (
+            <>
+              <Table data={data} />
+              {tx.pending ? (
+                <div className='flex justify-center align-middle mt-4' onClick={() => setShowInfo(true)}>
+                  <TipIcon small />
+                  <p className='text-sm underline underline-offset-2 cursor-pointer'>What are pending transactions?</p>
+                </div>
+              ) : null}
+            </>
+          )}
+        </Padded>
       </Content>
       <ButtonsOnBottom>
         {showSettleButton ? (
@@ -91,7 +93,6 @@ export default function Transaction() {
         ) : tx.explorable ? (
           <Button onClick={handleExplorer} label='View on explorer' />
         ) : null}
-        <Button onClick={goBackToWallet} label='Back to wallet' secondary />
       </ButtonsOnBottom>
       <Modal open={showInfo} onClose={() => setShowInfo(false)}>
         <div className='flex flex-col gap-4 text-left'>

@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import Label from './Label'
+import { TextLabel } from './Text'
 
 interface TextareaProps {
   children?: ReactNode
@@ -17,8 +17,8 @@ export default function Textarea({ children, label, onChange, value }: TextareaP
   const rows = value ? Math.ceil(value.length / 32) : 2
 
   return (
-    <div>
-      {label ? <Label text={label} /> : null}
+    <div style={{ width: '100%' }}>
+      {label ? <TextLabel>{label}</TextLabel> : null}
       <textarea className={className} onChange={onChange} readOnly={readOnly} rows={rows} value={value}>
         {children}
       </textarea>

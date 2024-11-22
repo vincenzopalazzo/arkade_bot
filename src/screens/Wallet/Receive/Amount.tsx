@@ -3,13 +3,14 @@ import Button from '../../../components/Button'
 import ButtonsOnBottom from '../../../components/ButtonsOnBottom'
 import { NavigationContext, Pages } from '../../../providers/navigation'
 import { FlowContext } from '../../../providers/flow'
-import Content from '../../../components/Content'
+import Padded from '../../../components/Padded'
 import Error from '../../../components/Error'
 import { getReceivingAddresses } from '../../../lib/asp'
 import { extractError } from '../../../lib/error'
-import { IonContent } from '@ionic/react'
 import Header from '../../../components/Header'
 import InputAmount from '../../../components/InputAmount'
+import Content from '../../../components/Content'
+import FlexCol from '../../../components/flexCol'
 
 export default function ReceiveAmount() {
   const { setRecvInfo } = useContext(FlowContext)
@@ -40,13 +41,15 @@ export default function ReceiveAmount() {
 
   return (
     <>
-      <IonContent>
-        <Header text='Receive' />
-        <Content>
-          <Error error={Boolean(error)} text={error} />
-          <InputAmount label='Amount' onChange={handleChange} value={amount} />
-        </Content>
-      </IonContent>
+      <Header text='Receive' />
+      <Content>
+        <Padded>
+          <FlexCol>
+            <Error error={Boolean(error)} text={error} />
+            <InputAmount label='Amount' onChange={handleChange} value={amount} />
+          </FlexCol>
+        </Padded>
+      </Content>
       <ButtonsOnBottom>
         <Button onClick={handleProceed} label={buttonLabel} />
       </ButtonsOnBottom>

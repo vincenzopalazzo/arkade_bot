@@ -4,8 +4,8 @@ import Error from '../../components/Error'
 import TransactionsList from '../../components/TransactionsList'
 import { WalletContext } from '../../providers/wallet'
 import { AspContext } from '../../providers/asp'
-import { IonContent } from '@ionic/react'
 import LogoIcon from '../../icons/Logo'
+import Padded from '../../components/Padded'
 import Content from '../../components/Content'
 
 export default function Wallet() {
@@ -23,13 +23,14 @@ export default function Wallet() {
   }, [aspInfo.unreachable])
 
   return (
-    <IonContent>
-      <Content>
+    <Content>
+      <Padded>
         <LogoIcon />
+        <div style={{ marginTop: '3rem' }} />
         <Balance sats={wallet.balance} />
         <Error error={error} text='Asp unreachable' />
-      </Content>
+      </Padded>
       <TransactionsList />
-    </IonContent>
+    </Content>
   )
 }
