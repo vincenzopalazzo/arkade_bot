@@ -4,6 +4,7 @@ import Error from './Error'
 import FlexRow from './FlexRow'
 import Shadow from './Shadow'
 import FlexCol from './flexCol'
+import Padded from './Padded'
 
 interface InputContainerProps {
   children: ReactNode
@@ -16,7 +17,7 @@ export default function InputContainer({ children, error, label, right }: InputC
   const TopLabel = () => (
     <FlexRow between>
       <Text size='smaller'>{label}</Text>
-      <Text size='smaller' color='white50'>
+      <Text size='smaller' color='dark50'>
         {right}
       </Text>
     </FlexRow>
@@ -26,7 +27,9 @@ export default function InputContainer({ children, error, label, right }: InputC
     <FlexCol>
       <FlexCol gap='0.25rem'>
         {label || right ? <TopLabel /> : null}
-        <Shadow>{children}</Shadow>
+        <Shadow>
+          <Padded>{children}</Padded>
+        </Shadow>
       </FlexCol>
       <Error error={Boolean(error)} text={error ?? ''} />
     </FlexCol>

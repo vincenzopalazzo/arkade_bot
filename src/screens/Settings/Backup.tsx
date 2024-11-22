@@ -9,7 +9,8 @@ import { getPrivateKey } from '../../lib/asp'
 import { seedToNsec } from '../../lib/privateKey'
 import Header from './Header'
 import FlexCol from '../../components/flexCol'
-import { TextNormal } from '../../components/Text'
+import { TextLabel, TextNormal, TextSecondary } from '../../components/Text'
+import { IonTextarea } from '@ionic/react'
 
 export default function Backup() {
   const label = 'Copy to clipboard'
@@ -33,11 +34,9 @@ export default function Backup() {
     <>
       <Header text='Backup' back />
       <Content>
+        <Textarea label='Private key' value={nsec} />
         <Padded>
-          <FlexCol>
-            <Textarea label='Private key' value={nsec} />
-            <TextNormal>This is enough to restore your wallet</TextNormal>
-          </FlexCol>
+          <TextSecondary>This is enough to restore your wallet</TextSecondary>
         </Padded>
       </Content>
       <ButtonsOnBottom>

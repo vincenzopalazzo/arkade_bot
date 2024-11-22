@@ -1,7 +1,7 @@
 import { ReactElement, ReactNode, createContext, useContext, useState } from 'react'
 import { WalletContext } from './wallet'
 import BackupIcon from '../icons/Backup'
-import DarkThemeIcon from '../icons/DarkTheme'
+import AppearanceIcon from '../icons/Appearance'
 import InfoIcon from '../icons/Info'
 import LockIcon from '../icons/Lock'
 import NostrIcon from '../icons/Nostr'
@@ -20,6 +20,7 @@ export enum Sections {
 export enum Options {
   Menu = 'menu',
   About = 'about',
+  Appearance = 'appearance',
   Backup = 'backup',
   Lock = 'lock wallet',
   Notifications = 'notifications',
@@ -28,7 +29,6 @@ export enum Options {
   Password = 'password',
   Reset = 'reset',
   Server = 'server',
-  Theme = 'theme',
   Vtxos = 'vtxos',
 }
 
@@ -42,6 +42,11 @@ const options: Option[] = [
   {
     icon: <InfoIcon />,
     option: Options.About,
+    section: Sections.General,
+  },
+  {
+    icon: <AppearanceIcon />,
+    option: Options.Appearance,
     section: Sections.General,
   },
   {
@@ -80,11 +85,6 @@ const options: Option[] = [
     section: Sections.Advanced,
   },
   {
-    icon: <DarkThemeIcon />,
-    option: Options.Theme,
-    section: Sections.General,
-  },
-  {
     icon: <VtxosIcon />,
     option: Options.Vtxos,
     section: Sections.Advanced,
@@ -106,7 +106,7 @@ const allOptions: OptionsResponse[] = [Sections.General, Sections.Security, Sect
 const miniOptions: OptionsResponse[] = [
   {
     section: Sections.General,
-    options: options.filter((o) => [Options.About, Options.Theme].includes(o.option)),
+    options: options.filter((o) => [Options.About, Options.Appearance].includes(o.option)),
   },
 ]
 

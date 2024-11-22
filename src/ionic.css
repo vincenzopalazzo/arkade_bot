@@ -1,6 +1,19 @@
+:root {
+  --dark80: rgba(var(--ion-color-dark-rgb), 0.8);
+  --dark50: rgba(var(--ion-color-dark-rgb), 0.5);
+  --dark20: rgba(var(--ion-color-dark-rgb), 0.2);
+  --dark10: rgba(var(--ion-color-dark-rgb), 0.1);
+  --dark05: rgba(var(--ion-color-dark-rgb), 0.05);
+  --letuce: rgb(45, 213, 91);
+  --redbg: rgb(56, 0, 8);
+  --red: rgb(255, 79, 79);
+  --white: rgb(251, 251, 251);
+}
+
 ion-header {
   align-items: center;
   border-bottom: 1px solid #444;
+  color: var(--ion-color-dark);
   display: flex;
   height: 4rem;
   & ion-grid {
@@ -13,12 +26,17 @@ ion-header {
   margin: auto;
 }
 
-ion-tab-bar svg {
-  opacity: 0.5;
-}
-
-ion-tab-bar svg:hover {
-  opacity: 1;
+ion-tab-bar {
+  & svg {
+    color: var(--dark50);
+    &:hover {
+      color: var(--ion-color-dark);
+    }
+  }
+  & ion-tab-button.tab-selected,
+  & ion-tab-button.tab-selected svg {
+    color: var(--ion-color-dark);
+  }
 }
 
 div.shadow {

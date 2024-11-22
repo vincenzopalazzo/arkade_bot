@@ -8,7 +8,7 @@ export default function Table({ data }: { data: string[][] }) {
       {data.map(([title, value]) => (
         <FlexRow between key={title}>
           <TextNormal>{title}</TextNormal>
-          <TextSecondary truncate>{value}</TextSecondary>
+          <TextSecondary>{value}</TextSecondary>
         </FlexRow>
       ))}
     </FlexCol>

@@ -11,7 +11,7 @@ import { FlowContext } from '../providers/flow'
 import { NavigationContext, Pages } from '../providers/navigation'
 import { IonGrid, IonRow, IonCol } from '@ionic/react'
 
-const border = '1px solid #FBFBFB33'
+const border = '1px solid var(--dark50)'
 
 const TransactionLine = ({ tx }: { tx: Tx }) => {
   const { setTxInfo } = useContext(FlowContext)

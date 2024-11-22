@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react'
 import Button from '../../components/Button'
 import ButtonsOnBottom from '../../components/ButtonsOnBottom'
-import { ConfigContext } from '../../providers/config'
+import { ConfigContext, Themes } from '../../providers/config'
 import Padded from '../../components/Padded'
 import Textarea from '../../components/Textarea'
 import Content from '../../components/Content'
@@ -11,6 +11,11 @@ import Select from '../../components/Select'
 import Error from '../../components/Error'
 import { setNostrNotificationRecipient } from '../../lib/asp'
 import Header from './Header'
+import Checkbox from '../../components/Checkbox'
+import { TextLabel, TextSecondary } from '../../components/Text'
+import FlexCol from '../../components/flexCol'
+import InputAddress from '../../components/InputAddress'
+import InputNpub from '../../components/InputNpub'
 
 export default function Nostr() {
   const { config, updateConfig } = useContext(ConfigContext)
@@ -29,17 +34,8 @@ export default function Nostr() {
     setError(invalidNpub(npub))
   }, [npub])
 
-  const handleAuth = (e: any) => {
-    updateConfig({ ...config, nostr: Boolean(parseInt(e.target.value)) })
-  }
-
-  const handleChange = (e: any) => {
-    setNpub(e.target.value)
-  }
-
-  const handleSave = () => {
-    updateConfig({ ...config, npub })
-    setNostrNotificationRecipient(npub)
+  const handleCheck = () => {
+    updateConfig({ ...config, nostr: !config.nostr })
   }
 
   const handleCopy = async () => {
@@ -48,7 +44,11 @@ export default function Nostr() {
     setTimeout(() => setButtonLabel(label), 2100)
   }
 
-  const value = config.nostr ? '1' : '0'
+  const handleSave = () => {
+    updateConfig({ ...config, npub })
+    setNostrNotificationRecipient(npub)
+  }
+
   const showCopyButton = config.nostr && config.npub === npub && npub
   const showSaveButton = config.nostr && config.npub !== npub && !error
 
@@ -56,29 +56,29 @@ export default function Nostr() {
     <>
       <Header text='Nostr' back />
       <Content>
+        <TextLabel>Nostr</TextLabel>
+        <Checkbox checked={config.nostr} onClick={handleCheck} text='Allow Nostr' />
         <Padded>
-          <div className='flex flex-col gap-10 mt-10'>
-            <p>
+          <FlexCol gap='3rem'>
+            <TextSecondary wrap>
               If you let your VTXOs expire, you will receive, on Nostr, via encrypted DM, an arknote with the same
               value, that you will be able to redeem later.
-            </p>
-            <Select onChange={handleAuth} value={value}>
-              <option value='0'>Not allowed</option>
-              <option value='1'>Allowed</option>
-            </Select>
+            </TextSecondary>
             {config.nostr ? (
-              <>
-                <Textarea label='Nostr public key (npub)' value={npub} onChange={handleChange} />
+              <FlexCol>
+                <InputNpub label='Nostr public key (npub)' onChange={setNpub} value={npub} />
                 <Error error={Boolean(error)} text={error} />
-              </>
+              </FlexCol>
             ) : null}
-          </div>
+          </FlexCol>
         </Padded>
       </Content>
-      <ButtonsOnBottom>
-        {showCopyButton ? <Button onClick={handleCopy} label={buttonLabel} /> : null}
-        {showSaveButton ? <Button onClick={handleSave} label='Save new npub' /> : null}
-      </ButtonsOnBottom>
+      {config.nostr ? (
+        <ButtonsOnBottom>
+          {showCopyButton ? <Button onClick={handleCopy} label={buttonLabel} /> : null}
+          {showSaveButton ? <Button onClick={handleSave} label='Save new npub' /> : null}
+        </ButtonsOnBottom>
+      ) : null}
     </>
   )
 }

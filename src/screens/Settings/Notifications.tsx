@@ -1,18 +1,20 @@
 import { useContext } from 'react'
-import { ConfigContext } from '../../providers/config'
+import { ConfigContext, Themes } from '../../providers/config'
 import Select from '../../components/Select'
 import Padded from '../../components/Padded'
 import { notificationApiSupport, requestPermission, sendTestNotification } from '../../lib/notifications'
 import Header from './Header'
 import Content from '../../components/Content'
+import { TextLabel, TextNormal, TextSecondary } from '../../components/Text'
+import Checkbox from '../../components/Checkbox'
+import FlexCol from '../../components/flexCol'
 
 export default function Notifications() {
   const { config, updateConfig } = useContext(ConfigContext)
 
-  const handleChange = (e: any) => {
+  const handleChange = () => {
     if (!notificationApiSupport) return
-    const enable = Boolean(parseInt(e.target.value))
-    if (enable) {
+    if (!config.notifications) {
       requestPermission().then((notifications) => {
         updateConfig({ ...config, notifications })
         if (notifications) sendTestNotification()
@@ -22,30 +24,26 @@ export default function Notifications() {
     }
   }
 
-  const value = config.notifications ? '1' : '0'
-
   return (
     <>
       <Header text='Notifications' back />
       <Content>
+        <TextLabel>Notifications</TextLabel>
+        <Checkbox checked={config.notifications} onClick={handleChange} text='Allow notifications' />
         <Padded>
-          <Select onChange={handleChange} value={value} disabled={!notificationApiSupport}>
-            <option value='0'>Not allowed</option>
-            <option value='1'>Allowed</option>
-          </Select>
-          <div className='flex flex-col gap-6 mt-10'>
-            {notificationApiSupport ? (
-              <>
-                <p>Get notified when an update is available or a payment is received</p>
-                <p>You'll need to grant permission if asked</p>
-              </>
-            ) : (
-              <>
-                <p>Your browser does not support the Notifications API</p>
-                <p>If on iOS you'll need to 'Add to homescreen' and be running iOS 16.4 or higher</p>
-              </>
-            )}
-          </div>
+          {notificationApiSupport ? (
+            <>
+              <TextSecondary>Get notified when an update is available or a payment is received</TextSecondary>
+              <TextSecondary>You'll need to grant permission if asked</TextSecondary>
+            </>
+          ) : (
+            <>
+              <TextSecondary>Your browser does not support the Notifications API</TextSecondary>
+              <TextSecondary>
+                If on iOS you'll need to 'Add to homescreen' and be running iOS 16.4 or higher
+              </TextSecondary>
+            </>
+          )}
         </Padded>
       </Content>
     </>

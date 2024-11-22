@@ -6,7 +6,7 @@ interface PaddedProps {
 
 export default function Padded({ children }: PaddedProps) {
   const style = {
-    margin: '1rem',
+    margin: '0.25rem 1rem',
   }
   return <div style={style}>{children}</div>
 }

@@ -9,85 +9,75 @@ const fontSizesAndLineHeight: any = {
   large: ['28px', '42px'],
 }
 
-const fontColors: any = {
-  red: '#FF4F4F',
-  green: '#34C759',
-  white100: '#FBFBFBFF',
-  white80: '#FBFBFBB2',
-  white50: '#FBFBFB80',
-  white20: '#FBFBFB33',
-  white10: '#FBFBFB1A',
-}
-
 interface TextProps {
+  bold?: boolean
   capitalize?: boolean
   centered?: boolean
   children: ReactNode
   color?: string
-  green?: boolean
   size?: string
-  truncate?: boolean
+  wrap?: boolean
 }
 
-export default function Text({ capitalize, centered, color, children, green, size, truncate }: TextProps) {
+export default function Text({ bold, capitalize, centered, color, children, size, wrap }: TextProps) {
   const fkey = size && Object.keys(fontSizesAndLineHeight).includes(size) ? size : 'normal'
-  const ckey = color && Object.keys(fontColors).includes(color) ? color : 'white100'
 
   const style: any = {
-    color: fontColors[ckey],
+    color: `var(--${color})`,
     fontSize: fontSizesAndLineHeight[fkey][0],
+    fontWeight: bold ? '600' : undefined,
     lineHeight: fontSizesAndLineHeight[fkey][1],
-    overflow: truncate ? 'hidden' : undefined,
+    overflow: wrap ? undefined : 'hidden',
     textAlign: centered ? 'center' : undefined,
-    textOverflow: truncate ? 'ellipsis' : undefined,
+    textOverflow: wrap ? undefined : 'ellipsis',
     textTransform: capitalize ? 'capitalize' : undefined,
-    whiteSpace: truncate ? 'nowrap' : undefined,
+    whiteSpace: wrap ? undefined : 'nowrap',
   }
 
   return (
-    <IonText color={green ? 'success' : ''}>
+    <IonText>
       <p style={style}>{children}</p>
     </IonText>
   )
 }
 
-export function TextEmphasys({ children }: { children: ReactNode }) {
+export function TextEmphasys({ children }: TextProps) {
   return (
-    <Text size='large' color='white100' capitalize>
+    <Text size='large' capitalize>
       {children}
     </Text>
   )
 }
 
-export function TextGreen({ children }: { children: ReactNode }) {
+export function TextGreen({ children }: TextProps) {
   return <Text color='green'>{children}</Text>
 }
 
-export function TextLabel({ children }: { children: ReactNode }) {
+export function TextLabel({ children }: TextProps) {
   return (
     <div style={{ padding: '0 1rem', marginBottom: '0.5rem' }}>
-      <Text capitalize color='white50' size='smaller'>
+      <Text capitalize color='dark50' size='smaller'>
         {children}
       </Text>
     </div>
   )
 }
 
-export function TextMini({ children }: { children: ReactNode }) {
+export function TextMini({ children }: TextProps) {
   return (
-    <Text size='tiny' color='white80' capitalize>
+    <Text size='tiny' color='dark80' capitalize>
       {children}
     </Text>
   )
 }
 
-export function TextNormal({ children }: { children: ReactNode }) {
-  return <Text>{children}</Text>
+export function TextNormal({ children, color }: TextProps) {
+  return <Text color={color}>{children}</Text>
 }
 
-export function TextSecondary({ children, truncate }: { children: ReactNode; truncate?: boolean }) {
+export function TextSecondary({ children, wrap }: TextProps) {
   return (
-    <Text color='white50' size='small' truncate={truncate}>
+    <Text color='dark50' size='small' wrap={wrap}>
       {children}
     </Text>
   )

@@ -10,7 +10,7 @@ export default function Error({ error, text }: ErrorProps) {
   if (!error) return null
   return (
     <Shadow red>
-      <Text size='small' centered>
+      <Text bold centered color='white' size='small'>
         {text}
       </Text>
     </Shadow>

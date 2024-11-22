@@ -6,5 +6,9 @@ interface ContentProps {
 }
 
 export default function Content({ children }: ContentProps) {
-  return <IonContent>{children}</IonContent>
+  return (
+    <IonContent>
+      <div style={{ marginTop: '2rem' }}>{children}</div>
+    </IonContent>
+  )
 }

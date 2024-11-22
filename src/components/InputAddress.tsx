@@ -1,8 +1,9 @@
-import { IonIcon, IonInput } from '@ionic/react'
+import { IonIcon, IonInput, IonText } from '@ionic/react'
 import { scanOutline } from 'ionicons/icons'
 import InputContainer from './InputContainer'
 import { useEffect, useState } from 'react'
 import BarcodeScanner from './BarcodeScanner'
+import ScanIcon from '../icons/Scan'
 
 interface InputAddressProps {
   label?: string
@@ -46,7 +47,11 @@ export default function InputAddress({ label, onChange, placeholder, value }: In
   return (
     <InputContainer label={label} error={error}>
       <IonInput onIonInput={handleInput} placeholder={placeholder} value={value}>
-        <IonIcon icon={scanOutline} slot='end' onClick={startScan} />
+        <IonText slot='end' style={{ color: 'var(--dark50)' }}>
+          <div onClick={startScan}>
+            <ScanIcon />
+          </div>
+        </IonText>
       </IonInput>
     </InputContainer>
   )

@@ -10,14 +10,17 @@ import Content from '../../components/Content'
 export default function Menu() {
   const { setOption, validOptions } = useContext(OptionsContext)
 
+  const border = '1px solid var(--dark10)'
+
   const gridStyle = {
-    borderTop: '1px solid #FBFBFB50',
+    borderTop: border,
   }
 
   const rowStyle = (option: Options) => ({
-    backgroundColor: option === Options.Reset ? '#380008' : '#333',
-    borderBottom: '1px solid #FBFBFB1A',
-    color: option === Options.Reset ? '#FF4F4F' : '#FBFBFB',
+    alignItems: 'center',
+    backgroundColor: option === Options.Reset ? 'var(--redbg)' : 'var(--dark10)',
+    borderBottom: border,
+    color: option === Options.Reset ? 'var(--red)' : 'var(--dark)',
     cursor: 'pointer',
     padding: '0.5rem 1rem',
   })
@@ -31,11 +34,11 @@ export default function Menu() {
             <TextLabel>{op.section}</TextLabel>
             <IonGrid class='ion-no-padding' style={gridStyle}>
               {op.options.map(({ icon, option }) => (
-                <IonRow class='ion-align-items-center' onClick={() => setOption(option)} style={rowStyle(option)}>
+                <IonRow key={option} onClick={() => setOption(option)} style={rowStyle(option)}>
                   <IonCol>
                     <FlexRow>
                       {icon}
-                      <Text color={option === Options.Reset ? 'red' : 'white100'} capitalize>
+                      <Text color={option === Options.Reset ? 'red' : ''} capitalize>
                         {option}
                       </Text>
                     </FlexRow>

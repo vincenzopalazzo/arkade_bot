@@ -16,7 +16,7 @@ export default function Paste({ data, onClick }: PasteProps) {
   }
 
   return (
-    <Shadow light onClick={onClick}>
+    <Shadow lighter onClick={onClick}>
       <IonGrid style={gridStyle}>
         <IonRow>
           <IonCol size='7'>
@@ -26,7 +26,7 @@ export default function Paste({ data, onClick }: PasteProps) {
             </FlexRow>
           </IonCol>
           <IonCol size='5'>
-            <Text size='smaller' color='white50' truncate>
+            <Text size='smaller' color='dark50'>
               {data}
             </Text>
           </IonCol>

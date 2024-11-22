@@ -36,7 +36,7 @@ export default function InputAmount({ label, onChange, right, value }: InputAmou
   return (
     <InputContainer error={error} label={label} right={right}>
       <IonInput onIonInput={handleInput} type='number' value={value}>
-        <IonText slot='end' style={{ color: '#fbfbfb80' }}>{`$${fiat}`}</IonText>
+        <IonText slot='end' style={{ color: 'var(--dark50)', fontSize: '13px' }}>{`$${fiat}`}</IonText>
       </IonInput>
     </InputContainer>
   )

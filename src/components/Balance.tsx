@@ -19,7 +19,7 @@ export default function Balance({ sats }: BalanceProps) {
     <FlexCol gap='4px'>
       <TextMini>My balance</TextMini>
       <TextEmphasys>{text}</TextEmphasys>
-      <Text color='white80'>{fiat}</Text>
+      <Text color='dark80'>{fiat}</Text>
     </FlexCol>
   )
 }

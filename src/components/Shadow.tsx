@@ -2,16 +2,17 @@ import { ReactNode } from 'react'
 
 interface ShadowProps {
   children: ReactNode
-  light?: boolean
+  lighter?: boolean
   onClick?: () => void
   red?: boolean
+  squared?: boolean
 }
 
-export default function Shadow({ children, light, onClick, red }: ShadowProps) {
+export default function Shadow({ children, lighter, onClick, red, squared }: ShadowProps) {
   const style = {
-    backgroundColor: red ? '#FF4F4F' : light ? '#FBFBFB33' : '#FBFBFB1A',
-    borderRadius: '0.5rem',
-    padding: '0.5rem',
+    backgroundColor: red ? 'var(--red)' : lighter ? 'var(--dark05)' : 'var(--dark10)',
+    borderRadius: squared ? undefined : '0.5rem',
+    padding: '0.5rem 0',
     width: '100%',
   }
 

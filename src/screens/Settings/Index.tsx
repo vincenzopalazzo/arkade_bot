@@ -4,7 +4,7 @@ import Notifications from './Notifications'
 import Backup from './Backup'
 import Reset from './Reset'
 import About from './About'
-import Theme from './Theme'
+import Appearance from './Appearance'
 import Nostr from './Nostr'
 import Vtxos from './Vtxos'
 import NoteScan from '../Wallet/Vouchers/Scan'
@@ -26,7 +26,7 @@ export default function Settings() {
       {option === Options.Notifications && <Notifications />}
       {option === Options.Reset && <Reset backup={() => setOption(Options.Backup)} />}
       {option === Options.Server && <Server backup={() => setOption(Options.Backup)} />}
-      {option === Options.Theme && <Theme />}
+      {option === Options.Appearance && <Appearance />}
       {option === Options.Vtxos && <Vtxos />}
     </>
   )
