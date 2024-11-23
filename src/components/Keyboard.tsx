@@ -2,54 +2,60 @@ import { IonCol, IonGrid, IonRow } from '@ionic/react'
 import Header from './Header'
 import Content from './Content'
 import { useContext, useEffect, useState } from 'react'
-import { TextEmphasys, TextSecondary } from './Text'
+import Text, { TextSecondary } from './Text'
 import { FiatContext } from '../providers/fiat'
 import { prettyNumber } from '../lib/format'
 import { WalletContext } from '../providers/wallet'
 import { defaultFee } from '../lib/constants'
 import Error from './Error'
+import Button from './Button'
+import Padded from './Padded'
 
 interface KeyboardProps {
   back: () => void
+  hideBalance?: boolean
   onChange: (arg0: number) => void
+  value: number
 }
 
-export default function Keyboard({ back, onChange }: KeyboardProps) {
+export default function Keyboard({ back, hideBalance, onChange, value }: KeyboardProps) {
   const { toUSD } = useContext(FiatContext)
   const { wallet } = useContext(WalletContext)
 
-  const [amount, setAmount] = useState('')
-  const [fiatValue, setFiatValue] = useState('')
+  const [sats, setSats] = useState(0)
   const [error, setError] = useState('')
 
   useEffect(() => {
-    if (!amount) return
-    try {
-      const sats = parseFloat(amount)
-      setFiatValue(prettyNumber(toUSD(sats), 2))
-      onChange(sats)
-    } catch {
-      setError('Invalid amount')
-    }
-  }, [amount])
+    setSats(value)
+  }, [value])
 
   const amountWithSats = () => {
-    if (amount) return amount + ' SATS'
+    if (sats) return prettyNumber(sats) + ' SATS'
   }
 
   const fiatValueWithUSD = () => {
-    if (amount) return fiatValue + ' USD'
+    if (!sats) return
+    return prettyNumber(toUSD(sats), 2)
   }
 
   const handleKeyPress = (k: string) => {
-    if (k === 'x' && !amount.length) return
-    setAmount((amount) => (k === 'x' ? amount.slice(0, -1) : `${amount}${k}`))
+    if (k === 'x' && !sats) return
+    const text = sats.toString()
+    const res = k === 'x' ? text.slice(0, -1) : text + k
+    setSats(Number(res))
   }
 
   const handleMaxPress = () => {
     if (wallet.balance < defaultFee) return setError('Total balance is below fee')
-    setAmount((wallet.balance - defaultFee).toString())
+    setSats(wallet.balance - defaultFee)
   }
+
+  const handleSave = () => {
+    onChange(sats)
+    back()
+  }
+
+  const disabled = !sats || Number.isNaN(sats)
 
   const gridStyle = {
     borderTop: '1px solid var(--dark50)',
@@ -65,14 +71,16 @@ export default function Keyboard({ back, onChange }: KeyboardProps) {
 
   return (
     <>
-      <Header text='Amount' back={back} max={handleMaxPress} />
+      <Header text='Amount' back={back} max={hideBalance ? undefined : handleMaxPress} />
       <Content>
         <Error error={Boolean(error)} text={error} />
         <div style={{ paddingTop: '3rem' }} />
-        <TextEmphasys centered>{amountWithSats()}</TextEmphasys>
+        <Text big centered>
+          {amountWithSats()}
+        </Text>
         <TextSecondary centered>{fiatValueWithUSD()}</TextSecondary>
       </Content>
-      <TextSecondary centered>{wallet.balance} sats available</TextSecondary>
+      {hideBalance ? null : <TextSecondary centered>{wallet.balance} sats available</TextSecondary>}
       <IonGrid style={gridStyle}>
         <IonRow style={rowStyle}>
           <IonCol size='4' onClick={() => handleKeyPress('1')}>
@@ -108,9 +116,7 @@ export default function Keyboard({ back, onChange }: KeyboardProps) {
           </IonCol>
         </IonRow>
         <IonRow style={rowStyle}>
-          <IonCol size='4' onClick={() => handleKeyPress('.')}>
-            .
-          </IonCol>
+          <IonCol size='4'>.</IonCol>
           <IonCol size='4' onClick={() => handleKeyPress('0')}>
             0
           </IonCol>
@@ -119,6 +125,9 @@ export default function Keyboard({ back, onChange }: KeyboardProps) {
           </IonCol>
         </IonRow>
       </IonGrid>
+      <Padded>
+        <Button label='Save' disabled={disabled} onClick={handleSave} />
+      </Padded>
     </>
   )
 }

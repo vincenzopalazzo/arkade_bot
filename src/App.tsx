@@ -27,13 +27,36 @@ import HomeIcon from './icons/Home'
 import ReceiveIcon from './icons/Receive'
 import SettingsIcon from './icons/Settings'
 import SendIcon from './icons/Send'
+import { Options, OptionsContext } from './providers/options'
+import { emptyRecvInfo, emptySendInfo, FlowContext } from './providers/flow'
 
 setupIonicReact()
 
 export default function App() {
   const { wasmLoaded, walletUnlocked, wallet } = useContext(WalletContext)
   const { configLoaded } = useContext(ConfigContext)
+  const { setRecvInfo, setSendInfo } = useContext(FlowContext)
   const { navigate, screen, tab } = useContext(NavigationContext)
+  const { setOption } = useContext(OptionsContext)
+
+  const handleHome = () => {
+    navigate(Pages.Wallet)
+  }
+
+  const handleSend = () => {
+    setSendInfo(emptySendInfo)
+    navigate(Pages.SendForm)
+  }
+
+  const handleReceive = () => {
+    setRecvInfo(emptyRecvInfo)
+    navigate(Pages.ReceiveAmount)
+  }
+
+  const handleSettings = () => {
+    setOption(Options.Menu)
+    navigate(Pages.Settings)
+  }
 
   const page =
     !configLoaded || !wasmLoaded ? Pages.Loading : wallet.initialized && !walletUnlocked ? Pages.Unlock : screen
@@ -52,27 +75,19 @@ export default function App() {
             <IonTab tab={Tabs.Receive}>{comp}</IonTab>
             <IonTab tab={Tabs.Settings}>{comp}</IonTab>
             <IonTabBar slot='bottom'>
-              <IonTabButton tab={Tabs.Home} selected={tab === Tabs.Home} onClick={() => navigate(Pages.Wallet)}>
+              <IonTabButton tab={Tabs.Home} selected={tab === Tabs.Home} onClick={handleHome}>
                 <HomeIcon />
                 Home
               </IonTabButton>
-              <IonTabButton tab={Tabs.Send} selected={tab === Tabs.Send} onClick={() => navigate(Pages.SendForm)}>
+              <IonTabButton tab={Tabs.Send} selected={tab === Tabs.Send} onClick={handleSend}>
                 <SendIcon />
                 Send
               </IonTabButton>
-              <IonTabButton
-                tab={Tabs.Receive}
-                selected={tab === Tabs.Receive}
-                onClick={() => navigate(Pages.ReceiveAmount)}
-              >
+              <IonTabButton tab={Tabs.Receive} selected={tab === Tabs.Receive} onClick={handleReceive}>
                 <ReceiveIcon />
                 Receive
               </IonTabButton>
-              <IonTabButton
-                tab={Tabs.Settings}
-                selected={tab === Tabs.Settings}
-                onClick={() => navigate(Pages.Settings)}
-              >
+              <IonTabButton tab={Tabs.Settings} selected={tab === Tabs.Settings} onClick={handleSettings}>
                 <SettingsIcon />
                 Settings
               </IonTabButton>

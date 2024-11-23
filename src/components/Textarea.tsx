@@ -1,8 +1,9 @@
 import { ReactNode } from 'react'
-import { TextLabel } from './Text'
+import Text from './Text'
 import { IonTextarea } from '@ionic/react'
 import Padded from './Padded'
 import Shadow from './Shadow'
+import FlexCol from './flexCol'
 
 interface TextareaProps {
   children?: ReactNode
@@ -17,15 +18,17 @@ export default function Textarea({ children, label, onChange, value }: TextareaP
   }
 
   return (
-    <>
-      {label ? <TextLabel>{label}</TextLabel> : null}
-      <Padded>
-        <Shadow>
-          <IonTextarea onChange={onChange} readonly={typeof onChange === 'undefined'} style={style} value={value}>
-            {children}
-          </IonTextarea>
-        </Shadow>
-      </Padded>
-    </>
+    <FlexCol gap='0.5rem'>
+      {label ? (
+        <Text color='dark50' small>
+          {label}
+        </Text>
+      ) : null}
+      <Shadow>
+        <IonTextarea onChange={onChange} readonly={typeof onChange === 'undefined'} style={style} value={value}>
+          {children}
+        </IonTextarea>
+      </Shadow>
+    </FlexCol>
   )
 }

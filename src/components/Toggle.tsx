@@ -1,4 +1,4 @@
-import { TextNormal } from './Text'
+import Text from './Text'
 import { IonToggle } from '@ionic/react'
 import FlexRow from './FlexRow'
 import Padded from './Padded'
@@ -15,7 +15,7 @@ export default function Toggle({ checked, onClick, text }: ToggleProps) {
     <Shadow squared>
       <Padded>
         <FlexRow between>
-          <TextNormal>{text}</TextNormal>
+          <Text>{text}</Text>
           <IonToggle checked={checked} onClick={onClick} />
         </FlexRow>
       </Padded>

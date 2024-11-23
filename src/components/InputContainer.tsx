@@ -16,8 +16,8 @@ interface InputContainerProps {
 export default function InputContainer({ children, error, label, right }: InputContainerProps) {
   const TopLabel = () => (
     <FlexRow between>
-      <Text size='smaller'>{label}</Text>
-      <Text size='smaller' color='dark50'>
+      <Text smaller>{label}</Text>
+      <Text color='dark50' smaller>
         {right}
       </Text>
     </FlexRow>

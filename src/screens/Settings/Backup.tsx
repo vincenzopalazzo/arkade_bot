@@ -9,6 +9,7 @@ import { getPrivateKey } from '../../lib/asp'
 import { seedToNsec } from '../../lib/privateKey'
 import Header from './Header'
 import { TextSecondary } from '../../components/Text'
+import FlexCol from '../../components/flexCol'
 
 export default function Backup() {
   const label = 'Copy to clipboard'
@@ -32,9 +33,11 @@ export default function Backup() {
     <>
       <Header text='Backup' back />
       <Content>
-        <Textarea label='Private key' value={nsec} />
         <Padded>
-          <TextSecondary>This is enough to restore your wallet</TextSecondary>
+          <FlexCol>
+            <Textarea label='Private key' value={nsec} />
+            <TextSecondary>This is enough to restore your wallet</TextSecondary>
+          </FlexCol>
         </Padded>
       </Content>
       <ButtonsOnBottom>

@@ -2,7 +2,7 @@ import { useContext } from 'react'
 import { prettyNumber } from '../lib/format'
 import { Satoshis } from '../lib/types'
 import { FiatContext } from '../providers/fiat'
-import Text, { TextEmphasys, TextMini } from './Text'
+import Text from './Text'
 import FlexCol from './flexCol'
 
 interface BalanceProps {
@@ -17,8 +17,10 @@ export default function Balance({ sats }: BalanceProps) {
 
   return (
     <FlexCol gap='4px'>
-      <TextMini>My balance</TextMini>
-      <TextEmphasys>{text}</TextEmphasys>
+      <Text color='dark80' tiny>
+        My balance
+      </Text>
+      <Text big>{text}</Text>
       <Text color='dark80'>{fiat}</Text>
     </FlexCol>
   )

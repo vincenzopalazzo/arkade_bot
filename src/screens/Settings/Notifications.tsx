@@ -1,13 +1,11 @@
 import { useContext } from 'react'
-import { ConfigContext, Themes } from '../../providers/config'
-import Select from '../../components/Select'
+import { ConfigContext } from '../../providers/config'
 import Padded from '../../components/Padded'
 import { notificationApiSupport, requestPermission, sendTestNotification } from '../../lib/notifications'
 import Header from './Header'
 import Content from '../../components/Content'
-import { TextLabel, TextNormal, TextSecondary } from '../../components/Text'
+import { TextLabel, TextSecondary } from '../../components/Text'
 import Toggle from '../../components/Toggle'
-import FlexCol from '../../components/flexCol'
 
 export default function Notifications() {
   const { config, updateConfig } = useContext(ConfigContext)

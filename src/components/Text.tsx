@@ -1,32 +1,45 @@
 import { IonText } from '@ionic/react'
 import { ReactNode } from 'react'
 
-const fontSizesAndLineHeight: any = {
-  tiny: ['12px', '18px'],
-  smaller: ['13px', '20px'],
-  small: ['14px', '21px'],
-  normal: ['16px', '24px'],
-  large: ['28px', '42px'],
-}
-
 interface TextProps {
   bold?: boolean
   capitalize?: boolean
   centered?: boolean
   children: ReactNode
   color?: string
-  size?: string
   wrap?: boolean
+  tiny?: boolean
+  smaller?: boolean
+  small?: boolean
+  big?: boolean
+  bigger?: boolean
+  dark50?: boolean
+  dark80?: boolean
+  green?: boolean
+  red?: boolean
+  white?: boolean
 }
 
-export default function Text({ bold, capitalize, centered, color, children, size, wrap }: TextProps) {
-  const fkey = size && Object.keys(fontSizesAndLineHeight).includes(size) ? size : 'normal'
+export default function Text({
+  bold,
+  capitalize,
+  centered,
+  color,
+  children,
+  wrap,
+  tiny,
+  smaller,
+  small,
+  big,
+  bigger,
+}: TextProps) {
+  const fontSize = tiny ? 12 : smaller ? 13 : small ? 14 : big ? 24 : bigger ? 28 : 16
 
   const style: any = {
     color: `var(--${color})`,
-    fontSize: fontSizesAndLineHeight[fkey][0],
+    fontSize,
     fontWeight: bold ? '600' : undefined,
-    lineHeight: fontSizesAndLineHeight[fkey][1],
+    lineHeight: '1.5',
     overflow: wrap ? undefined : 'hidden',
     textAlign: centered ? 'center' : undefined,
     textOverflow: wrap ? undefined : 'ellipsis',
@@ -41,43 +54,19 @@ export default function Text({ bold, capitalize, centered, color, children, size
   )
 }
 
-export function TextEmphasys({ centered, children }: TextProps) {
-  return (
-    <Text size='large' capitalize centered={centered}>
-      {children}
-    </Text>
-  )
-}
-
-export function TextGreen({ children }: TextProps) {
-  return <Text color='green'>{children}</Text>
-}
-
 export function TextLabel({ children }: TextProps) {
   return (
     <div style={{ padding: '0 1rem', marginBottom: '0.5rem' }}>
-      <Text capitalize color='dark50' size='smaller'>
+      <Text capitalize color='dark50' smaller>
         {children}
       </Text>
     </div>
   )
 }
 
-export function TextMini({ centered, children }: TextProps) {
-  return (
-    <Text color='dark80' capitalize centered={centered} size='tiny'>
-      {children}
-    </Text>
-  )
-}
-
-export function TextNormal({ children, color }: TextProps) {
-  return <Text color={color}>{children}</Text>
-}
-
 export function TextSecondary({ centered, children, wrap }: TextProps) {
   return (
-    <Text centered={centered} color='dark50' size='small' wrap={wrap}>
+    <Text centered={centered} color='dark50' small wrap={wrap}>
       {children}
     </Text>
   )

@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import { WalletContext } from '../providers/wallet'
-import Text, { TextGreen, TextLabel, TextSecondary } from './Text'
+import Text, { TextLabel, TextSecondary } from './Text'
 import { Tx } from '../lib/types'
 import { prettyDate, prettyNumber } from '../lib/format'
 import PendingIcon from '../icons/Pending'
@@ -11,7 +11,7 @@ import { FlowContext } from '../providers/flow'
 import { NavigationContext, Pages } from '../providers/navigation'
 import { IonGrid, IonRow, IonCol } from '@ionic/react'
 
-const border = '1px solid var(--dark50)'
+const border = '1px solid var(--dark20)'
 
 const TransactionLine = ({ tx }: { tx: Tx }) => {
   const { setTxInfo } = useContext(FlowContext)
@@ -23,8 +23,8 @@ const TransactionLine = ({ tx }: { tx: Tx }) => {
   const Icon = () => (tx.pending ? <PendingIcon /> : tx.type === 'sent' ? <SentIcon /> : <ReceivedIcon />)
   const Kind = () => (tx.type === 'sent' ? <Text>Sent (xxx...xxx)</Text> : <Text>Received (xxx...xxx)</Text>)
   const Date = () => <TextSecondary>{prettyDate(tx.createdAt)}</TextSecondary>
-  const Sats = () => (tx.type === 'sent' ? <Text>{amount}</Text> : <TextGreen>{amount}</TextGreen>)
-  const Last = () => (tx.type === 'sent' ? <Text>Sent</Text> : <TextGreen>Received</TextGreen>)
+  const Sats = () => (tx.type === 'sent' ? <Text>{amount}</Text> : <Text color='green'>{amount}</Text>)
+  const Last = () => (tx.type === 'sent' ? <Text>Sent</Text> : <Text color='green'>Received</Text>)
 
   const handleClick = () => {
     setTxInfo(tx)

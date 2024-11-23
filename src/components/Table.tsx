@@ -1,4 +1,4 @@
-import { TextNormal, TextSecondary } from './Text'
+import Text, { TextSecondary } from './Text'
 import FlexRow from './FlexRow'
 import FlexCol from './flexCol'
 
@@ -7,7 +7,7 @@ export default function Table({ data }: { data: string[][] }) {
     <FlexCol gap='0.5rem'>
       {data.map(([title, value]) => (
         <FlexRow between key={title}>
-          <TextNormal>{title}</TextNormal>
+          <Text>{title}</Text>
           <TextSecondary>{value}</TextSecondary>
         </FlexRow>
       ))}

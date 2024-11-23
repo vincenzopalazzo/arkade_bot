@@ -22,11 +22,11 @@ export default function Paste({ data, onClick }: PasteProps) {
           <IonCol size='7'>
             <FlexRow>
               <PasteIcon />
-              <Text size='smaller'>Paste from clipboard</Text>
+              <Text smaller>Paste from clipboard</Text>
             </FlexRow>
           </IonCol>
           <IonCol size='5'>
-            <Text size='smaller' color='dark50'>
+            <Text color='dark50' smaller>
               {data}
             </Text>
           </IonCol>

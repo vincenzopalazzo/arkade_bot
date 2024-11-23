@@ -1,39 +1,44 @@
-import { IonButton, IonButtons, IonCol, IonGrid, IonHeader, IonRow, IonTitle } from '@ionic/react'
+import { IonButton, IonButtons, IonHeader, IonTitle } from '@ionic/react'
 import BackIcon from '../icons/Back'
 import Shadow from './Shadow'
-import { TextMini } from './Text'
+import Text from './Text'
+import FlexRow from './FlexRow'
 
 interface HeaderProps {
+  all?: () => void
   back?: () => void
   max?: () => void
   text: string
 }
 
-export default function Header({ back, max, text }: HeaderProps) {
-  const MaxButton = () => (
-    <Shadow onClick={max}>
-      <TextMini centered>Max</TextMini>
+export default function Header({ all, back, max, text }: HeaderProps) {
+  const SideButton = (text: string, onClick: () => void) => (
+    <Shadow onClick={onClick}>
+      <Text color='dark80' centered tiny wrap>
+        {text}
+      </Text>
     </Shadow>
   )
+
   return (
-    <IonHeader>
-      <IonGrid>
-        <IonRow>
-          <IonCol size='1'>
-            {back ? (
-              <IonButtons>
-                <IonButton onClick={back}>
-                  <BackIcon />
-                </IonButton>
-              </IonButtons>
-            ) : null}
-          </IonCol>
-          <IonCol>
-            <IonTitle class='ion-text-center'>{text}</IonTitle>
-          </IonCol>
-          <IonCol size='1'>{max ? <MaxButton /> : null}</IonCol>
-        </IonRow>
-      </IonGrid>
+    <IonHeader style={{ boxShadow: 'none' }}>
+      <FlexRow between>
+        <div style={{ minWidth: '4rem' }}>
+          {back ? (
+            <IonButtons>
+              <IonButton onClick={back}>
+                <BackIcon />
+              </IonButton>
+            </IonButtons>
+          ) : (
+            <p>&nbsp;</p>
+          )}
+        </div>
+        <IonTitle class='ion-text-center'>{text}</IonTitle>
+        <div style={{ minWidth: '4rem', paddingRight: '1rem' }}>
+          {max ? SideButton('Max', max) : all ? SideButton('All', all) : <p>&nbsp;</p>}
+        </div>
+      </FlexRow>
     </IonHeader>
   )
 }

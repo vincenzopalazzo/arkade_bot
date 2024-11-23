@@ -11,6 +11,7 @@ import Header from '../../../components/Header'
 import InputAmount from '../../../components/InputAmount'
 import Content from '../../../components/Content'
 import FlexCol from '../../../components/flexCol'
+import Keyboard from '../../../components/Keyboard'
 
 export default function ReceiveAmount() {
   const { setRecvInfo } = useContext(FlowContext)
@@ -21,10 +22,16 @@ export default function ReceiveAmount() {
   const [amount, setAmount] = useState(0)
   const [buttonLabel, setButtonLabel] = useState(defaultButtonLabel)
   const [error, setError] = useState('')
+  const [showKeys, setShowKeys] = useState(false)
 
   const handleChange = (sats: number) => {
     setAmount(sats)
     setButtonLabel(sats ? 'Continue' : defaultButtonLabel)
+  }
+
+  const handleFocus = () => {
+    const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints
+    if (isMobile) setShowKeys(true)
   }
 
   const handleProceed = async () => {
@@ -41,18 +48,24 @@ export default function ReceiveAmount() {
 
   return (
     <>
-      <Header text='Receive' />
-      <Content>
-        <Padded>
-          <FlexCol>
-            <Error error={Boolean(error)} text={error} />
-            <InputAmount label='Amount' onChange={handleChange} value={amount} />
-          </FlexCol>
-        </Padded>
-      </Content>
-      <ButtonsOnBottom>
-        <Button onClick={handleProceed} label={buttonLabel} />
-      </ButtonsOnBottom>
+      {showKeys ? (
+        <Keyboard back={() => setShowKeys(false)} hideBalance onChange={handleChange} value={amount} />
+      ) : (
+        <>
+          <Header text='Receive' />
+          <Content>
+            <Padded>
+              <FlexCol>
+                <Error error={Boolean(error)} text={error} />
+                <InputAmount label='Amount' onChange={handleChange} onFocus={handleFocus} value={amount} />
+              </FlexCol>
+            </Padded>
+          </Content>
+          <ButtonsOnBottom>
+            <Button onClick={handleProceed} label={buttonLabel} />
+          </ButtonsOnBottom>
+        </>
+      )}
     </>
   )
 }

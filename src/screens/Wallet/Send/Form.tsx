@@ -15,9 +15,7 @@ import Header from '../../../components/Header'
 import { WalletContext } from '../../../providers/wallet'
 import { prettyNumber } from '../../../lib/format'
 import Content from '../../../components/Content'
-import Paste from '../../../components/Paste'
 import FlexCol from '../../../components/flexCol'
-import { pasteFromClipboard } from '../../../lib/clipboard'
 import Keyboard from '../../../components/Keyboard'
 
 export default function SendForm() {
@@ -26,35 +24,18 @@ export default function SendForm() {
   const { sendInfo, setNoteInfo, setSendInfo } = useContext(FlowContext)
   const { wallet } = useContext(WalletContext)
 
-  const [clipboard, setClipboard] = useState('')
   const [destination, setDestination] = useState('')
-  const [disabled, setDisabled] = useState(true)
   const [error, setError] = useState('')
-  const [satoshis, setSatoshis] = useState(0)
+  const [sats, setSats] = useState(0)
   const [showKeys, setShowKeys] = useState(false)
 
   const [address, setAddress] = useState('')
-  const [amount, setAmount] = useState(0)
-
-  useEffect(() => {
-    pasteFromClipboard().then((value) => {
-      const lowerCaseData = value.toLowerCase()
-      if (
-        bip21.isBip21(lowerCaseData) ||
-        isArkAddress(lowerCaseData) ||
-        isBTCAddress(lowerCaseData) ||
-        isArkNote(lowerCaseData)
-      ) {
-        setClipboard(value)
-      }
-    })
-  }, [])
 
   useEffect(() => {
     const { address, arkAddress, satoshis } = sendInfo
     if (address) setAddress(address)
     if (arkAddress) setAddress(arkAddress)
-    if (satoshis) setAmount(satoshis)
+    setSats(satoshis ?? 0)
   }, [])
 
   useEffect(() => {
@@ -63,7 +44,7 @@ export default function SendForm() {
     const lowerCaseData = address.toLowerCase()
     if (bip21.isBip21(lowerCaseData)) {
       const { address, arkAddress, satoshis } = bip21.decode(lowerCaseData)
-      if (satoshis) setSatoshis(satoshis)
+      if (satoshis) setSats(satoshis)
       if (arkAddress) return setDestination(arkAddress)
       if (address) return setDestination(address)
       return setError('Unable to parse bip21')
@@ -86,34 +67,23 @@ export default function SendForm() {
     setError('Invalid address or invoice')
   }, [address])
 
-  useEffect(() => {
-    setSatoshis(amount)
-  }, [amount])
-
-  useEffect(() => {
-    setDisabled(!(destination && satoshis && satoshis > 0))
-  }, [destination, satoshis])
-
   const handleContinue = () => {
-    setSendInfo({ address: destination, satoshis })
+    setSendInfo({ address: destination, satoshis: sats })
     navigate(Pages.SendDetails)
   }
 
   const handleFocus = () => {
-    if (!amount) setShowKeys(true)
-  }
-
-  const handlePaste = () => {
-    setAddress(clipboard)
-    setClipboard('')
+    const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints
+    if (isMobile) setShowKeys(true)
   }
 
   const balance = `${prettyNumber(wallet.balance)} sats available`
+  const disabled = !(destination && sats && sats > 0)
 
   return (
     <>
       {showKeys ? (
-        <Keyboard back={() => setShowKeys(false)} onChange={setAmount} />
+        <Keyboard back={() => setShowKeys(false)} onChange={setSats} value={sats} />
       ) : (
         <>
           <Header text='Send' />
@@ -123,16 +93,8 @@ export default function SendForm() {
                 <Error error={Boolean(error)} text={error} />
                 <FlexCol gap='0.5rem'>
                   <InputAddress label='Recipient address' onChange={setAddress} value={address} />
-                  {clipboard ? <Paste data={clipboard} onClick={handlePaste} /> : null}
                 </FlexCol>
-                <InputAmount
-                  label='Amount'
-                  onChange={setAmount}
-                  onFocus={handleFocus}
-                  right={balance}
-                  value={satoshis}
-                />
-                <Button label='Open keyboard' onClick={() => setShowKeys(true)} />
+                <InputAmount label='Amount' onChange={setSats} onFocus={handleFocus} right={balance} value={sats} />
               </FlexCol>
             </Padded>
           </Content>

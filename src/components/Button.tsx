@@ -18,18 +18,13 @@ export default function Button({ disabled, icon, label, onClick, red, secondary,
     marginTop: '1rem',
   }
 
-  const xxx = (ev: any) => {
-    console.log('ffff')
-    onClick(ev)
-  }
-
   return (
     <IonButton
       color={red ? 'danger' : 'dark'}
       disabled={disabled}
       expand={short ? undefined : 'block'}
       fill={secondary ? 'outline' : 'solid'}
-      onClick={xxx}
+      onClick={onClick}
       style={style}
     >
       {icon}

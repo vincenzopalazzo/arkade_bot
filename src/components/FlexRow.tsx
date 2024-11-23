@@ -3,15 +3,16 @@ import { ReactNode } from 'react'
 interface FlexRowProps {
   between?: boolean
   children: ReactNode
+  gap?: string
   onClick?: () => void
 }
 
-export default function FlexRow({ between, children, onClick }: FlexRowProps) {
+export default function FlexRow({ between, children, gap, onClick }: FlexRowProps) {
   const justifyContent = between ? 'space-between' : 'start'
   const style = {
     alignItems: 'center',
     display: 'flex',
-    gap: '.5rem',
+    gap: gap ?? '.5rem',
     justifyContent,
     width: '100%',
   }

@@ -13,7 +13,7 @@ import { Options, OptionsContext } from '../../providers/options'
 import Menu from './Menu'
 
 export default function Settings() {
-  const { option, setOption } = useContext(OptionsContext)
+  const { option } = useContext(OptionsContext)
 
   return (
     <>
@@ -25,7 +25,7 @@ export default function Settings() {
       {option === Options.Notes && <NoteScan />}
       {option === Options.Notifications && <Notifications />}
       {option === Options.Reset && <Reset />}
-      {option === Options.Server && <Server backup={() => setOption(Options.Backup)} />}
+      {option === Options.Server && <Server />}
       {option === Options.Appearance && <Appearance />}
       {option === Options.Vtxos && <Vtxos />}
     </>

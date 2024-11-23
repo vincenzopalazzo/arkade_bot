@@ -17,27 +17,22 @@ export default function InputAmount({ label, onChange, onFocus, right, value }: 
 
   const [error, setError] = useState('')
   const [fiatValue, setFiatValue] = useState('')
-  const [text, setText] = useState('')
 
   useEffect(() => {
-    if (value) setText(value.toString())
+    setFiatValue(prettyNumber(toUSD(value ?? 0), 2))
+    setError(value ? (value < 0 ? 'Invalid amount' : '') : '')
   }, [value])
 
-  useEffect(() => {
-    const sats = Math.floor(Number(text))
-    setFiatValue(prettyNumber(toUSD(sats), 2))
-    setError(sats < 0 ? 'Invalid amount' : '')
-    onChange(sats)
-  }, [text])
-
   const handleInput = (ev: Event) => {
-    setText((ev.target as HTMLInputElement).value)
+    const newValue = Number((ev.target as HTMLInputElement).value)
+    if (Number.isNaN(newValue)) return
+    onChange(newValue)
   }
 
   return (
     <>
       <InputContainer error={error} label={label} right={right}>
-        <IonInput onIonFocus={onFocus} onIonInput={handleInput} type='number' value={value}>
+        <IonInput onIonFocus={onFocus} onIonInput={handleInput} type='number' value={value ? value : undefined}>
           <IonText slot='end' style={{ color: 'var(--dark50)', fontSize: '13px' }}>{`$${fiatValue}`}</IonText>
         </IonInput>
       </InputContainer>

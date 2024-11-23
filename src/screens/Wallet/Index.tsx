@@ -30,6 +30,7 @@ export default function Wallet() {
         <Balance sats={wallet.balance} />
         <Error error={error} text='Asp unreachable' />
       </Padded>
+      <div style={{ marginTop: '2rem' }} />
       <TransactionsList />
     </Content>
   )

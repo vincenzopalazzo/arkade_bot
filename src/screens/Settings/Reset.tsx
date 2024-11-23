@@ -6,7 +6,7 @@ import Padded from '../../components/Padded'
 import Content from '../../components/Content'
 import Header from './Header'
 import { NavigationContext, Pages } from '../../providers/navigation'
-import { TextEmphasys, TextNormal } from '../../components/Text'
+import Text from '../../components/Text'
 import Checkbox from '../../components/Checkbox'
 
 export default function Reset() {
@@ -29,8 +29,8 @@ export default function Reset() {
       <Header text='Reset wallet' back />
       <Content>
         <Padded>
-          <TextEmphasys>Did you backup your wallet?</TextEmphasys>
-          <TextNormal color='dark80'>This operation cannot be undone.</TextNormal>
+          <Text big>Did you backup your wallet?</Text>
+          <Text color='dark80'>This operation cannot be undone.</Text>
         </Padded>
       </Content>
       <ButtonsOnBottom>

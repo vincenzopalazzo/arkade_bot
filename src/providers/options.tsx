@@ -27,7 +27,7 @@ export enum Options {
   Nostr = 'nostr',
   Notes = 'notes',
   Password = 'password',
-  Reset = 'reset',
+  Reset = 'reset wallet',
   Server = 'server',
   Vtxos = 'vtxos',
 }

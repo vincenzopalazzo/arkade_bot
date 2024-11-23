@@ -4,23 +4,23 @@ import { useState } from 'react'
 import BarcodeScanner from './BarcodeScanner'
 import ScanIcon from '../icons/Scan'
 import Clipboard from './Clipboard'
-import { isArkAddress, isBTCAddress } from '../lib/address'
-import { isArkNote } from '../lib/arknote'
-import { isBip21 } from '../lib/bip21'
 
-interface InputAddressProps {
+interface InputUrlProps {
   label?: string
   onChange: (arg0: any) => void
   placeholder?: string
   value?: string
 }
 
-export default function InputAddress({ label, onChange, placeholder, value }: InputAddressProps) {
+export default function InputUrl({ label, onChange, placeholder, value }: InputUrlProps) {
   const [error, setError] = useState('')
   const [scan, setScan] = useState(false)
 
+  const isUrl = new RegExp('^https?://')
+
   const handleInput = (ev: Event) => {
-    onChange((ev.target as HTMLInputElement).value)
+    const data = (ev.target as HTMLInputElement).value.toLowerCase()
+    if (isUrl.test(data)) onChange(data)
   }
 
   const startScan = () => {
@@ -36,9 +36,8 @@ export default function InputAddress({ label, onChange, placeholder, value }: In
     setError(data)
   }
 
-  const validator = (dataToValidate: string): boolean => {
-    const data = dataToValidate.toLowerCase()
-    return isBip21(data) || isArkAddress(data) || isBTCAddress(data) || isArkNote(data)
+  const validator = (data: string): boolean => {
+    return isUrl.test(data.toLowerCase())
   }
 
   if (scan) return <BarcodeScanner setData={handleData} setError={handleError} />
