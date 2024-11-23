@@ -41,9 +41,9 @@ export default function Text({ bold, capitalize, centered, color, children, size
   )
 }
 
-export function TextEmphasys({ children }: TextProps) {
+export function TextEmphasys({ centered, children }: TextProps) {
   return (
-    <Text size='large' capitalize>
+    <Text size='large' capitalize centered={centered}>
       {children}
     </Text>
   )
@@ -63,9 +63,9 @@ export function TextLabel({ children }: TextProps) {
   )
 }
 
-export function TextMini({ children }: TextProps) {
+export function TextMini({ centered, children }: TextProps) {
   return (
-    <Text size='tiny' color='dark80' capitalize>
+    <Text color='dark80' capitalize centered={centered} size='tiny'>
       {children}
     </Text>
   )
@@ -75,9 +75,9 @@ export function TextNormal({ children, color }: TextProps) {
   return <Text color={color}>{children}</Text>
 }
 
-export function TextSecondary({ children, wrap }: TextProps) {
+export function TextSecondary({ centered, children, wrap }: TextProps) {
   return (
-    <Text color='dark50' size='small' wrap={wrap}>
+    <Text centered={centered} color='dark50' size='small' wrap={wrap}>
       {children}
     </Text>
   )

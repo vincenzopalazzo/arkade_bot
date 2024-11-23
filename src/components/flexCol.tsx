@@ -1,17 +1,21 @@
 import { ReactNode } from 'react'
 
 interface FlexColProps {
+  between?: boolean
+  centered?: boolean
   children: ReactNode
   end?: boolean
   gap?: string
 }
 
-export default function FlexCol({ children, end, gap }: FlexColProps) {
+export default function FlexCol({ between, centered, children, end, gap }: FlexColProps) {
   const style: any = {
-    alignItems: end ? 'end' : 'start',
+    alignItems: centered ? 'center' : end ? 'end' : 'start',
     display: 'flex',
     flexDirection: 'column',
     gap: gap ?? '1rem',
+    height: between ? '100%' : undefined,
+    justifyContent: between ? 'space-between' : undefined,
     width: '100%',
   }
 

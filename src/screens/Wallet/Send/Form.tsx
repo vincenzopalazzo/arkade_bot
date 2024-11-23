@@ -113,14 +113,7 @@ export default function SendForm() {
   return (
     <>
       {showKeys ? (
-        <>
-          <Header text='Amount' back={() => setShowKeys(false)} />
-          <Content>
-            <Padded>
-              <Keyboard onChange={setAmount} />
-            </Padded>
-          </Content>
-        </>
+        <Keyboard back={() => setShowKeys(false)} onChange={setAmount} />
       ) : (
         <>
           <Header text='Send' />
