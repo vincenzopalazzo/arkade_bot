@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
 import Button from '../../components/Button'
-import Title from '../../components/Title'
 import ButtonsOnBottom from '../../components/ButtonsOnBottom'
 import Error from '../../components/Error'
 import { NavigationContext, Pages } from '../../providers/navigation'
@@ -9,6 +8,8 @@ import { FlowContext } from '../../providers/flow'
 import Content from '../../components/Content'
 import { invalidPrivateKey, nsecToSeed } from '../../lib/privateKey'
 import Textarea from '../../components/Textarea'
+import Header from '../../components/Header'
+import FlexCol from '../../components/FlexCol'
 
 enum ButtonLabel {
   Invalid = 'Invalid private key',
@@ -34,7 +35,9 @@ export default function InitOld() {
     setPrivateKey(someKey.match(/^nsec/) ? nsecToSeed(someKey) : someKey)
   }, [someKey])
 
-  const handleChange = (e: any) => setSomeKey(e.target.value)
+  const handleChange = (key: string) => {
+    setSomeKey(key)
+  }
 
   const handleCancel = () => navigate(Pages.Init)
 
@@ -46,18 +49,20 @@ export default function InitOld() {
   const disabled = privateKey.length > 0 && error.length > 0
 
   return (
-    <Content>
-      <Padded>
-        <Title text='Restore wallet' subtext='Insert your private key' />
-        <div className='flex flex-col gap-2 mt-10'>
-          <Textarea label='Private key' onChange={handleChange} />
-          <Error error={Boolean(error)} text={error} />
-        </div>
-      </Padded>
+    <>
+      <Header text='Restore wallet' back={handleCancel} />
+      <Content>
+        <Padded>
+          <FlexCol>
+            <Textarea label='Private key' onChange={handleChange} />
+            <Error error={Boolean(error)} text={error} />
+          </FlexCol>
+        </Padded>
+      </Content>
       <ButtonsOnBottom>
         <Button onClick={handleProceed} label={label} disabled={disabled} />
         <Button onClick={handleCancel} label='Cancel' secondary />
       </ButtonsOnBottom>
-    </Content>
+    </>
   )
 }

@@ -10,7 +10,7 @@ import { extractError } from '../../../lib/error'
 import Header from '../../../components/Header'
 import InputAmount from '../../../components/InputAmount'
 import Content from '../../../components/Content'
-import FlexCol from '../../../components/flexCol'
+import FlexCol from '../../../components/FlexCol'
 import Keyboard from '../../../components/Keyboard'
 
 export default function ReceiveAmount() {

@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
 import Button from '../../components/Button'
-import Title from '../../components/Title'
 import ButtonsOnBottom from '../../components/ButtonsOnBottom'
 import { NavigationContext, Pages } from '../../providers/navigation'
 import { AspContext } from '../../providers/asp'
@@ -9,6 +8,9 @@ import { generateMnemonic } from 'bip39'
 import { getPrivateKeyFromMnemonic } from '../../lib/wallet'
 import { FlowContext } from '../../providers/flow'
 import Content from '../../components/Content'
+import CenterScreen from '../../components/CenterScreen'
+import Text from '../../components/Text'
+import LogoIcon from '../../icons/Logo'
 
 export default function Init() {
   const { aspInfo } = useContext(AspContext)
@@ -32,20 +34,19 @@ export default function Init() {
   const handleOldWallet = () => navigate(Pages.InitOld)
 
   return (
-    <Content>
-      <div className='mt-24 max-w-80 md:max-w-full mx-auto'>
-        <Title text='Arkade' subtext='Ark wallet PoC' />
-        <div className='flex flex-col gap-1 mb-4'>
-          <p>Bitcoin transactions that scale</p>
-          <p>Extremely beta software</p>
-          <p>Signet only</p>
-        </div>
-        <Error error={error} text='ASP unreachable, try again later' />
-      </div>
+    <>
+      <Content>
+        <CenterScreen>
+          <LogoIcon big />
+          <Text bigger>Arkade</Text>
+          <Text color='dark50'>Ark wallet PoC</Text>
+          <Error error={error} text='ASP unreachable, try again later' />
+        </CenterScreen>
+      </Content>
       <ButtonsOnBottom>
         <Button disabled={error} onClick={handleNewWallet} label='New wallet' />
         <Button disabled={error} onClick={handleOldWallet} label='Restore wallet' />
       </ButtonsOnBottom>
-    </Content>
+    </>
   )
 }

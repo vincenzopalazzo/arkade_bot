@@ -1,11 +1,15 @@
 import { useEffect, useState } from 'react'
 import InputPassword from './InputPassword'
+import FlexCol from './FlexCol'
+import Text from './Text'
+import CheckList from './CheckList'
+import StrengthBars from './Strength'
 
-const calcStrength = (pass: string, max = 100): number => {
-  let strength = pass.length * 5
-  if (pass.match(/\d/)) strength += 10
-  if (pass.match(/\W/)) strength += 10
-  return strength < max ? strength : max
+const calcStrength = (pass: string): number => {
+  let strength = pass.length * 0.2
+  if (pass.match(/\d/)) strength += 1
+  if (pass.match(/\W/)) strength += 1
+  return strength
 }
 
 interface NewPasswordProps {
@@ -33,18 +37,28 @@ export default function NewPassword({ onNewPassword, setLabel }: NewPasswordProp
 
   const handleChangeConfirm = (e: any) => setConfirm(e.target.value)
 
+  const passwordChecks = [
+    {
+      text: '8 characters minimum',
+      done: password.length > 7,
+    },
+    {
+      text: 'contain at least 1 number',
+      done: /\d/.test(password),
+    },
+    {
+      text: 'contain at least 1 special character',
+      done: /\W/.test(password),
+    },
+  ]
+
   return (
-    <div className='pt-10'>
-      <InputPassword onChange={handleChangeInsert} label='Insert password' />
-      <div className='relative mb-16 mt-2 text-sm text-gray-500'>
-        <div className='w-full bg-gray-200 rounded-full h-1.5 mb-4'>
-          <div className='bg-gray-700 h-1.5 rounded-full' style={{ width: `${strength}%` }} />
-        </div>
-        <span className='absolute start-0 -bottom-6'>Weak</span>
-        <span className='absolute start-1/2 -translate-x-1/2 -bottom-6'>Enough</span>
-        <span className='absolute end-0 -bottom-6'>Strong</span>
-      </div>
+    <FlexCol>
+      <InputPassword onChange={handleChangeInsert} label='Password' strength={strength} />
+      <StrengthBars strength={strength} />
       <InputPassword onChange={handleChangeConfirm} label='Confirm password' />
-    </div>
+      <Text smaller>Set a strong password with:</Text>
+      <CheckList data={passwordChecks} />
+    </FlexCol>
   )
 }

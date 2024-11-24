@@ -5,7 +5,7 @@ import Padded from '../../components/Padded'
 import Header from './Header'
 import { TextLabel, TextSecondary } from '../../components/Text'
 import Toggle from '../../components/Toggle'
-import FlexCol from '../../components/flexCol'
+import FlexCol from '../../components/FlexCol'
 
 export default function Theme() {
   const { config, updateConfig } = useContext(ConfigContext)

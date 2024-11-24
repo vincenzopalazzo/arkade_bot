@@ -9,7 +9,7 @@ import { getPrivateKey } from '../../lib/asp'
 import { seedToNsec } from '../../lib/privateKey'
 import Header from './Header'
 import { TextSecondary } from '../../components/Text'
-import FlexCol from '../../components/flexCol'
+import FlexCol from '../../components/FlexCol'
 
 export default function Backup() {
   const label = 'Copy to clipboard'

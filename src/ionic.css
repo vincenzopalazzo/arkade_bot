@@ -1,5 +1,6 @@
 :root {
   --dark80: rgba(var(--ion-color-dark-rgb), 0.8);
+  --dark70: rgba(var(--ion-color-dark-rgb), 0.7);
   --dark50: rgba(var(--ion-color-dark-rgb), 0.5);
   --dark20: rgba(var(--ion-color-dark-rgb), 0.2);
   --dark10: rgba(var(--ion-color-dark-rgb), 0.1);
@@ -8,6 +9,7 @@
   --redbg: rgb(56, 0, 8);
   --red: rgb(255, 79, 79);
   --white: rgb(251, 251, 251);
+  --yellow: rgb(255, 221, 70);
 }
 
 ion-button {

@@ -195,9 +195,9 @@ export const startListenTransactionStream = async (callback: () => {}) => {
 }
 
 export const unlock = async (password: string): Promise<void> => {
-  await window.unlock(password)
+  return await window.unlock(password)
 }
 
-export const walletLocked = async (): Promise<void> => {
-  await window.locked()
+export const walletLocked = async (): Promise<boolean> => {
+  return await window.locked()
 }

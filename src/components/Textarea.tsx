@@ -1,9 +1,8 @@
 import { ReactNode } from 'react'
 import Text from './Text'
 import { IonTextarea } from '@ionic/react'
-import Padded from './Padded'
 import Shadow from './Shadow'
-import FlexCol from './flexCol'
+import FlexCol from './FlexCol'
 
 interface TextareaProps {
   children?: ReactNode
@@ -17,6 +16,11 @@ export default function Textarea({ children, label, onChange, value }: TextareaP
     padding: '0.5rem 1rem',
   }
 
+  const handleChange = (ev: Event) => {
+    const value = (ev.target as HTMLTextAreaElement).value
+    if (onChange) onChange(value)
+  }
+
   return (
     <FlexCol gap='0.5rem'>
       {label ? (
@@ -25,7 +29,7 @@ export default function Textarea({ children, label, onChange, value }: TextareaP
         </Text>
       ) : null}
       <Shadow>
-        <IonTextarea onChange={onChange} readonly={typeof onChange === 'undefined'} style={style} value={value}>
+        <IonTextarea onIonChange={handleChange} readonly={typeof onChange === 'undefined'} style={style} value={value}>
           {children}
         </IonTextarea>
       </Shadow>

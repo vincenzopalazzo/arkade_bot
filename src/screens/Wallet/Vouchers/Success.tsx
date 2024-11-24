@@ -9,6 +9,10 @@ import Content from '../../../components/Content'
 import { NotificationsContext } from '../../../providers/notifications'
 import { FlowContext } from '../../../providers/flow'
 import { prettyNumber } from '../../../lib/format'
+import Header from '../../../components/Header'
+import CenterScreen from '../../../components/CenterScreen'
+import Text from '../../../components/Text'
+import FlexCol from '../../../components/FlexCol'
 
 export default function NoteSuccess() {
   const { noteInfo } = useContext(FlowContext)
@@ -22,18 +26,19 @@ export default function NoteSuccess() {
   }, [])
 
   return (
-    <Content>
-      <Padded>
-        <Title text='Success' subtext={`${prettyNumber(noteInfo.satoshis)} sats redeemed`} />
-        <div className='flex h-60'>
-          <div className='m-auto'>
+    <>
+      <Header text='Success' />
+      <Content>
+        <CenterScreen>
+          <FlexCol centered>
             <SuccessIcon />
-          </div>
-        </div>
-      </Padded>
+            <Text>{`${prettyNumber(noteInfo.satoshis)} sats redeemeed`}</Text>
+          </FlexCol>
+        </CenterScreen>
+      </Content>
       <ButtonsOnBottom>
-        <Button onClick={goBackToWallet} label='Back to wallet' secondary />
+        <Button onClick={goBackToWallet} label='Back to wallet' />
       </ButtonsOnBottom>
-    </Content>
+    </>
   )
 }

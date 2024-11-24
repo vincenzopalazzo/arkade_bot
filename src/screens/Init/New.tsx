@@ -11,6 +11,7 @@ import { getPrivateKeyFromMnemonic } from '../../lib/wallet'
 import TipIcon from '../../icons/Tip'
 import { seedToNsec } from '../../lib/privateKey'
 import Textarea from '../../components/Textarea'
+import Header from '../../components/Header'
 
 export default function InitNew() {
   const { navigate } = useContext(NavigationContext)
@@ -38,21 +39,24 @@ export default function InitNew() {
   }
 
   return (
-    <Content>
-      <Padded>
-        <Title text='Your new wallet' subtext='Write it in a secure place' />
-        <div className='flex flex-col gap-4 mt-10'>
-          <Textarea label='Private key' value={nsec} />
-          <div className='flex justify-center align-middle mt-4'>
-            <TipIcon small />
-            <p className='text-sm'>You can see it later on Settings &gt; Backup</p>
+    <>
+      <Header text='Wallet' back={handleCancel} />
+      <Content>
+        <Padded>
+          <Title text='Your new wallet' subtext='Write it in a secure place' />
+          <div className='flex flex-col gap-4 mt-10'>
+            <Textarea label='Private key' value={nsec} />
+            <div className='flex justify-center align-middle mt-4'>
+              <TipIcon small />
+              <p className='text-sm'>You can see it later on Settings &gt; Backup</p>
+            </div>
           </div>
-        </div>
-      </Padded>
+        </Padded>
+      </Content>
       <ButtonsOnBottom>
         <Button onClick={handleProceed} label='Continue' />
         <Button onClick={handleCancel} label='Cancel' secondary />
       </ButtonsOnBottom>
-    </Content>
+    </>
   )
 }

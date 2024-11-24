@@ -15,8 +15,9 @@ import Header from '../../../components/Header'
 import { WalletContext } from '../../../providers/wallet'
 import { prettyNumber } from '../../../lib/format'
 import Content from '../../../components/Content'
-import FlexCol from '../../../components/flexCol'
+import FlexCol from '../../../components/FlexCol'
 import Keyboard from '../../../components/Keyboard'
+import Text from '../../../components/Text'
 
 export default function SendForm() {
   const { aspInfo } = useContext(AspContext)
@@ -77,7 +78,12 @@ export default function SendForm() {
     if (isMobile) setShowKeys(true)
   }
 
-  const balance = `${prettyNumber(wallet.balance)} sats available`
+  const Available = () => (
+    <Text color='dark50' smaller>
+      {`${prettyNumber(wallet.balance)} sats available`}
+    </Text>
+  )
+
   const disabled = !(destination && sats && sats > 0)
 
   return (
@@ -94,7 +100,13 @@ export default function SendForm() {
                 <FlexCol gap='0.5rem'>
                   <InputAddress label='Recipient address' onChange={setAddress} value={address} />
                 </FlexCol>
-                <InputAmount label='Amount' onChange={setSats} onFocus={handleFocus} right={balance} value={sats} />
+                <InputAmount
+                  label='Amount'
+                  onChange={setSats}
+                  onFocus={handleFocus}
+                  right={<Available />}
+                  value={sats}
+                />
               </FlexCol>
             </Padded>
           </Content>

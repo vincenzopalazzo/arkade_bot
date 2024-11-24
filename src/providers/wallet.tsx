@@ -100,6 +100,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     })
   }
 
+  // load wasm on startup
   useEffect(() => {
     if (wasmLoaded) return
     const sdkFile = '/ark-sdk.wasm'
@@ -125,7 +126,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [wasmLoaded])
 
-  // calculate next roll over date
+  // auto settle vtxos if next recycle in less than 24 hours
   useEffect(() => {
     if (!wallet.nextRecycle || !walletUnlocked) return
     const now = Math.floor(new Date().getTime() / 1000)
@@ -229,8 +230,10 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   const unlockWallet = async (password: string) => {
     try {
       await unlock(password)
-      setWalletUnlocked(true)
-      reloadWallet()
+      walletLocked().then((locked) => {
+        setWalletUnlocked(!locked)
+        if (!locked) reloadWallet()
+      })
     } catch (err) {
       throw 'Invalid password'
     }

@@ -8,7 +8,7 @@ interface InputAmountProps {
   label?: string
   onChange: (arg0: any) => void
   onFocus?: () => void
-  right?: string
+  right?: JSX.Element
   value?: number
 }
 

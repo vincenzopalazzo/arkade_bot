@@ -13,7 +13,7 @@ import { setNostrNotificationRecipient } from '../../lib/asp'
 import Header from './Header'
 import Toggle from '../../components/Toggle'
 import { TextLabel, TextSecondary } from '../../components/Text'
-import FlexCol from '../../components/flexCol'
+import FlexCol from '../../components/FlexCol'
 import InputAddress from '../../components/InputAddress'
 import InputNpub from '../../components/InputNpub'
 

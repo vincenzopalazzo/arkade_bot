@@ -1,12 +1,12 @@
 import { useContext, useState } from 'react'
 import Button from '../../components/Button'
 import ButtonsOnBottom from '../../components/ButtonsOnBottom'
-import Title from '../../components/Title'
 import { NavigationContext, Pages } from '../../providers/navigation'
 import Padded from '../../components/Padded'
 import NewPassword from '../../components/NewPassword'
 import { FlowContext } from '../../providers/flow'
 import Content from '../../components/Content'
+import Header from '../../components/Header'
 
 export default function InitPassword() {
   const { navigate } = useContext(NavigationContext)
@@ -23,15 +23,17 @@ export default function InitPassword() {
   }
 
   return (
-    <Content>
-      <Padded>
-        <Title text='Password' subtext='Define your password' />
-        <NewPassword onNewPassword={setPassword} setLabel={setLabel} />
-      </Padded>
+    <>
+      <Header text='Define password' back={handleCancel} />
+      <Content>
+        <Padded>
+          <NewPassword onNewPassword={setPassword} setLabel={setLabel} />
+        </Padded>
+      </Content>
       <ButtonsOnBottom>
         <Button onClick={handleProceed} label={label} disabled={!password} />
         <Button onClick={handleCancel} label='Cancel' secondary />
       </ButtonsOnBottom>
-    </Content>
+    </>
   )
 }

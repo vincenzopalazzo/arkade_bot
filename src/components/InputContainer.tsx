@@ -3,23 +3,21 @@ import Text from './Text'
 import Error from './Error'
 import FlexRow from './FlexRow'
 import Shadow from './Shadow'
-import FlexCol from './flexCol'
+import FlexCol from './FlexCol'
 import Padded from './Padded'
 
 interface InputContainerProps {
   children: ReactNode
   error?: string
   label?: string
-  right?: string
+  right?: JSX.Element
 }
 
 export default function InputContainer({ children, error, label, right }: InputContainerProps) {
   const TopLabel = () => (
     <FlexRow between>
       <Text smaller>{label}</Text>
-      <Text color='dark50' smaller>
-        {right}
-      </Text>
+      <div>{right}</div>
     </FlexRow>
   )
 

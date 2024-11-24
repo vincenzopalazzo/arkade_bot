@@ -28,17 +28,20 @@ export default function Lock() {
     setError('')
     setPassword(pass)
     lockWallet(pass)
-      .then(() => navigate(Pages.Wallet))
+      .then(() => navigate(Pages.Unlock))
       .catch(() => {})
   }
 
   const handleLock = async () => {
     setLocking(true)
     lockWallet(password)
-      .then(() => navigate(Pages.Wallet))
+      .then(() => {
+        setPassword('')
+        setLocking(false)
+        navigate(Pages.Unlock)
+      })
       .catch((err) => {
         setError(extractError(err))
-        setLocking(false)
       })
   }
 
