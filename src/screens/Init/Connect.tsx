@@ -1,7 +1,6 @@
 import { useContext, useEffect } from 'react'
 import Button from '../../components/Button'
 import ButtonsOnBottom from '../../components/ButtonsOnBottom'
-import Text from '../../components/Text'
 import { NavigationContext, Pages } from '../../providers/navigation'
 import { FlowContext } from '../../providers/flow'
 import Content from '../../components/Content'
@@ -29,8 +28,7 @@ export default function InitConnect() {
       <Header text='Connecting to server' back={handleCancel} />
       <Content>
         <CenterScreen>
-          <Loading />
-          <Text small>Connecting to server</Text>
+          <Loading text='Connecting to server' />
         </CenterScreen>
       </Content>
       <ButtonsOnBottom>
