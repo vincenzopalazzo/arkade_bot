@@ -1,10 +1,6 @@
-export default function ArrowIcon({ small, tiny }: { small?: boolean; tiny?: boolean }) {
+export default function ArrowIcon() {
   return (
-    <svg
-      className={tiny ? 'w-3 h-3' : small ? 'w-4 h-4' : 'w-6 h-6'}
-      viewBox='0 0 24 24'
-      xmlns='http://www.w3.org/2000/svg'
-    >
+    <svg height={12} width={12} viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'>
       <path fill='none' stroke='currentColor' strokeWidth='2' d='m7 2l10 10L7 22' />
     </svg>
   )

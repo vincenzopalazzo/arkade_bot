@@ -44,7 +44,7 @@ export default function Menu() {
                     </FlexRow>
                   </IonCol>
                   <IonCol size='1'>
-                    <ArrowIcon tiny />
+                    <ArrowIcon />
                   </IonCol>
                 </IonRow>
               ))}

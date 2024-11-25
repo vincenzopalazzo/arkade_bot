@@ -1,6 +1,7 @@
 export default function LoadingIcon({ small }: { small?: boolean }) {
+  const size = small ? 32 : 64
   return (
-    <svg className={small ? 'w-8 h-8 ' : 'w-16 h-16'} viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'>
+    <svg height={size} width={size} viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'>
       <circle cx='12' cy='2' r='0' fill='currentColor'>
         <animate
           attributeName='r'
