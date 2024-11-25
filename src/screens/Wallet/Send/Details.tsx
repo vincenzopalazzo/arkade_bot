@@ -29,24 +29,13 @@ export default function SendDetails() {
     if (!address && !arkAddress) return setError('Missing address')
     if (!satoshis) return setError('Missing amount')
     const total = satoshis + feeInSats
-    if (address) {
-      setDetails({
-        address,
-        comment: 'Paying to mainnet',
-        satoshis,
-        fees: feeInSats,
-        total,
-      })
-    }
-    if (arkAddress) {
-      setDetails({
-        address: arkAddress,
-        comment: 'Paying inside Ark',
-        satoshis,
-        fees: feeInSats,
-        total,
-      })
-    }
+    setDetails({
+      address: arkAddress ?? address,
+      comment: arkAddress ? 'Paying inside Ark' : 'Paying to mainnet',
+      satoshis,
+      fees: feeInSats,
+      total,
+    })
     if (wallet.balance < total) {
       setButtonLabel('Insufficient funds')
       setError(`Insufficient funds, you just have ${prettyNumber(wallet.balance)} sats`)
@@ -56,6 +45,8 @@ export default function SendDetails() {
   }, [sendInfo])
 
   const handleContinue = () => navigate(Pages.SendPayment)
+
+  console.log('sendInfo', sendInfo)
 
   return (
     <>

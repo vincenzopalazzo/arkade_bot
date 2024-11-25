@@ -3,15 +3,22 @@ import Text from './Text'
 import FlexRow from './FlexRow'
 
 const getColor = (strength: number): string => {
-  if (strength < 2) return 'red'
+  if (strength <= 1) return 'red'
   if (strength < 4) return 'yellow'
   return 'green'
 }
 
 const getWord = (strength: number): string => {
-  if (strength < 2) return 'weak'
+  if (strength <= 1) return 'weak'
   if (strength < 4) return 'medium'
   return 'strong'
+}
+
+export const calcStrength = (pass: string): number => {
+  let strength = pass.length * 0.25
+  if (pass.match(/\d/)) strength += 1
+  if (pass.match(/\W/)) strength += 1
+  return strength
 }
 
 export const StrengthLabel = ({ strength }: { strength: number }): JSX.Element => (
@@ -20,7 +27,7 @@ export const StrengthLabel = ({ strength }: { strength: number }): JSX.Element =
       Strength:
     </Text>
     <Text smaller color={getColor(strength)}>
-      {getWord(strength)}
+      {getWord(strength)} {strength}
     </Text>
   </FlexRow>
 )

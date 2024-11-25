@@ -35,7 +35,7 @@ export default function Keyboard({ back, hideBalance, onChange, value }: Keyboar
 
   const fiatValueWithUSD = () => {
     if (!sats) return
-    return prettyNumber(toUSD(sats), 2)
+    return prettyNumber(toUSD(sats), 2) + ' USD'
   }
 
   const handleKeyPress = (k: string) => {

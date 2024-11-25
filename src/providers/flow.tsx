@@ -21,6 +21,7 @@ export interface RecvInfo {
 export type SendInfo = {
   address?: string
   arkAddress?: string
+  recipient?: string
   satoshis?: number
   txid?: string
 }
@@ -59,6 +60,7 @@ export const emptyRecvInfo: RecvInfo = {
 export const emptySendInfo: SendInfo = {
   address: '',
   arkAddress: '',
+  recipient: '',
   satoshis: 0,
   txid: '',
 }

@@ -25,51 +25,48 @@ export default function SendForm() {
   const { sendInfo, setNoteInfo, setSendInfo } = useContext(FlowContext)
   const { wallet } = useContext(WalletContext)
 
-  const [destination, setDestination] = useState('')
   const [error, setError] = useState('')
-  const [sats, setSats] = useState(0)
   const [showKeys, setShowKeys] = useState(false)
 
-  const [address, setAddress] = useState('')
+  const [amount, setAmount] = useState(0)
+  const [recipient, setRecipient] = useState('')
 
   useEffect(() => {
-    const { address, arkAddress, satoshis } = sendInfo
-    if (address) setAddress(address)
-    if (arkAddress) setAddress(arkAddress)
-    setSats(satoshis ?? 0)
+    const { recipient, satoshis } = sendInfo
+    setRecipient(recipient ?? '')
+    setAmount(satoshis ?? 0)
   }, [])
 
   useEffect(() => {
     setError('')
-    if (!address) return
-    const lowerCaseData = address.toLowerCase()
+    if (!recipient) return
+    const lowerCaseData = recipient.toLowerCase()
     if (bip21.isBip21(lowerCaseData)) {
       const { address, arkAddress, satoshis } = bip21.decode(lowerCaseData)
-      if (satoshis) setSats(satoshis)
-      if (arkAddress) return setDestination(arkAddress)
-      if (address) return setDestination(address)
-      return setError('Unable to parse bip21')
+      if (!address && !arkAddress) return setError('Unable to parse bip21')
+      setAmount(satoshis ?? 0)
+      return setSendInfo({ address, arkAddress, recipient, satoshis })
     }
     if (isArkAddress(lowerCaseData)) {
       const { aspKey } = decodeArkAddress(lowerCaseData)
       if (aspKey !== aspInfo.pubkey.slice(2)) return setError('Invalid ASP pubkey')
-      return setDestination(lowerCaseData)
+      return setSendInfo({ arkAddress: lowerCaseData })
     }
     if (isBTCAddress(lowerCaseData)) {
-      return setDestination(lowerCaseData)
+      return setSendInfo({ address: lowerCaseData })
     }
     if (isArkNote(lowerCaseData)) {
       try {
-        const anote = ArkNote.fromString(address)
-        setNoteInfo({ note: address, satoshis: anote.data.value })
+        const anote = ArkNote.fromString(recipient)
+        setNoteInfo({ note: recipient, satoshis: anote.data.value })
         return navigate(Pages.NoteRedeem)
       } catch (_) {}
     }
-    setError('Invalid address or invoice')
-  }, [address])
+    setError('Invalid recipient address')
+  }, [recipient])
 
   const handleContinue = () => {
-    setSendInfo({ address: destination, satoshis: sats })
+    setSendInfo({ ...sendInfo, satoshis: amount })
     navigate(Pages.SendDetails)
   }
 
@@ -84,12 +81,13 @@ export default function SendForm() {
     </Text>
   )
 
-  const disabled = !(destination && sats && sats > 0)
+  const { address, arkAddress, satoshis } = sendInfo
+  const disabled = !((address || arkAddress) && satoshis && satoshis > 0)
 
   return (
     <>
       {showKeys ? (
-        <Keyboard back={() => setShowKeys(false)} onChange={setSats} value={sats} />
+        <Keyboard back={() => setShowKeys(false)} onChange={setAmount} value={amount} />
       ) : (
         <>
           <Header text='Send' />
@@ -98,14 +96,14 @@ export default function SendForm() {
               <FlexCol gap='2rem'>
                 <Error error={Boolean(error)} text={error} />
                 <FlexCol gap='0.5rem'>
-                  <InputAddress label='Recipient address' onChange={setAddress} value={address} />
+                  <InputAddress label='Recipient address' onChange={setRecipient} value={recipient} />
                 </FlexCol>
                 <InputAmount
                   label='Amount'
-                  onChange={setSats}
+                  onChange={setAmount}
                   onFocus={handleFocus}
                   right={<Available />}
-                  value={sats}
+                  value={sendInfo.satoshis}
                 />
               </FlexCol>
             </Padded>

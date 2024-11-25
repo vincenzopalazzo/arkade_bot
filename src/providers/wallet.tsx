@@ -185,7 +185,6 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     try {
       await lock(password)
       setWalletUnlocked(false)
-      reloadWallet()
     } catch (err) {
       throw 'Invalid password'
     }
@@ -230,10 +229,8 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   const unlockWallet = async (password: string) => {
     try {
       await unlock(password)
-      walletLocked().then((locked) => {
-        setWalletUnlocked(!locked)
-        if (!locked) reloadWallet()
-      })
+      setWalletUnlocked(true)
+      reloadWallet()
     } catch (err) {
       throw 'Invalid password'
     }

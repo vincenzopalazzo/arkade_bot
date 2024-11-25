@@ -11,10 +11,8 @@ import NoteSuccess from '../screens/Wallet/Vouchers/Success'
 import ReceiveAmount from '../screens/Wallet/Receive/Amount'
 import ReceiveQRCode from '../screens/Wallet/Receive/QrCode'
 import ReceiveSuccess from '../screens/Wallet/Receive/Success'
-import SendAmount from '../screens/Wallet/Send/Amount'
 import SendForm from '../screens/Wallet/Send/Form'
 import SendDetails from '../screens/Wallet/Send/Details'
-import SendFees from '../screens/Wallet/Send/Fees'
 import SendPayment from '../screens/Wallet/Send/Pay'
 import SendSuccess from '../screens/Wallet/Send/Success'
 import Transaction from '../screens/Wallet/Transaction'
@@ -37,10 +35,8 @@ export enum Pages {
   ReceiveAmount,
   ReceiveQRCode,
   ReceiveSuccess,
-  SendAmount,
   SendForm,
   SendDetails,
-  SendFees,
   SendPayment,
   SendSuccess,
   Settings,
@@ -72,10 +68,8 @@ const pageTab = {
   [Pages.ReceiveAmount]: Tabs.Receive,
   [Pages.ReceiveQRCode]: Tabs.Receive,
   [Pages.ReceiveSuccess]: Tabs.Receive,
-  [Pages.SendAmount]: Tabs.Send,
   [Pages.SendForm]: Tabs.Send,
   [Pages.SendDetails]: Tabs.Send,
-  [Pages.SendFees]: Tabs.Send,
   [Pages.SendPayment]: Tabs.Send,
   [Pages.SendSuccess]: Tabs.Send,
   [Pages.Settings]: Tabs.Settings,
@@ -112,14 +106,10 @@ export const pageComponent = (page: Pages): JSX.Element => {
       return <ReceiveQRCode />
     case Pages.ReceiveSuccess:
       return <ReceiveSuccess />
-    case Pages.SendAmount:
-      return <SendAmount />
     case Pages.SendForm:
       return <SendForm />
     case Pages.SendDetails:
       return <SendDetails />
-    case Pages.SendFees:
-      return <SendFees />
     case Pages.SendPayment:
       return <SendPayment />
     case Pages.SendSuccess:

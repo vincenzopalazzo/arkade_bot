@@ -15,7 +15,8 @@ export default function Wallet() {
   const [error, setError] = useState(false)
 
   useEffect(() => {
-    reloadWallet()
+    console.log('once?')
+    // reloadWallet()
   }, [])
 
   useEffect(() => {

@@ -3,14 +3,7 @@ import InputPassword from './InputPassword'
 import FlexCol from './FlexCol'
 import Text from './Text'
 import CheckList from './CheckList'
-import StrengthBars from './Strength'
-
-const calcStrength = (pass: string): number => {
-  let strength = pass.length * 0.2
-  if (pass.match(/\d/)) strength += 1
-  if (pass.match(/\W/)) strength += 1
-  return strength
-}
+import StrengthBars, { calcStrength } from './Strength'
 
 interface NewPasswordProps {
   setLabel: (label: string) => void

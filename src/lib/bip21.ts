@@ -7,23 +7,37 @@ import { fromSatoshis, toSatoshis } from './format'
 export const decode = (uri: string) => {
   if (!isBip21(uri)) throw new Error('Invalid BIP21 URI: ' + uri)
   let destination, options, query, satoshis
+
   const [scheme, rest] = uri.split(':')
   if (rest.indexOf('?') !== -1) {
-    const split = uri.split('?')
+    const split = rest.split('?')
     destination = split[0]
     query = split[1]
   } else {
     destination = rest
   }
+
   if (query) options = qs.parse(query)
+
   if (options?.amount) {
     satoshis = toSatoshis(Number(options.amount))
     if (!isFinite(satoshis)) throw new Error('Invalid amount')
     if (satoshis < 0) throw new Error('Invalid amount')
   }
-  const arkAddress = scheme === 'ark' ? destination : (options?.ark as string)
+
+  const arkAddress = /^ark/.test(scheme) ? destination : (options?.ark as string)
   const invoice = /^lightning/.test(scheme) ? destination : (options?.lightning as string)
   const address = /^bitcoin/.test(scheme) ? destination : (options?.liquidnetwork as string)
+
+  console.log('{ address, arkAddress, destination, invoice, options, satoshis, scheme }', {
+    address,
+    arkAddress,
+    destination,
+    invoice,
+    options,
+    satoshis,
+    scheme,
+  })
 
   return { address, arkAddress, destination, invoice, options, satoshis, scheme }
 }
