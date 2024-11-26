@@ -23,6 +23,8 @@ export const invalidNpub = (npub: string): string => {
 export const nsecToSeed = (nsec: string): string => {
   const { type, data } = nip19.decode(nsec)
   if (type !== 'nsec') throw 'invalid nsec'
+  console.log('nsec', nsec)
+  console.log('seed', bytesToHex(data))
   return bytesToHex(data)
 }
 

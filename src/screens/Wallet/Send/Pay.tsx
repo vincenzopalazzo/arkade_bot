@@ -7,7 +7,7 @@ import Padded from '../../../components/Padded'
 import { WalletContext } from '../../../providers/wallet'
 import Error from '../../../components/Error'
 import { extractError } from '../../../lib/error'
-import { collaborativeRedeem, sendAsync } from '../../../lib/asp'
+import { collaborativeRedeem, sendOffChain } from '../../../lib/asp'
 import Loading from '../../../components/Loading'
 import Header from '../../../components/Header'
 import Content from '../../../components/Content'
@@ -39,7 +39,7 @@ export default function SendPayment() {
     if (wallet.initialized && satoshis) {
       try {
         if (arkAddress) {
-          sendAsync(satoshis, arkAddress)
+          sendOffChain(satoshis, arkAddress)
             .then((txid) => onTxid(txid))
             .catch((error) => setError(extractError(error)))
         } else if (address) {

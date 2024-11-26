@@ -20,7 +20,6 @@ declare global {
     locked: () => Promise<bool>
     receive: () => Promise<any>
     redeemNotes: (notes: string[]) => Promise<void>
-    sendAsync: (withExpiryCoinselect: boolean, recipients: any[]) => Promise<string>
     sendOffChain: (withExpiryCoinselect: boolean, recipients: any[]) => Promise<string>
     sendOnChain: (recipients: any[]) => Promise<string>
     settle: () => Promise<void>
