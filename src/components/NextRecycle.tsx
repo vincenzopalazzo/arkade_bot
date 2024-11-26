@@ -12,7 +12,7 @@ export default function NextRecycle({ onClick }: { onClick: () => void }) {
   return (
     <div>
       <div className='flex justify-between'>
-        <Label text='Next recycle' />
+        <Label text='Next roll over' />
         <Label text='All VTXOs' onClick={onClick} />
       </div>
       <div className={`border cursor-pointer p-2 flex justify-between w-full rounded-md ${bg}`} onClick={onClick}>

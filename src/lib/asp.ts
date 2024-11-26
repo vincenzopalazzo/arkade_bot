@@ -1,13 +1,11 @@
-import { defaultDust, defaultMinRelayFee, defaultNetwork, defaultRoundInterval } from './constants'
-import { NetworkName } from './network'
+import { invalidNpub } from './privateKey'
 import { Satoshis, Tx, Vtxo } from './types'
 
 export interface AspInfo {
   boardingDescriptorTemplate: string
   dust: number
   forfeitAddress: string
-  minRelayFee: number
-  network: NetworkName
+  network: string
   pubkey: string
   roundInterval: number
   roundLifetime: number
@@ -18,10 +16,9 @@ export interface AspInfo {
 
 export const emptyAspInfo: AspInfo = {
   boardingDescriptorTemplate: '',
-  dust: defaultDust,
+  dust: 0,
   forfeitAddress: '',
-  minRelayFee: 0,
-  network: defaultNetwork,
+  network: '',
   pubkey: '',
   roundInterval: 0,
   roundLifetime: 0,
@@ -30,37 +27,25 @@ export const emptyAspInfo: AspInfo = {
   url: '',
 }
 
-const aspMap = {
-  [NetworkName.Liquid]: 'https://asp-liquid.arkdev.info',
-  [NetworkName.Regtest]: 'http://localhost:7070',
-  [NetworkName.Signet]: 'https://insiders.signet.arklabs.to',
-  [NetworkName.Testnet]: 'https://asp.arkdev.info',
-}
-
 const headers = { 'Content-Type': 'application/json' }
 
-const get = async (endpoint: string, net: NetworkName) => {
-  const response = await fetch(aspMap[net] + endpoint, { headers })
+const get = async (endpoint: string, url: string) => {
+  const response = await fetch(url + endpoint, { headers })
   return await response.json()
-}
-
-export const claimVtxos = async () => {
-  await window.claim()
 }
 
 export const collaborativeRedeem = async (amount: number, address: string): Promise<string> => {
   return await window.collaborativeRedeem(address, amount, false)
 }
 
-export const getAspInfo = async (net: NetworkName): Promise<AspInfo> => {
+export const getAspInfo = async (url: string): Promise<AspInfo> => {
   return new Promise((resolve) => {
-    get('/v1/info', net)
+    get('/v1/info', url)
       .then(
         ({
           boardingDescriptorTemplate,
           dust,
           forfeitAddress,
-          minRelayFee,
           network,
           pubkey,
           roundInterval,
@@ -69,16 +54,15 @@ export const getAspInfo = async (net: NetworkName): Promise<AspInfo> => {
         }) => {
           resolve({
             boardingDescriptorTemplate,
-            dust: dust ? Number(dust) : defaultDust,
+            dust,
             forfeitAddress,
-            minRelayFee: minRelayFee ? Number(minRelayFee) : defaultMinRelayFee,
-            network: network ? (network as NetworkName) : defaultNetwork,
+            network,
             pubkey,
-            roundInterval: roundInterval ? Number(roundInterval) : defaultRoundInterval,
+            roundInterval,
             roundLifetime: Number(roundLifetime),
             unilateralExitDelay: Number(unilateralExitDelay),
             unreachable: false,
-            url: aspMap[net],
+            url,
           })
         },
       )
@@ -107,25 +91,35 @@ export const getTxHistory = async (): Promise<Tx[]> => {
   const txs: Tx[] = []
   try {
     const res = await window.getTransactionHistory()
-    // console.log('res', res)
+    console.log('res', res)
     if (!res) return []
     for (const tx of JSON.parse(res)) {
       const date = new Date(tx.createdAt)
       const unix = Math.floor(date.getTime() / 1000)
+      const { boardingTxid, settled, redeemTxid, roundTxid, type } = tx
+      const explorable = boardingTxid
+        ? boardingTxid
+        : roundTxid
+        ? roundTxid === redeemTxid // TODO: remove after bug is fixed
+          ? undefined
+          : roundTxid
+        : undefined
       txs.push({
-        amount: parseInt(tx.amount, 10),
-        boardingTxid: tx.boardingTxid,
+        amount: Math.abs(parseInt(tx.amount, 10)),
+        boardingTxid,
         createdAt: unix,
-        isPending: tx.isPending,
-        redeemTxid: tx.redeemTxid,
-        roundTxid: tx.roundTxid,
-        type: tx.type,
+        explorable,
+        pending: !settled,
+        settled,
+        redeemTxid,
+        roundTxid,
+        type: type.toLowerCase(),
       })
     }
   } catch (_) {
     return []
   }
-  return txs
+  return txs.sort((a: Tx, b: Tx) => a.createdAt - b.createdAt)
 }
 
 export const getReceivingAddresses = async (): Promise<{ offchainAddr: string; boardingAddr: string }> => {
@@ -158,9 +152,13 @@ export const lock = async (password: string): Promise<void> => {
   await window.lock(password)
 }
 
-export const sendAsync = async (sats: number, address: string): Promise<string> => {
-  console.log('Sending async', sats, address)
-  return await window.sendAsync(false, [{ To: address, Amount: sats }])
+export const redeemNotes = async (notes: string[]): Promise<void> => {
+  console.log('redeeming notes', notes)
+  try {
+    await window.redeemNotes(notes)
+  } catch {
+    await window.redeemNotes(notes)
+  }
 }
 
 export const sendOffChain = async (sats: number, address: string): Promise<string> => {
@@ -169,8 +167,27 @@ export const sendOffChain = async (sats: number, address: string): Promise<strin
 }
 
 export const sendOnChain = async (sats: number, address: string): Promise<string> => {
-  console.log('Sending onchain', sats, address)
+  console.log('sending onchain', sats, address)
   return await window.sendOnChain([{ To: address, Amount: sats }])
+}
+
+export const settleVtxos = async (): Promise<void> => {
+  console.log('settling vtxos')
+  try {
+    await window.settle()
+  } catch {
+    await window.settle()
+  }
+}
+
+export const setNostrNotificationRecipient = async (npub: string): Promise<void> => {
+  if (invalidNpub(npub)) return
+  return window.setNostrNotificationRecipient(npub)
+}
+
+export const startListenTransactionStream = async (callback: () => {}) => {
+  console.log('start listening', typeof callback)
+  // return await window.getTransactionStream(callback)
 }
 
 export const unlock = async (password: string): Promise<void> => {

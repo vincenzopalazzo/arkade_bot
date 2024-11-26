@@ -4,7 +4,6 @@ import Header from './Header'
 import ArrowIcon from '../../icons/Arrow'
 import Notifications from './Notifications'
 import { WalletContext } from '../../providers/wallet'
-import EncryptIcon from '../../icons/Encrypt'
 import Backup from './Backup'
 import BackupIcon from '../../icons/Backup'
 import OuterContainer from '../../components/OuterContainer'
@@ -16,9 +15,14 @@ import DarkThemeIcon from '../../icons/DarkTheme'
 import Theme from './Theme'
 import NostrIcon from '../../icons/Nostr'
 import Nostr from './Nostr'
-import ClockIcon from '../../icons/Clock'
+import VtxosIcon from '../../icons/Vtxos'
 import Vtxos from './Vtxos'
 import NotificationIcon from '../../icons/Notification'
+import NoteScan from '../Wallet/Vouchers/Scan'
+import VoucherIcon from '../../icons/Voucher'
+import LockIcon from '../../icons/Lock'
+import ServerIcon from '../../icons/Server'
+import Server from './Server'
 
 enum Options {
   Menu = 'menu',
@@ -27,8 +31,10 @@ enum Options {
   Lock = 'lock wallet',
   Notifications = 'notifications',
   Nostr = 'nostr',
+  Notes = 'notes',
   Password = 'password',
   Reset = 'reset',
+  Server = 'server',
   Theme = 'theme',
   Vtxos = 'vtxos',
 }
@@ -55,12 +61,16 @@ export default function Settings() {
       option: Options.Backup,
     },
     {
-      icon: <EncryptIcon />,
+      icon: <LockIcon />,
       option: Options.Lock,
     },
     {
       icon: <NostrIcon />,
       option: Options.Nostr,
+    },
+    {
+      icon: <VoucherIcon />,
+      option: Options.Notes,
     },
     {
       icon: <NotificationIcon />,
@@ -71,11 +81,15 @@ export default function Settings() {
       option: Options.Reset,
     },
     {
+      icon: <ServerIcon />,
+      option: Options.Server,
+    },
+    {
       icon: <DarkThemeIcon />,
       option: Options.Theme,
     },
     {
-      icon: <ClockIcon />,
+      icon: <VtxosIcon />,
       option: Options.Vtxos,
     },
   ]
@@ -111,15 +125,17 @@ export default function Settings() {
                 </div>
               ))}
             </div>
-            <p className='font-semibold text-xs text-center'>v2024102403</p>
+            <p className='font-semibold text-xs text-center'>v2024110401</p>
           </div>
         )}
         {option === Options.About && <About />}
         {option === Options.Backup && <Backup />}
         {option === Options.Lock && <Lock />}
-        {option === Options.Notifications && <Notifications />}
         {option === Options.Nostr && <Nostr />}
+        {option === Options.Notes && <NoteScan />}
+        {option === Options.Notifications && <Notifications />}
         {option === Options.Reset && <Reset backup={() => setOption(Options.Backup)} />}
+        {option === Options.Server && <Server backup={() => setOption(Options.Backup)} />}
         {option === Options.Theme && <Theme />}
         {option === Options.Vtxos && <Vtxos />}
       </div>

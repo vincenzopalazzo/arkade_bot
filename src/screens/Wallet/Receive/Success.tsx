@@ -8,6 +8,7 @@ import Content from '../../../components/Content'
 import Container from '../../../components/Container'
 import { NotificationsContext } from '../../../providers/notifications'
 import { FlowContext } from '../../../providers/flow'
+import { prettyNumber } from '../../../lib/format'
 
 export default function ReceiveSuccess() {
   const { recvInfo } = useContext(FlowContext)
@@ -23,7 +24,7 @@ export default function ReceiveSuccess() {
   return (
     <Container>
       <Content>
-        <Title text='Success' subtext={`${recvInfo.satoshis} sats received`} />
+        <Title text='Success' subtext={`${prettyNumber(recvInfo.satoshis)} sats received`} />
         <div className='flex h-60'>
           <div className='m-auto'>
             <SuccessIcon />

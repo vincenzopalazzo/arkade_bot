@@ -19,9 +19,9 @@ export default function Transactions() {
 
   const goBackToWallet = () => navigate(Pages.Wallet)
 
-  const showClaimButton = wallet.txs.reduce((acc, tx) => tx.isPending || acc, false)
+  const showSettleButton = wallet.txs.reduce((acc, tx) => tx.pending || acc, false)
 
-  const handleClaim = async () => {
+  const handleSettle = async () => {
     setSettling(true)
     await settlePending()
     setSettling(false)
@@ -42,7 +42,7 @@ export default function Transactions() {
         )}
       </Content>
       <ButtonsOnBottom>
-        {showClaimButton ? <Button onClick={handleClaim} label={buttonLabel} disabled={settling} /> : null}
+        {showSettleButton ? <Button onClick={handleSettle} label={buttonLabel} disabled={settling} /> : null}
         <Button onClick={goBackToWallet} label='Back to wallet' secondary />
       </ButtonsOnBottom>
     </Container>

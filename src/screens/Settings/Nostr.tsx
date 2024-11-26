@@ -7,9 +7,10 @@ import Content from '../../components/Content'
 import Textarea from '../../components/Textarea'
 import Container from '../../components/Container'
 import { copyToClipboard } from '../../lib/clipboard'
-import { getPrivateKey } from '../../lib/asp'
-import { seedToNpub } from '../../lib/privateKey'
+import { invalidNpub } from '../../lib/privateKey'
 import Select from '../../components/Select'
+import Error from '../../components/Error'
+import { setNostrNotificationRecipient } from '../../lib/asp'
 
 export default function Nostr() {
   const { config, toggleShowConfig, updateConfig } = useContext(ConfigContext)
@@ -17,20 +18,28 @@ export default function Nostr() {
   const label = 'Copy to clipboard'
 
   const [buttonLabel, setButtonLabel] = useState(label)
+  const [error, setError] = useState('')
   const [npub, setNpub] = useState('')
 
   useEffect(() => {
-    getPrivateKey().then((sk) => {
-      setNpub(seedToNpub(sk))
-    })
+    if (config.npub) setNpub(config.npub)
   }, [])
 
-  const handleChange = (e: any) => {
+  useEffect(() => {
+    setError(invalidNpub(npub))
+  }, [npub])
+
+  const handleAuth = (e: any) => {
     updateConfig({ ...config, nostr: Boolean(parseInt(e.target.value)) })
   }
 
-  const handleClose = () => {
-    toggleShowConfig()
+  const handleChange = (e: any) => {
+    setNpub(e.target.value)
+  }
+
+  const handleSave = () => {
+    updateConfig({ ...config, npub })
+    setNostrNotificationRecipient(npub)
   }
 
   const handleCopy = async () => {
@@ -40,38 +49,34 @@ export default function Nostr() {
   }
 
   const value = config.nostr ? '1' : '0'
+  const showCopyButton = config.nostr && config.npub === npub && npub
+  const showSaveButton = config.nostr && config.npub !== npub && !error
 
   return (
     <Container>
       <Content>
-        <Title text='Nostr' subtext='Publish events to Nostr' />
+        <Title text='Nostr' subtext='Receive notes on Nostr' />
         <div className='flex flex-col gap-10 mt-10'>
-          <Select onChange={handleChange} value={value}>
+          <p>
+            If you let your VTXOs expire, you will receive, on Nostr, via encrypted DM, an arknote with the same value,
+            that you will be able to redeem later.
+          </p>
+          <Select onChange={handleAuth} value={value}>
             <option value='0'>Not allowed</option>
             <option value='1'>Allowed</option>
           </Select>
           {config.nostr ? (
             <>
-              <Textarea label='Public key' value={npub} />
-              <div className='flex justify-around'>
-                <p className='underline underline-offset-2'>
-                  <a href={`https://njump.me/${npub}`} target='_blank'>
-                    Web view
-                  </a>
-                </p>
-                <p className='underline underline-offset-2'>
-                  <a href={`https://njump.me/${npub}.rss`} target='_blank'>
-                    RSS view
-                  </a>
-                </p>
-              </div>
+              <Textarea label='Nostr public key (npub)' value={npub} onChange={handleChange} />
+              <Error error={Boolean(error)} text={error} />
             </>
           ) : null}
         </div>
       </Content>
       <ButtonsOnBottom>
-        {config.nostr ? <Button onClick={handleCopy} label={buttonLabel} /> : null}
-        <Button onClick={handleClose} label='Back to wallet' secondary />
+        {showCopyButton ? <Button onClick={handleCopy} label={buttonLabel} /> : null}
+        {showSaveButton ? <Button onClick={handleSave} label='Save new npub' /> : null}
+        <Button onClick={toggleShowConfig} label='Back to wallet' secondary />
       </ButtonsOnBottom>
     </Container>
   )

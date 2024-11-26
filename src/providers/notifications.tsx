@@ -1,10 +1,10 @@
 import { ReactNode, createContext, useContext, useEffect, useRef } from 'react'
-import { hexToBytes } from '@noble/hashes/utils'
-import { finalizeEvent, getPublicKey, Relay } from 'nostr-tools'
-import { getPrivateKey } from '../lib/asp'
 import { ConfigContext } from './config'
 import { sendNotification } from '../lib/notifications'
 import { prettyNumber } from '../lib/format'
+import { finalizeEvent, getPublicKey, Relay } from 'nostr-tools'
+import { hexToBytes } from '@noble/hashes/utils'
+import { getPrivateKey } from '../lib/asp'
 
 interface NotificationsContextProps {
   notifyPaymentReceived: (s: number) => void
@@ -44,7 +44,7 @@ export const NotificationsProvider = ({ children }: { children: ReactNode }) => 
         },
       ],
       {
-        onevent(event) {
+        onevent(event: any) {
           console.log('got event:', event)
         },
       },

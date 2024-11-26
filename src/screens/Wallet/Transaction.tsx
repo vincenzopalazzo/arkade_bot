@@ -8,7 +8,7 @@ import Container from '../../components/Container'
 import { WalletContext } from '../../providers/wallet'
 import { FlowContext } from '../../providers/flow'
 import { prettyAgo, prettyDate, prettyNumber } from '../../lib/format'
-import { defaultFees } from '../../lib/constants'
+import { defaultFee } from '../../lib/constants'
 import Table from '../../components/Table'
 import Error from '../../components/Error'
 import { extractError } from '../../lib/error'
@@ -27,25 +27,25 @@ export default function Transaction() {
   const defaultButtonLabel = 'Settle pending'
 
   const [buttonLabel, setButtonLabel] = useState(defaultButtonLabel)
-  const [showButton, setShowButton] = useState(false)
+  const [showSettleButton, setShowSettleButton] = useState(false)
   const [showInfo, setShowInfo] = useState(false)
   const [settling, setSettling] = useState(false)
   const [error, setError] = useState('')
 
   useEffect(() => {
-    if (tx) setShowButton(tx.isPending)
-  }, [tx?.isPending])
+    if (tx) setShowSettleButton(tx.pending)
+  }, [tx?.pending])
 
   useEffect(() => {
     setButtonLabel(settling ? 'Settling...' : defaultButtonLabel)
   }, [settling])
 
-  const handleClaim = async () => {
+  const handleSettle = async () => {
     setError('')
     setSettling(true)
     try {
       await settlePending()
-      if (tx) setTxInfo({ ...tx, isPending: false })
+      if (tx) setTxInfo({ ...tx, pending: false, settled: true })
     } catch (err) {
       setError(extractError(err))
     }
@@ -53,17 +53,17 @@ export default function Transaction() {
   }
 
   const handleExplorer = () => {
-    if (tx?.roundTxid) openInNewTab(tx.roundTxid, wallet)
+    if (tx?.explorable) openInNewTab(tx.explorable, wallet)
   }
 
   if (!tx) return <></>
 
   const data = [
+    ['State', tx.pending ? 'Pending' : 'Settled'],
     ['When', prettyAgo(tx.createdAt)],
-    ['State', tx.isPending ? 'Pending' : 'Settled'],
     ['Date', prettyDate(tx.createdAt)],
-    ['Amount', `${prettyNumber(tx.type === 'sent' ? tx.amount - defaultFees : tx.amount)} sats`],
-    ['Network fees', `${prettyNumber(tx.type === 'sent' ? defaultFees : 0)} sats`],
+    ['Amount', `${prettyNumber(tx.type === 'sent' ? tx.amount - defaultFee : tx.amount)} sats`],
+    ['Network fees', `${prettyNumber(tx.type === 'sent' ? defaultFee : 0)} sats`],
     ['Total', `${prettyNumber(tx.amount)} sats`],
   ]
 
@@ -77,7 +77,7 @@ export default function Transaction() {
         ) : (
           <>
             <Table data={data} />
-            {tx.isPending ? (
+            {tx.pending ? (
               <div className='flex justify-center align-middle mt-4' onClick={() => setShowInfo(true)}>
                 <TipIcon small />
                 <p className='text-sm underline underline-offset-2 cursor-pointer'>What are pending transactions?</p>
@@ -87,8 +87,11 @@ export default function Transaction() {
         )}
       </Content>
       <ButtonsOnBottom>
-        {showButton ? <Button onClick={handleClaim} label={buttonLabel} disabled={settling} /> : null}
-        {tx.roundTxid ? <Button onClick={handleExplorer} label='View on explorer' /> : null}
+        {showSettleButton ? (
+          <Button onClick={handleSettle} label={buttonLabel} disabled={settling} />
+        ) : tx.explorable ? (
+          <Button onClick={handleExplorer} label='View on explorer' />
+        ) : null}
         <Button onClick={goBackToWallet} label='Back to wallet' secondary />
       </ButtonsOnBottom>
       <Modal open={showInfo} onClose={() => setShowInfo(false)}>

@@ -1,5 +1,6 @@
 import { ReactNode, createContext, useEffect, useState } from 'react'
 import { clearStorage, readConfigFromStorage, saveConfigToStorage } from '../lib/storage'
+import { defaultAsp } from '../lib/constants'
 
 export enum Themes {
   Dark = 'Dark',
@@ -14,16 +15,20 @@ export enum Unit {
 }
 
 export interface Config {
+  aspUrl: string
   nostr: boolean
   notifications: boolean
+  npub: string
   theme: Themes
   unit: Unit
 }
 
 const defaultConfig: Config = {
+  aspUrl: defaultAsp,
   nostr: false,
   notifications: false,
-  theme: Themes.Light,
+  npub: '',
+  theme: Themes.Dark,
   unit: Unit.BTC,
 }
 
@@ -76,7 +81,6 @@ export const ConfigProvider = ({ children }: { children: ReactNode }) => {
     const config = readConfigFromStorage() ?? { ...defaultConfig, theme: preferredTheme() }
     updateConfig(config)
     setConfigLoaded(true)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [configLoaded])
 
   return (

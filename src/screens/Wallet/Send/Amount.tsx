@@ -9,6 +9,7 @@ import InputAmount from '../../../components/InputAmount'
 import Container from '../../../components/Container'
 import { WalletContext } from '../../../providers/wallet'
 import { AspContext } from '../../../providers/asp'
+import { prettyNumber } from '../../../lib/format'
 
 enum ButtonLabel {
   NoBalance = 'Not enough balance',
@@ -44,9 +45,9 @@ export default function SendAmount() {
   return (
     <Container>
       <Content>
-        <Title text='Send' subtext='Define amount' />
-        <div className='flex flex-col gap-2 mt-4'>
-          <InputAmount label='Amount' onChange={setAmount} />
+        <Title text='Send' subtext={`Balance ${prettyNumber(wallet.balance)} sats`} />
+        <div className='flex flex-col gap-4'>
+          <InputAmount label='Amount' onChange={setAmount} sendAll />
         </div>
       </Content>
       <ButtonsOnBottom>

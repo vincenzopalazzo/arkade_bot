@@ -13,15 +13,15 @@ import { pasteFromClipboard } from '../../../lib/clipboard'
 import { decodeArkAddress } from '../../../lib/address'
 import { AspContext } from '../../../providers/asp'
 import * as bip21 from '../../../lib/bip21'
+import { ArkNote, isArkNote } from '../../../lib/arknote'
 
 export default function SendInvoice() {
   const { aspInfo } = useContext(AspContext)
   const { navigate } = useContext(NavigationContext)
-  const { setSendInfo } = useContext(FlowContext)
+  const { setNoteInfo, setSendInfo } = useContext(FlowContext)
 
   const defaultLabel = 'Paste address or invoice'
   const [buttonLabel, setButtonLabel] = useState(defaultLabel)
-  const [cameraAllowed, setCameraAllowed] = useState(false)
   const [error, setError] = useState('')
   const [pastedData, setPastedData] = useState('')
 
@@ -29,16 +29,11 @@ export default function SendInvoice() {
   const firefox = !navigator.clipboard || !('readText' in navigator.clipboard)
 
   useEffect(() => {
-    navigator.permissions.query({ name: 'camera' as PermissionName }).then((x) => {
-      if (x.state !== 'denied') setCameraAllowed(true)
-    })
-  })
-
-  useEffect(() => {
-    if (!pastedData) return
     setError('')
-    if (bip21.isBip21(pastedData)) {
-      const { address, amount, arkAddress } = bip21.decode(pastedData)
+    if (!pastedData) return
+    const lowerCaseData = pastedData.toLowerCase()
+    if (bip21.isBip21(lowerCaseData)) {
+      const { address, amount, arkAddress } = bip21.decode(lowerCaseData)
       if (arkAddress) {
         setSendInfo({ arkAddress, satoshis: amount ?? 0 })
         return navigate(amount ? Pages.SendDetails : Pages.SendAmount)
@@ -50,20 +45,31 @@ export default function SendInvoice() {
       setError('Unable to parse bip21')
       return
     }
-    if (/^t*ark1/.test(pastedData)) {
-      const { aspKey } = decodeArkAddress(pastedData)
-      if (aspKey !== aspInfo.pubkey) {
+    if (/^t*ark1/.test(lowerCaseData)) {
+      const { aspKey } = decodeArkAddress(lowerCaseData)
+      var ourAspPubkey = aspInfo.pubkey
+      if (aspInfo.pubkey.length === 66) {
+        ourAspPubkey = aspInfo.pubkey.slice(2)
+      }
+      if (aspKey !== ourAspPubkey) {
         setError('Invalid ASP pubkey')
         return
       }
-      setSendInfo({ arkAddress: pastedData })
+      setSendInfo({ arkAddress: lowerCaseData })
       return navigate(Pages.SendAmount)
     }
-    if (/^bc1/.test(pastedData) || /^tb1/.test(pastedData)) {
-      setSendInfo({ address: pastedData })
+    if (/^bc1/.test(lowerCaseData) || /^tb1/.test(lowerCaseData) || /^bcrt1/.test(lowerCaseData)) {
+      setSendInfo({ address: lowerCaseData })
       return navigate(Pages.SendAmount)
     }
-    setError('Invalid address')
+    if (isArkNote(lowerCaseData)) {
+      try {
+        const anote = ArkNote.fromString(pastedData)
+        setNoteInfo({ note: pastedData, satoshis: anote.data.value })
+        return navigate(Pages.NoteRedeem)
+      } catch (_) {}
+    }
+    setError('Invalid address or invoice')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pastedData])
 
@@ -71,7 +77,7 @@ export default function SendInvoice() {
     const pastedData = await pasteFromClipboard()
     setButtonLabel('Pasted')
     setTimeout(() => setButtonLabel(defaultLabel), 2100)
-    setPastedData(pastedData.toLowerCase())
+    setPastedData(pastedData)
   }
 
   const handleCancel = () => {
@@ -88,13 +94,13 @@ export default function SendInvoice() {
         <div className='flex flex-col gap-2'>
           <ShowError error={Boolean(error)} text={error} />
           {error ? null : (
-            <div className='flex flex-col h-full justify-between mb-2'>
+            <>
               {firefox ? (
                 <Input label='Paste your invoice here' left='&#9889;' onChange={handleChange} />
-              ) : cameraAllowed ? (
+              ) : (
                 <BarcodeScanner setPastedData={setPastedData} setError={setError} />
-              ) : null}
-            </div>
+              )}
+            </>
           )}
         </div>
       </Content>

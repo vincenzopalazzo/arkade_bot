@@ -17,7 +17,8 @@ export default function About() {
 
   const data = [
     ['Dust', `${aspInfo.dust} sats`],
-    ['Min Relay Fee', `${aspInfo.minRelayFee} sats`],
+    ['Forfeit address', prettyLongText(aspInfo.forfeitAddress, 10)],
+    ['Network', aspInfo.network],
     ['Round Interval', `${aspInfo.roundInterval} secs`],
     ['Round Lifetime', `${days} days`],
     ['Server Pubkey', prettyLongText(aspInfo.pubkey, 10)],

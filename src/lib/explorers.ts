@@ -1,69 +1,42 @@
 import { Wallet } from '../providers/wallet'
-import { NetworkName } from './network'
 
-export enum ExplorerName {
-  Blockstream = 'Blockstream',
-  Mempool = 'Mempool',
-  Mutiny = 'Mutiny',
-  Nigiri = 'Nigiri',
+type ExplorerURLs = {
+  api: string
+  web: string
 }
 
-export interface ExplorerURLs {
-  restApiExplorerURL: string
+type Explorers = Record<string, ExplorerURLs>
+
+const explorers: Explorers = {
+  mainnet: {
+    api: 'https://mempool.space/api',
+    web: 'https://mempool.space',
+  },
+  regtest: {
+    api: 'http://localhost:3000',
+    web: 'http://localhost:5000',
+  },
+  signet: {
+    api: 'https://mutinynet.com/api',
+    web: 'https://mutinynet.com',
+  },
+  testnet: {
+    api: 'https://mempool.space/testnet/api',
+    web: 'https://mempool.space/testnet',
+  },
 }
 
-export interface Explorer {
-  name: ExplorerName
-  [NetworkName.Liquid]?: ExplorerURLs
-  [NetworkName.Regtest]?: ExplorerURLs
-  [NetworkName.Signet]?: ExplorerURLs
-  [NetworkName.Testnet]?: ExplorerURLs
+export const getRestApiExplorerURL = (network: string): string => {
+  return explorers[network]?.api ?? ''
 }
 
-const explorers: Explorer[] = [
-  {
-    name: ExplorerName.Blockstream,
-    [NetworkName.Liquid]: {
-      restApiExplorerURL: 'https://blockstream.info/liquid',
-    },
-    [NetworkName.Testnet]: {
-      restApiExplorerURL: 'https://blockstream.info/liquidtestnet',
-    },
-  },
-  {
-    name: ExplorerName.Mempool,
-    [NetworkName.Liquid]: {
-      restApiExplorerURL: 'https://liquid.network',
-    },
-    [NetworkName.Testnet]: {
-      restApiExplorerURL: 'https://liquid.network/liquidtestnet',
-    },
-  },
-  {
-    name: ExplorerName.Nigiri,
-    [NetworkName.Regtest]: {
-      restApiExplorerURL: 'http://localhost:5001',
-    },
-  },
-  {
-    name: ExplorerName.Mutiny,
-    [NetworkName.Signet]: {
-      restApiExplorerURL: 'https://mutinynet.com',
-    },
-  },
-]
-
-export const getExplorerNames = (network: NetworkName) =>
-  explorers.filter((e: Explorer) => e[network]).map((e) => e.name)
-
-const getRestApiExplorerURL = ({ explorer, network }: Wallet) => {
-  const exp = explorers.find((e) => e.name === explorer)
-  if (exp?.[network]) return exp[network]?.restApiExplorerURL
+export const getWebExplorerURL = (network: string): string => {
+  return explorers[network]?.web ?? ''
 }
 
 export const getTxIdURL = (txid: string, wallet: Wallet) => {
   // stupid bug from mempool
-  const url = getRestApiExplorerURL(wallet)?.replace(
+  const url = getWebExplorerURL(wallet.network)?.replace(
     'https://liquid.network/liquidtestnet',
     'https://liquid.network/testnet',
   )

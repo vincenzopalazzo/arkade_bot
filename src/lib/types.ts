@@ -8,9 +8,11 @@ export type Tx = {
   amount: number
   boardingTxid: string
   createdAt: number
-  isPending: boolean
+  explorable: string | undefined
+  pending: boolean
   redeemTxid: string
   roundTxid: string
+  settled: boolean
   type: string
 }
 

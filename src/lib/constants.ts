@@ -1,9 +1,4 @@
-import { ExplorerName } from './explorers'
-import { NetworkName } from './network'
-
-export const defaultDust = 450
-export const defaultFees = 206
-export const defaultExplorer = ExplorerName.Mutiny
-export const defaultNetwork = NetworkName.Signet
-export const defaultMinRelayFee = 30
-export const defaultRoundInterval = 10
+export const arknoteHRP = 'arknote'
+export const defaultFee = 206
+export const defaultAsp = 'http://localhost:7070'
+// export const defaultAsp = 'https://asp.voucher.signet.arklabs.to'

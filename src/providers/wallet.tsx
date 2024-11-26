@@ -1,13 +1,10 @@
 import { ReactNode, createContext, useContext, useEffect, useState } from 'react'
 import { readWalletFromStorage, saveWalletToStorage } from '../lib/storage'
 import { NavigationContext, Pages } from './navigation'
-import { NetworkName } from '../lib/network'
 import { Tx, Vtxo } from '../lib/types'
-import { ExplorerName } from '../lib/explorers'
-import { defaultExplorer, defaultNetwork } from '../lib/constants'
+import { getRestApiExplorerURL } from '../lib/explorers'
 import {
-  claimVtxos,
-  getAspInfo,
+  settleVtxos,
   getBalance,
   getReceivingAddresses,
   getTxHistory,
@@ -16,21 +13,23 @@ import {
   sendOffChain,
   unlock,
   walletLocked,
+  getAspInfo,
 } from '../lib/asp'
 import { AspContext } from './asp'
 import { NotificationsContext } from './notifications'
 import { ConfigContext } from './config'
+import { FlowContext } from './flow'
+import { ArkNote, arkNoteInUrl } from '../lib/arknote'
+import { fetchWasm } from '../lib/fetch'
 
 export interface Wallet {
   arkAddress: string
   balance: number
-  explorer: ExplorerName
+  explorer: string
   initialized: boolean
   lastUpdate: number
-  network: NetworkName
+  network: string
   nextRecycle: number
-  password: string
-  privateKey: string
   txs: Tx[]
   vtxos: {
     spendable: Vtxo[]
@@ -41,13 +40,11 @@ export interface Wallet {
 const defaultWallet: Wallet = {
   arkAddress: '',
   balance: 0,
-  explorer: defaultExplorer,
+  explorer: '',
   initialized: false,
   lastUpdate: 0,
-  network: defaultNetwork,
+  network: '',
   nextRecycle: 0,
-  password: '',
-  privateKey: '',
   txs: [],
   vtxos: {
     spendable: [],
@@ -61,7 +58,6 @@ interface WalletContextProps {
   recycleVtxos: () => Promise<void>
   reloadWallet: () => void
   resetWallet: () => void
-  setPrivateKey: (key: string) => void
   settlePending: () => Promise<void>
   updateWallet: (w: Wallet) => void
   unlockWallet: (password: string) => Promise<void>
@@ -77,7 +73,6 @@ export const WalletContext = createContext<WalletContextProps>({
   reloadWallet: () => {},
   resetWallet: () => {},
   settlePending: () => Promise.resolve(),
-  setPrivateKey: () => {},
   unlockWallet: () => Promise.resolve(),
   updateWallet: () => {},
   walletUnlocked: false,
@@ -87,7 +82,8 @@ export const WalletContext = createContext<WalletContextProps>({
 
 export const WalletProvider = ({ children }: { children: ReactNode }) => {
   const { setAspInfo, aspInfo } = useContext(AspContext)
-  const { resetConfig } = useContext(ConfigContext)
+  const { config, resetConfig } = useContext(ConfigContext)
+  const { noteInfo, setNoteInfo } = useContext(FlowContext)
   const { navigate } = useContext(NavigationContext)
   const { notifyVtxosRecycled, notifyTxSettled } = useContext(NotificationsContext)
 
@@ -95,18 +91,24 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   const [wasmLoaded, setWasmLoaded] = useState(false)
   const [wallet, setWallet] = useState(defaultWallet)
 
+  const instantiateWasm = (wasm: any) => {
+    const go = new window.Go()
+    WebAssembly.instantiateStreaming(wasm, go.importObject).then((result) => {
+      go.run(result.instance)
+      setWasmLoaded(true)
+      console.log('wasm loaded')
+    })
+  }
+
   useEffect(() => {
     if (wasmLoaded) return
-    const go = new window.Go()
-    WebAssembly.instantiateStreaming(fetch('https://arkadewasm.bordalix.workers.dev?21'), go.importObject).then(
-      (result) => {
-        // WebAssembly.instantiateStreaming(fetch('ark-sdk.wasm'), go.importObject).then((result) => {
-        go.run(result.instance)
-        setWasmLoaded(true)
-        console.log('wasm loaded')
-      },
-    )
-    getAspInfo(wallet.network).then(setAspInfo)
+    const sdkFile = '/ark-sdk.wasm'
+    const r2 = 'https://pub-2691569bbfd24a6a81b70001c8eb7506.r2.dev'
+    fetchWasm(sdkFile)
+      .then(instantiateWasm)
+      .catch(() => {
+        fetchWasm(r2 + sdkFile).then(instantiateWasm)
+      })
   }, [])
 
   useEffect(() => {
@@ -123,20 +125,50 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [wasmLoaded])
 
+  // calculate next roll over date
   useEffect(() => {
     if (!wallet.nextRecycle || !walletUnlocked) return
     const now = Math.floor(new Date().getTime() / 1000)
     const threshold = 60 * 60 * 24 // one day in seconds
     const urgent = wallet.nextRecycle - now < threshold
-    if (urgent) claimVtxos().then(() => recycleVtxos())
+    if (urgent) settleVtxos().then(() => recycleVtxos())
   }, [wallet.nextRecycle, walletUnlocked])
+
+  // if voucher present, go to redeem page
+  useEffect(() => {
+    if (!walletUnlocked || !wallet.initialized) return
+    if (noteInfo.satoshis) navigate(Pages.NoteRedeem)
+    // startListenTransactionStream(reloadWallet)
+  }, [walletUnlocked, wallet.initialized])
+
+  // if voucher on url, add it to state and remove from url
+  useEffect(() => {
+    if (walletUnlocked || !arkNoteInUrl()) return
+    const note = arkNoteInUrl()
+    try {
+      const { value } = ArkNote.fromString(note).data
+      setNoteInfo({ note, satoshis: value })
+      window.location.hash = ''
+    } catch (_) {}
+    // startListenTransactionStream(reloadWallet)
+  }, [walletUnlocked])
+
+  useEffect(() => {
+    getAspInfo(config.aspUrl).then(setAspInfo)
+  }, [config.aspUrl])
+
+  useEffect(() => {
+    if (!wasmLoaded || !aspInfo.network) return
+    updateWallet({ ...wallet, network: aspInfo.network })
+  }, [aspInfo.network, wasmLoaded])
 
   const initWallet = async (password: string, privateKey: string) => {
     const aspUrl = aspInfo.url
     const chain = 'bitcoin'
     const clientType = 'rest'
     const walletType = 'singlekey'
-    await window.init(walletType, clientType, aspUrl, privateKey, password, chain)
+    const explorerUrl = getRestApiExplorerURL(wallet.network) ?? ''
+    await window.init(walletType, clientType, aspUrl, privateKey, password, chain, explorerUrl)
     updateWallet({ ...wallet, initialized: true })
   }
 
@@ -144,7 +176,6 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     try {
       return await walletLocked()
     } catch (err) {
-      console.log('err', err)
       return true
     }
   }
@@ -168,6 +199,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const reloadWallet = async () => {
+    console.log('reloading wallet')
     const vtxos = await getVtxos()
     const balance = await getBalance()
     const txs = await getTxHistory()
@@ -189,13 +221,9 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const settlePending = async () => {
-    await claimVtxos()
+    await settleVtxos()
     await reloadWallet()
     notifyTxSettled()
-  }
-
-  const setPrivateKey = (privateKey: string) => {
-    setWallet({ ...wallet, privateKey })
   }
 
   const unlockWallet = async (password: string) => {
@@ -221,7 +249,6 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
         recycleVtxos,
         reloadWallet,
         resetWallet,
-        setPrivateKey,
         settlePending,
         unlockWallet,
         updateWallet,

@@ -18,11 +18,11 @@ root.render(
       <AspProvider>
         <NotificationsProvider>
           <FiatProvider>
-            <WalletProvider>
-              <FlowProvider>
+            <FlowProvider>
+              <WalletProvider>
                 <App />
-              </FlowProvider>
-            </WalletProvider>
+              </WalletProvider>
+            </FlowProvider>
           </FiatProvider>
         </NotificationsProvider>
       </AspProvider>

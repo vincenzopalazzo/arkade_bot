@@ -24,7 +24,7 @@ const TransactionLine = ({ tx }: { tx: Tx }) => {
   return (
     <div className='border cursor-pointer p-2 flex justify-between w-full rounded-md' onClick={handleClick}>
       <p className='text-left w-2/5'>{amount}</p>
-      {tx.isPending ? <Pill text='Pending' /> : null}
+      {tx.pending ? <Pill text='Pending' /> : null}
       <p className='text-right w-2/5'>{date}</p>
     </div>
   )
@@ -41,8 +41,8 @@ export default function TransactionsList({ short }: { short?: boolean }) {
   const sortFunction = (a: Tx, b: Tx) => (!a.createdAt ? -1 : !b.createdAt ? 1 : b.createdAt - a.createdAt)
 
   const showMax = 4
-  const pending = wallet.txs.filter((tx) => tx.isPending).sort(sortFunction)
-  const settled = wallet.txs.filter((tx) => !tx.isPending).sort(sortFunction)
+  const pending = wallet.txs.filter((tx) => tx.pending).sort(sortFunction)
+  const settled = wallet.txs.filter((tx) => !tx.pending).sort(sortFunction)
   const ordered = [...pending, ...settled]
   const showTxs = short ? ordered.slice(0, showMax) : ordered
 

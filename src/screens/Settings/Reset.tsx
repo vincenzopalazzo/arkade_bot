@@ -7,7 +7,7 @@ import { WalletContext } from '../../providers/wallet'
 import Content from '../../components/Content'
 import Container from '../../components/Container'
 
-export default function Restore({ backup }: { backup: () => void }) {
+export default function Reset({ backup }: { backup: () => void }) {
   const { toggleShowConfig } = useContext(ConfigContext)
   const { resetWallet } = useContext(WalletContext)
 

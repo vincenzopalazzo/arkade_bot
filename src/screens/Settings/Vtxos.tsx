@@ -9,6 +9,7 @@ import Label from '../../components/Label'
 import { prettyAgo, prettyNumber } from '../../lib/format'
 import Loading from '../../components/Loading'
 import NextRecycle from '../../components/NextRecycle'
+import Error from '../../components/Error'
 import { ConfigContext } from '../../providers/config'
 
 export default function Vtxos() {
@@ -50,16 +51,20 @@ export default function Vtxos() {
           </div>
         ) : (
           <div className='flex flex-col gap-10'>
-            <NextRecycle onClick={() => setShowList(true)} />
-            <div className='flex flex-col gap-6'>
-              <p>Your VTXOs have a lifetime of 7 days and they need to be recycled prior to expiration.</p>
-              <p>The app will try to auto-recycle all VTXOs which expire in less than 24 hours.</p>
-            </div>
+            {wallet.vtxos.spendable?.length > 0 ? (
+              <NextRecycle onClick={() => setShowList(true)} />
+            ) : (
+              <Error error text="You don't have any VTXOs" />
+            )}
+            <p>Your VTXOs have a lifetime of 7 days and they need to be rolled over prior to expiration.</p>
+            <p>The app will try to auto roll over all VTXOs which expire in less than 24 hours.</p>
           </div>
         )}
       </Content>
       <ButtonsOnBottom>
-        <Button onClick={handleRecycle} label={buttonLabel} disabled={recycling} />
+        {wallet.vtxos.spendable?.length > 0 ? (
+          <Button onClick={handleRecycle} label={buttonLabel} disabled={recycling} />
+        ) : null}
         <Button onClick={toggleShowConfig} label='Back to wallet' secondary />
       </ButtonsOnBottom>
     </Container>

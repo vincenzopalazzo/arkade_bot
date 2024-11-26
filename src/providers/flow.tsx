@@ -6,6 +6,11 @@ export interface InitInfo {
   privateKey: string
 }
 
+export interface NoteInfo {
+  note: string
+  satoshis: number
+}
+
 export interface RecvInfo {
   boardingAddr: string
   offchainAddr: string
@@ -24,10 +29,12 @@ export type TxInfo = Tx | undefined
 
 interface FlowContextProps {
   initInfo: InitInfo
+  noteInfo: NoteInfo
   recvInfo: RecvInfo
   sendInfo: SendInfo
   txInfo: TxInfo
   setInitInfo: (arg0: InitInfo) => void
+  setNoteInfo: (arg0: NoteInfo) => void
   setRecvInfo: (arg0: RecvInfo) => void
   setSendInfo: (arg0: SendInfo) => void
   setTxInfo: (arg0: TxInfo) => void
@@ -36,6 +43,11 @@ interface FlowContextProps {
 export const emptyInitInfo: InitInfo = {
   password: '',
   privateKey: '',
+}
+
+export const emptyNoteInfo: NoteInfo = {
+  note: '',
+  satoshis: 0,
 }
 
 export const emptyRecvInfo: RecvInfo = {
@@ -53,10 +65,12 @@ export const emptySendInfo: SendInfo = {
 
 export const FlowContext = createContext<FlowContextProps>({
   initInfo: emptyInitInfo,
+  noteInfo: emptyNoteInfo,
   recvInfo: emptyRecvInfo,
   sendInfo: emptySendInfo,
   txInfo: undefined,
   setInitInfo: () => {},
+  setNoteInfo: () => {},
   setRecvInfo: () => {},
   setSendInfo: () => {},
   setTxInfo: () => {},
@@ -64,13 +78,25 @@ export const FlowContext = createContext<FlowContextProps>({
 
 export const FlowProvider = ({ children }: { children: ReactNode }) => {
   const [initInfo, setInitInfo] = useState(emptyInitInfo)
+  const [noteInfo, setNoteInfo] = useState(emptyNoteInfo)
   const [recvInfo, setRecvInfo] = useState(emptyRecvInfo)
   const [sendInfo, setSendInfo] = useState(emptySendInfo)
   const [txInfo, setTxInfo] = useState<TxInfo>()
 
   return (
     <FlowContext.Provider
-      value={{ initInfo, recvInfo, sendInfo, txInfo, setInitInfo, setRecvInfo, setSendInfo, setTxInfo }}
+      value={{
+        initInfo,
+        noteInfo,
+        recvInfo,
+        sendInfo,
+        txInfo,
+        setInitInfo,
+        setNoteInfo,
+        setRecvInfo,
+        setSendInfo,
+        setTxInfo,
+      }}
     >
       {children}
     </FlowContext.Provider>
