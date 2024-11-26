@@ -11,7 +11,7 @@ import Header from '../../../components/Header'
 import { defaultFee } from '../../../lib/constants'
 import { prettyNumber } from '../../../lib/format'
 import Content from '../../../components/Content'
-import FlexCol from '../../../components/FlexCols'
+import FlexCol from '../../../components/FlexCol'
 
 export default function SendDetails() {
   const { navigate } = useContext(NavigationContext)

@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 import Text from './Text'
 import { IonTextarea } from '@ionic/react'
 import Shadow from './Shadow'
-import FlexCol from './FlexCols'
+import FlexCol from './FlexCol'
 
 interface TextareaProps {
   children?: ReactNode

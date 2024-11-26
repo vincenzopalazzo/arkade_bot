@@ -7,7 +7,7 @@ import Clipboard from './Clipboard'
 import { isArkAddress, isBTCAddress } from '../lib/address'
 import { isArkNote } from '../lib/arknote'
 import { isBip21 } from '../lib/bip21'
-import FlexCol from './FlexCols'
+import FlexCol from './FlexCol'
 
 interface InputAddressProps {
   label?: string

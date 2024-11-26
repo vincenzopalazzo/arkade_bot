@@ -12,7 +12,7 @@ import { NavigationContext, Pages } from '../../providers/navigation'
 import Header from './Header'
 import WarningBox from '../../components/Warning'
 import InputUrl from '../../components/InputUrl'
-import FlexCol from '../../components/FlexCols'
+import FlexCol from '../../components/FlexCol'
 
 export default function Server() {
   const { config, updateConfig } = useContext(ConfigContext)
