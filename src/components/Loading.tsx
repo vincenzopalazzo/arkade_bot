@@ -6,7 +6,11 @@ export default function Loading({ text }: { text?: string }) {
   return (
     <CenterScreen>
       <LoadingIcon />
-      {text ? <Text small>{text}</Text> : null}
+      {text ? (
+        <Text centered small wrap>
+          {text}
+        </Text>
+      ) : null}
     </CenterScreen>
   )
 }

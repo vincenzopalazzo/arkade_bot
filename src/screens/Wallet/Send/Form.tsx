@@ -18,6 +18,7 @@ import Content from '../../../components/Content'
 import FlexCol from '../../../components/FlexCol'
 import Keyboard from '../../../components/Keyboard'
 import Text from '../../../components/Text'
+import BarcodeScanner from '../../../components/BarcodeScanner'
 
 export default function SendForm() {
   const { aspInfo } = useContext(AspContext)
@@ -27,6 +28,7 @@ export default function SendForm() {
 
   const [error, setError] = useState('')
   const [showKeys, setShowKeys] = useState(false)
+  const [showScan, setShowScan] = useState(false)
 
   const [amount, setAmount] = useState(0)
   const [recipient, setRecipient] = useState('')
@@ -59,11 +61,15 @@ export default function SendForm() {
       try {
         const anote = ArkNote.fromString(recipient)
         setNoteInfo({ note: recipient, satoshis: anote.data.value })
-        return navigate(Pages.NoteRedeem)
+        return navigate(Pages.NotesRedeem)
       } catch (_) {}
     }
     setError('Invalid recipient address')
   }, [recipient])
+
+  useEffect(() => {
+    setSendInfo({ ...sendInfo, satoshis: amount })
+  }, [amount])
 
   const handleContinue = () => {
     setSendInfo({ ...sendInfo, satoshis: amount })
@@ -84,35 +90,38 @@ export default function SendForm() {
   const { address, arkAddress, satoshis } = sendInfo
   const disabled = !((address || arkAddress) && satoshis && satoshis > 0)
 
-  return (
+  return showKeys ? (
+    <Keyboard back={() => setShowKeys(false)} onChange={setAmount} value={amount} />
+  ) : showScan ? (
     <>
-      {showKeys ? (
-        <Keyboard back={() => setShowKeys(false)} onChange={setAmount} value={amount} />
-      ) : (
-        <>
-          <Header text='Send' />
-          <Content>
-            <Padded>
-              <FlexCol gap='2rem'>
-                <Error error={Boolean(error)} text={error} />
-                <FlexCol gap='0.5rem'>
-                  <InputAddress label='Recipient address' onChange={setRecipient} value={recipient} />
-                </FlexCol>
-                <InputAmount
-                  label='Amount'
-                  onChange={setAmount}
-                  onFocus={handleFocus}
-                  right={<Available />}
-                  value={sendInfo.satoshis}
-                />
-              </FlexCol>
-            </Padded>
-          </Content>
-          <ButtonsOnBottom>
-            <Button onClick={handleContinue} label='Continue' disabled={disabled} />
-          </ButtonsOnBottom>
-        </>
-      )}
+      <Header text='Send' back={() => setShowScan(false)} />
+      <Content>
+        <BarcodeScanner setData={setRecipient} setError={setError} />
+      </Content>
+      <ButtonsOnBottom>
+        <Button onClick={() => setShowScan(false)} label='Cancel' />
+      </ButtonsOnBottom>
+    </>
+  ) : (
+    <>
+      <Content>
+        <Padded>
+          <FlexCol gap='2rem'>
+            <Error error={Boolean(error)} text={error} />
+            <InputAddress label='Recipient address' onChange={setRecipient} value={recipient} />
+            <InputAmount
+              label='Amount'
+              onChange={setAmount}
+              onFocus={handleFocus}
+              right={<Available />}
+              value={amount}
+            />
+          </FlexCol>
+        </Padded>
+      </Content>
+      <ButtonsOnBottom>
+        <Button onClick={handleContinue} label='Continue' disabled={disabled} />
+      </ButtonsOnBottom>
     </>
   )
 }

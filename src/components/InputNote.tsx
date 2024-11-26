@@ -2,30 +2,25 @@ import FlexCol from './FlexCol'
 import InputContainer from './InputContainer'
 import Clipboard from './Clipboard'
 import { IonInput } from '@ionic/react'
+import { isArkNote } from '../lib/arknote'
 
-interface InputNpubProps {
+interface InputNoteProps {
   label: string
   onChange: (arg0: any) => void
-  value: string
 }
 
-export default function InputNpub({ label, onChange, value }: InputNpubProps) {
+export default function InputNote({ label, onChange }: InputNoteProps) {
   const handleInput = (ev: Event) => {
     const value = (ev.target as HTMLInputElement).value
     onChange(value)
   }
 
-  const isNpub = (dataToValidate: string): boolean => {
-    const data = dataToValidate.toLowerCase()
-    return /^npub/.test(data)
-  }
-
   return (
     <FlexCol gap='0.5rem'>
       <InputContainer label={label}>
-        <IonInput onIonInput={handleInput} value={value} />
+        <IonInput onIonInput={handleInput} />
       </InputContainer>
-      <Clipboard onPaste={onChange} validator={isNpub} />
+      <Clipboard onPaste={onChange} validator={isArkNote} />
     </FlexCol>
   )
 }

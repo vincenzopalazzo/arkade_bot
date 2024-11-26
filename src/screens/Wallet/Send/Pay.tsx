@@ -54,7 +54,9 @@ export default function SendPayment() {
     }
   }, [wallet.initialized])
 
-  const text = address ? 'Payments to mainnet require a round, which can take a few seconds' : undefined
+  const text = arkAddress
+    ? 'Paying inside the Ark'
+    : 'Payments to mainnet require a round, which can take a few seconds'
 
   return (
     <>

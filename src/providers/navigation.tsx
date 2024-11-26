@@ -5,9 +5,9 @@ import InitNew from '../screens/Init/New'
 import InitOld from '../screens/Init/Restore'
 import InitPassword from '../screens/Init/Password'
 import Loading from '../components/Loading'
-import NoteRedeem from '../screens/Wallet/Vouchers/Redeem'
-import NoteScan from '../screens/Wallet/Vouchers/Scan'
-import NoteSuccess from '../screens/Wallet/Vouchers/Success'
+import NotesRedeem from '../screens/Wallet/Notes/Redeem'
+import NotesForm from '../screens/Wallet/Notes/Form'
+import NotesSuccess from '../screens/Wallet/Notes/Success'
 import ReceiveAmount from '../screens/Wallet/Receive/Amount'
 import ReceiveQRCode from '../screens/Wallet/Receive/QrCode'
 import ReceiveSuccess from '../screens/Wallet/Receive/Success'
@@ -29,9 +29,9 @@ export enum Pages {
   InitPassword,
   InitConnect,
   Loading,
-  NoteRedeem,
-  NoteScan,
-  NoteSuccess,
+  NotesRedeem,
+  NotesForm,
+  NotesSuccess,
   ReceiveAmount,
   ReceiveQRCode,
   ReceiveSuccess,
@@ -62,9 +62,9 @@ const pageTab = {
   [Pages.InitPassword]: Tabs.None,
   [Pages.InitConnect]: Tabs.None,
   [Pages.Loading]: Tabs.None,
-  [Pages.NoteRedeem]: Tabs.Settings,
-  [Pages.NoteScan]: Tabs.Settings,
-  [Pages.NoteSuccess]: Tabs.Settings,
+  [Pages.NotesRedeem]: Tabs.Settings,
+  [Pages.NotesForm]: Tabs.Settings,
+  [Pages.NotesSuccess]: Tabs.Settings,
   [Pages.ReceiveAmount]: Tabs.Receive,
   [Pages.ReceiveQRCode]: Tabs.Receive,
   [Pages.ReceiveSuccess]: Tabs.Receive,
@@ -94,12 +94,12 @@ export const pageComponent = (page: Pages): JSX.Element => {
       return <InitPassword />
     case Pages.Loading:
       return <Loading />
-    case Pages.NoteRedeem:
-      return <NoteRedeem />
-    case Pages.NoteScan:
-      return <NoteScan />
-    case Pages.NoteSuccess:
-      return <NoteSuccess />
+    case Pages.NotesRedeem:
+      return <NotesRedeem />
+    case Pages.NotesForm:
+      return <NotesForm />
+    case Pages.NotesSuccess:
+      return <NotesSuccess />
     case Pages.ReceiveAmount:
       return <ReceiveAmount />
     case Pages.ReceiveQRCode:

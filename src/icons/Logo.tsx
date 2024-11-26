@@ -1,4 +1,9 @@
 export default function LogoIcon({ big }: { big?: boolean }) {
+  const size = big ? '144px' : '40px'
+  return <img height={size} width={size} src='/arkade-icon-rounded.png' />
+}
+
+export function LogoIconSvg({ big }: { big?: boolean }) {
   return (
     <svg
       width={big ? '144' : '40'}

@@ -1,19 +1,24 @@
 import { useContext, useEffect } from 'react'
 import Button from '../../../components/Button'
-import SuccessIcon from '../../../icons/Success'
 import ButtonsOnBottom from '../../../components/ButtonsOnBottom'
 import { NavigationContext, Pages } from '../../../providers/navigation'
 import { FlowContext } from '../../../providers/flow'
 import { NotificationsContext } from '../../../providers/notifications'
 import Header from '../../../components/Header'
 import Content from '../../../components/Content'
+import Success from '../../../components/Success'
+import { WalletContext } from '../../../providers/wallet'
 
 export default function SendSuccess() {
   const { sendInfo } = useContext(FlowContext)
   const { navigate } = useContext(NavigationContext)
   const { notifyPaymentSent } = useContext(NotificationsContext)
+  const { reloadWallet } = useContext(WalletContext)
 
-  const goBackToWallet = () => navigate(Pages.Wallet)
+  const goBackToWallet = () => {
+    reloadWallet()
+    navigate(Pages.Wallet)
+  }
 
   useEffect(() => {
     if (sendInfo.satoshis) notifyPaymentSent(sendInfo.satoshis)
@@ -21,13 +26,9 @@ export default function SendSuccess() {
 
   return (
     <>
-      <Header text='Sending' back={() => navigate(Pages.SendDetails)} />
+      <Header text='Sending' />
       <Content>
-        <div className='flex h-60 mt-4'>
-          <div className='m-auto'>
-            <SuccessIcon />
-          </div>
-        </div>
+        <Success text={`Sent ${sendInfo.satoshis} sats`} />
       </Content>
       <ButtonsOnBottom>
         <Button onClick={goBackToWallet} label='Back to wallet' secondary />

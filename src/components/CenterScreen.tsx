@@ -2,18 +2,20 @@ import { ReactNode } from 'react'
 
 interface CenterScreenProps {
   children: ReactNode
+  gap?: string
 }
 
-export default function CenterScreen({ children }: CenterScreenProps) {
+export default function CenterScreen({ children, gap }: CenterScreenProps) {
   const style: any = {
     alignItems: 'center',
     display: 'flex',
     flexDirection: 'column',
-    gap: '0.5rem',
+    gap: gap ?? '1rem',
     height: '100%',
     justifyContent: 'center',
+    margin: 'auto',
+    maxWidth: '16rem',
     paddingBottom: '5rem',
-    width: '100%',
   }
 
   return <div style={style}>{children}</div>

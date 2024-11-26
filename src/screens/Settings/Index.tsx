@@ -7,7 +7,7 @@ import About from './About'
 import Appearance from './Appearance'
 import Nostr from './Nostr'
 import Vtxos from './Vtxos'
-import NoteScan from '../Wallet/Vouchers/Scan'
+import NotesForm from '../Wallet/Notes/Form'
 import Server from './Server'
 import { Options, OptionsContext } from '../../providers/options'
 import Menu from './Menu'
@@ -24,7 +24,7 @@ export default function Settings() {
       {option === Options.Backup && <Backup />}
       {option === Options.Lock && <Lock />}
       {option === Options.Nostr && <Nostr />}
-      {option === Options.Notes && <NoteScan />}
+      {option === Options.Notes && <NotesForm />}
       {option === Options.Notifications && <Notifications />}
       {option === Options.Reset && <Reset />}
       {option === Options.Server && <Server />}

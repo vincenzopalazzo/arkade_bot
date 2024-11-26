@@ -11,6 +11,7 @@ import Content from '../../components/Content'
 import CenterScreen from '../../components/CenterScreen'
 import Text from '../../components/Text'
 import LogoIcon from '../../icons/Logo'
+import FlexCol from '../../components/FlexCol'
 
 export default function Init() {
   const { aspInfo } = useContext(AspContext)
@@ -38,8 +39,10 @@ export default function Init() {
       <Content>
         <CenterScreen>
           <LogoIcon big />
-          <Text bigger>Arkade</Text>
-          <Text color='dark50'>Ark wallet PoC</Text>
+          <FlexCol centered gap='0'>
+            <Text bigger>Arkade</Text>
+            <Text color='dark50'>Ark wallet PoC</Text>
+          </FlexCol>
           <Error error={error} text='ASP unreachable, try again later' />
         </CenterScreen>
       </Content>

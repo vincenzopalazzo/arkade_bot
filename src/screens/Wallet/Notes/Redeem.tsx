@@ -13,7 +13,7 @@ import { ArkNote } from '../../../lib/arknote'
 import Loading from '../../../components/Loading'
 import Header from '../../Settings/Header'
 
-export default function NoteRedeem() {
+export default function NotesRedeem() {
   const { noteInfo } = useContext(FlowContext)
   const { navigate } = useContext(NavigationContext)
 
@@ -42,7 +42,7 @@ export default function NoteRedeem() {
     setRedeeming(true)
     try {
       await redeemNotes([noteInfo.note])
-      navigate(Pages.NoteSuccess)
+      navigate(Pages.NotesSuccess)
     } catch (err) {
       setError(extractError(err))
     }

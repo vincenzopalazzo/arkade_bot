@@ -7,7 +7,6 @@ import Content from '../../components/Content'
 import { WalletContext } from '../../providers/wallet'
 import Loading from '../../components/Loading'
 import Header from '../../components/Header'
-import CenterScreen from '../../components/CenterScreen'
 
 export default function InitConnect() {
   const { navigate } = useContext(NavigationContext)
@@ -27,9 +26,7 @@ export default function InitConnect() {
     <>
       <Header text='Connecting to server' back={handleCancel} />
       <Content>
-        <CenterScreen>
-          <Loading text='Connecting to server' />
-        </CenterScreen>
+        <Loading text='Connecting to server' />
       </Content>
       <ButtonsOnBottom>
         <Button onClick={handleCancel} label='Cancel' secondary />

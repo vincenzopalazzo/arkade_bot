@@ -138,7 +138,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   // if voucher present, go to redeem page
   useEffect(() => {
     if (!walletUnlocked || !wallet.initialized) return
-    if (noteInfo.satoshis) navigate(Pages.NoteRedeem)
+    if (noteInfo.satoshis) navigate(Pages.NotesRedeem)
     // startListenTransactionStream(reloadWallet)
   }, [walletUnlocked, wallet.initialized])
 

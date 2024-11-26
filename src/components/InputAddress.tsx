@@ -7,6 +7,7 @@ import Clipboard from './Clipboard'
 import { isArkAddress, isBTCAddress } from '../lib/address'
 import { isArkNote } from '../lib/arknote'
 import { isBip21 } from '../lib/bip21'
+import FlexCol from './FlexCol'
 
 interface InputAddressProps {
   label?: string
@@ -44,7 +45,7 @@ export default function InputAddress({ label, onChange, placeholder, value }: In
   if (scan) return <BarcodeScanner setData={handleData} setError={handleError} />
 
   return (
-    <>
+    <FlexCol gap='0.5rem'>
       <InputContainer label={label} error={error}>
         <IonInput onIonInput={handleInput} placeholder={placeholder} value={value}>
           <IonText slot='end' style={{ color: 'var(--dark50)' }}>
@@ -55,6 +56,6 @@ export default function InputAddress({ label, onChange, placeholder, value }: In
         </IonInput>
       </InputContainer>
       <Clipboard onPaste={onChange} validator={validator} />
-    </>
+    </FlexCol>
   )
 }
