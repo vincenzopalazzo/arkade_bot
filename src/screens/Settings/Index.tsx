@@ -15,6 +15,8 @@ import Menu from './Menu'
 export default function Settings() {
   const { option } = useContext(OptionsContext)
 
+  console.log('settings/index')
+
   return (
     <>
       {option === Options.Menu && <Menu />}

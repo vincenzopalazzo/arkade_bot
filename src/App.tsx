@@ -33,13 +33,14 @@ import { emptyRecvInfo, emptySendInfo, FlowContext } from './providers/flow'
 setupIonicReact()
 
 export default function App() {
-  const { wasmLoaded, walletUnlocked, wallet } = useContext(WalletContext)
   const { configLoaded } = useContext(ConfigContext)
   const { setRecvInfo, setSendInfo } = useContext(FlowContext)
   const { navigate, screen, tab } = useContext(NavigationContext)
   const { setOption } = useContext(OptionsContext)
+  const { reloadWallet, wasmLoaded, walletUnlocked, wallet } = useContext(WalletContext)
 
   const handleHome = () => {
+    reloadWallet()
     navigate(Pages.Wallet)
   }
 

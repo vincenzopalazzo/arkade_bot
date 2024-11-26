@@ -12,7 +12,7 @@ import Header from '../../components/Header'
 
 export default function Unlock() {
   const { navigate } = useContext(NavigationContext)
-  const { unlockWallet } = useContext(WalletContext)
+  const { reloadWallet, unlockWallet } = useContext(WalletContext)
 
   const [error, setError] = useState('')
   const [label, setLabel] = useState('Unlock')
@@ -31,11 +31,14 @@ export default function Unlock() {
       .catch(() => {})
   }
 
-  const handleUnlock = async (pass: string) => {
-    if (!pass) return
+  const handleUnlock = async () => {
+    if (!password) return
     setUnlocking(true)
-    unlockWallet(pass)
-      .then(() => navigate(Pages.Wallet))
+    unlockWallet(password)
+      .then(() => {
+        reloadWallet()
+        navigate(Pages.Wallet)
+      })
       .catch((err) => {
         setError(extractError(err))
         setUnlocking(false)
@@ -52,7 +55,7 @@ export default function Unlock() {
         </Padded>
       </Content>
       <ButtonsOnBottom>
-        <Button onClick={() => handleUnlock(password)} label={label} disabled={unlocking} />
+        <Button onClick={handleUnlock} label={label} disabled={unlocking} />
       </ButtonsOnBottom>
     </>
   )
