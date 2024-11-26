@@ -3,7 +3,7 @@ import Text from './Text'
 import Error from './Error'
 import FlexRow from './FlexRow'
 import Shadow from './Shadow'
-import FlexCol from './FlexCol'
+import FlexCol from './FlexCols'
 import Padded from './Padded'
 
 interface InputContainerProps {

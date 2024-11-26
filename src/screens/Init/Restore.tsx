@@ -9,7 +9,7 @@ import Content from '../../components/Content'
 import { invalidPrivateKey, nsecToSeed } from '../../lib/privateKey'
 import Textarea from '../../components/Textarea'
 import Header from '../../components/Header'
-import FlexCol from '../../components/FlexCol'
+import FlexCol from '../../components/FlexCols'
 
 enum ButtonLabel {
   Invalid = 'Invalid private key',

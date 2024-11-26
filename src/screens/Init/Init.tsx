@@ -11,7 +11,7 @@ import Content from '../../components/Content'
 import CenterScreen from '../../components/CenterScreen'
 import Text from '../../components/Text'
 import LogoIcon from '../../icons/Logo'
-import FlexCol from '../../components/FlexCol'
+import FlexCol from '../../components/FlexCols'
 
 export default function Init() {
   const { aspInfo } = useContext(AspContext)

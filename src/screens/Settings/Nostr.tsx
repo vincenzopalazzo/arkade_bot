@@ -11,7 +11,7 @@ import { setNostrNotificationRecipient } from '../../lib/asp'
 import Header from './Header'
 import Toggle from '../../components/Toggle'
 import { TextLabel, TextSecondary } from '../../components/Text'
-import FlexCol from '../../components/FlexCol'
+import FlexCol from '../../components/FlexCols'
 import InputNpub from '../../components/InputNpub'
 
 export default function Nostr() {

@@ -1,6 +1,6 @@
 import Text, { TextSecondary } from './Text'
 import FlexRow from './FlexRow'
-import FlexCol from './FlexCol'
+import FlexCol from './FlexCols'
 
 export default function Table({ data }: { data: string[][] }) {
   return (

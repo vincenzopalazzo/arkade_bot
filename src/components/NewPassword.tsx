@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import InputPassword from './InputPassword'
-import FlexCol from './FlexCol'
+import FlexCol from './FlexCols'
 import Text from './Text'
 import CheckList from './CheckList'
 import StrengthBars, { calcStrength } from './Strength'

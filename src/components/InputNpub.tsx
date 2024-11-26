@@ -1,4 +1,4 @@
-import FlexCol from './FlexCol'
+import FlexCol from './FlexCols'
 import InputContainer from './InputContainer'
 import Clipboard from './Clipboard'
 import { IonInput } from '@ionic/react'

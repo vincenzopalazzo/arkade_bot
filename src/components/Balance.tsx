@@ -3,7 +3,7 @@ import { prettyNumber } from '../lib/format'
 import { Satoshis } from '../lib/types'
 import { FiatContext } from '../providers/fiat'
 import Text from './Text'
-import FlexCol from './FlexCol'
+import FlexCol from './FlexCols'
 
 interface BalanceProps {
   sats: Satoshis
