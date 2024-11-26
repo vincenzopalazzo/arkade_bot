@@ -1,4 +1,4 @@
-import Text, { TextSecondary } from './Text'
+import Text from './Text'
 import FlexRow from './FlexRow'
 import FlexCol from './FlexCol'
 
@@ -8,7 +8,7 @@ export default function Table({ data }: { data: string[][] }) {
       {data.map(([title, value]) => (
         <FlexRow between key={title}>
           <Text>{title}</Text>
-          <TextSecondary>{value}</TextSecondary>
+          <Text color={value === 'Settled' ? 'green' : 'dark50'}>{value}</Text>
         </FlexRow>
       ))}
     </FlexCol>

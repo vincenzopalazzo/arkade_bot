@@ -18,7 +18,7 @@ import Content from '../../../components/Content'
 import FlexCol from '../../../components/FlexCol'
 import Keyboard from '../../../components/Keyboard'
 import Text from '../../../components/Text'
-import BarcodeScanner from '../../../components/BarcodeScanner'
+import Scanner from '../../../components/Scanner'
 
 export default function SendForm() {
   const { aspInfo } = useContext(AspContext)
@@ -27,8 +27,8 @@ export default function SendForm() {
   const { wallet } = useContext(WalletContext)
 
   const [error, setError] = useState('')
-  const [showKeys, setShowKeys] = useState(false)
-  const [showScan, setShowScan] = useState(false)
+  const [keys, setKeys] = useState(false)
+  const [scan, setScan] = useState(false)
 
   const [amount, setAmount] = useState(0)
   const [recipient, setRecipient] = useState('')
@@ -78,7 +78,7 @@ export default function SendForm() {
 
   const handleFocus = () => {
     const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints
-    if (isMobile) setShowKeys(true)
+    if (isMobile) setKeys(true)
   }
 
   const Available = () => (
@@ -90,25 +90,24 @@ export default function SendForm() {
   const { address, arkAddress, satoshis } = sendInfo
   const disabled = !((address || arkAddress) && satoshis && satoshis > 0)
 
-  return showKeys ? (
-    <Keyboard back={() => setShowKeys(false)} onChange={setAmount} value={amount} />
-  ) : showScan ? (
+  if (scan)
+    return <Scanner close={() => setScan(false)} label='Recipient address' setData={setRecipient} setError={setError} />
+
+  if (keys) return <Keyboard back={() => setKeys(false)} onChange={setAmount} value={amount} />
+
+  return (
     <>
-      <Header text='Send' back={() => setShowScan(false)} />
-      <Content>
-        <BarcodeScanner setData={setRecipient} setError={setError} />
-      </Content>
-      <ButtonsOnBottom>
-        <Button onClick={() => setShowScan(false)} label='Cancel' />
-      </ButtonsOnBottom>
-    </>
-  ) : (
-    <>
+      <Header text='Send' />
       <Content>
         <Padded>
           <FlexCol gap='2rem'>
             <Error error={Boolean(error)} text={error} />
-            <InputAddress label='Recipient address' onChange={setRecipient} value={recipient} />
+            <InputAddress
+              label='Recipient address'
+              onChange={setRecipient}
+              openScan={() => setScan(true)}
+              value={recipient}
+            />
             <InputAmount
               label='Amount'
               onChange={setAmount}

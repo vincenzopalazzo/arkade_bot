@@ -1,31 +1,26 @@
-import FlexCol from './FlexCol'
-import InputContainer from './InputContainer'
-import Clipboard from './Clipboard'
-import { IonInput } from '@ionic/react'
+import InputWithScanner from './InputWithScanner'
 
 interface InputNpubProps {
   label: string
   onChange: (arg0: any) => void
+  openScan: () => void
+  placeholder?: string
   value: string
 }
 
-export default function InputNpub({ label, onChange, value }: InputNpubProps) {
-  const handleInput = (ev: Event) => {
-    const value = (ev.target as HTMLInputElement).value
-    onChange(value)
-  }
-
-  const isNpub = (dataToValidate: string): boolean => {
-    const data = dataToValidate.toLowerCase()
-    return /^npub/.test(data)
+export default function InputNpub({ label, onChange, openScan, placeholder, value }: InputNpubProps) {
+  const isNpub = (data: string): boolean => {
+    return /^npub/.test(data.toLowerCase())
   }
 
   return (
-    <FlexCol gap='0.5rem'>
-      <InputContainer label={label}>
-        <IonInput onIonInput={handleInput} value={value} />
-      </InputContainer>
-      <Clipboard onPaste={onChange} validator={isNpub} />
-    </FlexCol>
+    <InputWithScanner
+      label={label}
+      onChange={onChange}
+      openScan={openScan}
+      placeholder={placeholder}
+      validator={isNpub}
+      value={value}
+    />
   )
 }

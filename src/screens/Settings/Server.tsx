@@ -13,15 +13,17 @@ import Header from './Header'
 import WarningBox from '../../components/Warning'
 import InputUrl from '../../components/InputUrl'
 import FlexCol from '../../components/FlexCol'
+import Scanner from '../../components/Scanner'
 
 export default function Server() {
   const { config, updateConfig } = useContext(ConfigContext)
   const { navigate } = useContext(NavigationContext)
   const { updateWallet, wallet } = useContext(WalletContext)
 
+  const [aspUrl, setAspUrl] = useState('')
   const [error, setError] = useState('')
   const [found, setFound] = useState(false)
-  const [aspUrl, setAspUrl] = useState('')
+  const [scan, setScan] = useState(false)
 
   useEffect(() => {
     if (!aspUrl) return
@@ -43,13 +45,15 @@ export default function Server() {
     navigate(Pages.Init)
   }
 
+  if (scan) return <Scanner close={() => setScan(false)} label='Server URL' setData={setAspUrl} setError={setError} />
+
   return (
     <>
       <Header text='Server' back />
       <Content>
         <Padded>
           <FlexCol>
-            <InputUrl label='Server URL' onChange={setAspUrl} value={aspUrl} />
+            <InputUrl label='Server URL' onChange={setAspUrl} openScan={() => setScan(true)} value={aspUrl} />
             <Error error={Boolean(error)} text={error} />
             {found && !error ? <WarningBox green text='Server found' /> : null}
             <WarningBox text='Your wallet will be reseted. Make sure you backup your wallet first.' />

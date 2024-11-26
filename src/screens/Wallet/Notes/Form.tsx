@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
 import Button from '../../../components/Button'
-import BarcodeScanner from '../../../components/BarcodeScanner'
 import Error from '../../../components/Error'
 import ButtonsOnBottom from '../../../components/ButtonsOnBottom'
 import { NavigationContext, Pages } from '../../../providers/navigation'
@@ -11,6 +10,7 @@ import { ArkNote, isArkNote } from '../../../lib/arknote'
 import { ConfigContext } from '../../../providers/config'
 import Header from '../../Settings/Header'
 import InputNote from '../../../components/InputNote'
+import Scanner from '../../../components/Scanner'
 
 export default function NotesForm() {
   const { showConfig, toggleShowConfig } = useContext(ConfigContext)
@@ -19,7 +19,7 @@ export default function NotesForm() {
 
   const [error, setError] = useState('')
   const [note, setNote] = useState('')
-  const [showScan, setShowScan] = useState(false)
+  const [scan, setScan] = useState(false)
 
   useEffect(() => {
     setError('')
@@ -39,22 +39,14 @@ export default function NotesForm() {
     navigate(Pages.NotesRedeem)
   }
 
-  return showScan ? (
-    <>
-      <Header text='Note' back />
-      <Content>
-        <BarcodeScanner setData={setNote} setError={setError} />
-      </Content>
-      <ButtonsOnBottom>
-        <Button onClick={() => setShowScan(false)} label='Cancel scan' />
-      </ButtonsOnBottom>
-    </>
-  ) : (
+  if (scan) return <Scanner close={() => setScan(false)} label='Ark note' setData={setNote} setError={setError} />
+
+  return (
     <>
       <Header text='Note' back />
       <Content>
         <Padded>
-          <InputNote label='Ark note' onChange={setNote} />
+          <InputNote label='Ark note' onChange={setNote} openScan={() => setScan(true)} />
           <Error error={Boolean(error)} text={error} />
         </Padded>
       </Content>

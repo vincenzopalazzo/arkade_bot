@@ -13,6 +13,7 @@ import Toggle from '../../components/Toggle'
 import { TextLabel, TextSecondary } from '../../components/Text'
 import FlexCol from '../../components/FlexCol'
 import InputNpub from '../../components/InputNpub'
+import Scanner from '../../components/Scanner'
 
 export default function Nostr() {
   const { config, updateConfig } = useContext(ConfigContext)
@@ -22,6 +23,7 @@ export default function Nostr() {
   const [buttonLabel, setButtonLabel] = useState(label)
   const [error, setError] = useState('')
   const [npub, setNpub] = useState('')
+  const [scan, setScan] = useState(false)
 
   useEffect(() => {
     if (config.npub) setNpub(config.npub)
@@ -49,6 +51,8 @@ export default function Nostr() {
   const showCopyButton = config.nostr && config.npub === npub && npub
   const showSaveButton = config.nostr && config.npub !== npub && !error
 
+  if (scan) return <Scanner close={() => setScan(false)} label='Nostr npub' setData={setNpub} setError={setError} />
+
   return (
     <>
       <Header text='Nostr' back />
@@ -63,7 +67,12 @@ export default function Nostr() {
             </TextSecondary>
             {config.nostr ? (
               <FlexCol>
-                <InputNpub label='Nostr public key (npub)' onChange={setNpub} value={npub} />
+                <InputNpub
+                  label='Nostr public key (npub)'
+                  onChange={setNpub}
+                  openScan={() => setScan(true)}
+                  value={npub}
+                />
                 <Error error={Boolean(error)} text={error} />
               </FlexCol>
             ) : null}
