@@ -161,7 +161,7 @@ export const redeemNotes = async (notes: string[]): Promise<void> => {
 }
 
 export const sendOffChain = async (sats: number, address: string): Promise<string> => {
-  console.log('Sending offchain', sats, address)
+  console.log('sending offchain', sats, address)
   return await window.sendOffChain(false, [{ To: address, Amount: sats }])
 }
 

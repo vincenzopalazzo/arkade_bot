@@ -36,7 +36,7 @@ export default function Menu() {
             <TextLabel>{op.section}</TextLabel>
             <div style={gridStyle}>
               {op.options.map(({ icon, option }) => (
-                <div onClick={() => setOption(option)} style={rowStyle(option)}>
+                <div key={option} onClick={() => setOption(option)} style={rowStyle(option)}>
                   <FlexRow>
                     {icon}
                     <Text color={option === Options.Reset ? 'red' : ''} capitalize>

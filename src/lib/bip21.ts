@@ -29,16 +29,6 @@ export const decode = (uri: string) => {
   const invoice = /^lightning/.test(scheme) ? destination : (options?.lightning as string)
   const address = /^bitcoin/.test(scheme) ? destination : (options?.liquidnetwork as string)
 
-  console.log('{ address, arkAddress, destination, invoice, options, satoshis, scheme }', {
-    address,
-    arkAddress,
-    destination,
-    invoice,
-    options,
-    satoshis,
-    scheme,
-  })
-
   return { address, arkAddress, destination, invoice, options, satoshis, scheme }
 }
 

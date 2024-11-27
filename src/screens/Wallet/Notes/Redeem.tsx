@@ -53,14 +53,14 @@ export default function NotesRedeem() {
     <>
       <Header text='Redeem note' back />
       <Content>
-        <Padded>
-          <Error error={Boolean(error)} text={error} />
-          {redeeming ? (
-            <Loading text='Redeeming require a round, which can take a few seconds' />
-          ) : (
+        {redeeming ? (
+          <Loading text='Redeeming a note require a round, which can take a few seconds' />
+        ) : (
+          <Padded>
+            <Error error={Boolean(error)} text={error} />
             <Details details={details} />
-          )}
-        </Padded>
+          </Padded>
+        )}
       </Content>
       <ButtonsOnBottom>
         <Button onClick={handleRedeem} label={buttonLabel} disabled={redeeming} />

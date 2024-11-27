@@ -24,7 +24,7 @@ export default function NotesSuccess() {
     <>
       <Header text='Success' />
       <Content>
-        <Success text={`${prettyNumber(noteInfo.satoshis)} sats redeemeed`} />
+        <Success text={`${prettyNumber(noteInfo.satoshis)} sats redeemed`} />
       </Content>
       <ButtonsOnBottom>
         <Button onClick={goBackToWallet} label='Back to wallet' />

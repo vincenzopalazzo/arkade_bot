@@ -46,8 +46,6 @@ export default function SendDetails() {
 
   const handleContinue = () => navigate(Pages.SendPayment)
 
-  console.log('sendInfo', sendInfo)
-
   return (
     <>
       <Header text='Sign transaction' back={() => navigate(Pages.SendForm)} />
