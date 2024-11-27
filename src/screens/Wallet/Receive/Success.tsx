@@ -8,6 +8,7 @@ import { FlowContext } from '../../../providers/flow'
 import Header from '../../../components/Header'
 import Success from '../../../components/Success'
 import { WalletContext } from '../../../providers/wallet'
+import { prettyNumber } from '../../../lib/format'
 
 export default function ReceiveSuccess() {
   const { recvInfo } = useContext(FlowContext)
@@ -28,7 +29,7 @@ export default function ReceiveSuccess() {
     <>
       <Header text='Received' />
       <Content>
-        <Success text={`Received ${recvInfo.satoshis} sats`} />
+        <Success text={`Received ${prettyNumber(recvInfo.satoshis)} sats`} />
       </Content>
       <ButtonsOnBottom>
         <Button onClick={goBackToWallet} label='Back to wallet' secondary />

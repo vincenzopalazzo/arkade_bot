@@ -16,7 +16,7 @@ enum ButtonLabel {
   Ok = 'Continue',
 }
 
-export default function InitOld() {
+export default function InitRestore() {
   const { navigate } = useContext(NavigationContext)
   const { setInitInfo } = useContext(FlowContext)
 

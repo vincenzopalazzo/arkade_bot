@@ -17,7 +17,7 @@ export default function Balance({ sats }: BalanceProps) {
 
   return (
     <FlexCol gap='4px'>
-      <Text color='dark80' tiny>
+      <Text color='dark50' smaller>
         My balance
       </Text>
       <Text big>{text}</Text>

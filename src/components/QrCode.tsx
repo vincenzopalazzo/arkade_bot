@@ -5,6 +5,7 @@ import Button from './Button'
 import CopyIcon from '../icons/Copy'
 import { copyToClipboard } from '../lib/clipboard'
 import { useState } from 'react'
+import FlexCol from './FlexCol'
 
 interface QrCodeProps {
   short?: string
@@ -24,18 +25,14 @@ export default function QrCode({ short, value }: QrCodeProps) {
   }
 
   return (
-    <div className='w-[300px] mx-auto select-none text-center flex flex-col gap-6'>
+    <FlexCol centered>
       {value ? (
-        <div className='bg-white p-[10px]'>
+        <div style={{ backgroundColor: 'white', padding: '1rem' }}>
           <QRCode size={280} value={value} fgColor='#000000' />
         </div>
       ) : null}
       <Text>{prettyLongText(short ?? value)}</Text>
-      {canCopy ? (
-        <p>
-          <Button icon={<CopyIcon />} label={buttonLabel} onClick={handleCopy} secondary short />
-        </p>
-      ) : null}
-    </div>
+      {canCopy ? <Button icon={<CopyIcon />} label={buttonLabel} onClick={handleCopy} secondary short /> : null}
+    </FlexCol>
   )
 }

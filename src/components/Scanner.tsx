@@ -3,6 +3,7 @@ import Button from './Button'
 import ButtonsOnBottom from './ButtonsOnBottom'
 import Content from './Content'
 import Header from './Header'
+import Padded from './Padded'
 
 interface ScannerProps {
   close: () => void
@@ -16,7 +17,9 @@ export default function Scanner({ close, label, setData, setError }: ScannerProp
     <>
       <Header text={label} back={close} />
       <Content>
-        <BarcodeScanner setData={setData} setError={setError} />
+        <Padded>
+          <BarcodeScanner setData={setData} setError={setError} />
+        </Padded>
       </Content>
       <ButtonsOnBottom>
         <Button onClick={close} label='Cancel' />

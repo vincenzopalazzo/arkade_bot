@@ -32,7 +32,7 @@ export default function Init() {
     })
   }
 
-  const handleOldWallet = () => navigate(Pages.InitOld)
+  const handleOldWallet = () => navigate(Pages.InitRestore)
 
   return (
     <>

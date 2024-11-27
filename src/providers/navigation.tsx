@@ -1,8 +1,7 @@
 import { ReactNode, createContext, useState } from 'react'
 import Init from '../screens/Init/Init'
 import InitConnect from '../screens/Init/Connect'
-import InitNew from '../screens/Init/New'
-import InitOld from '../screens/Init/Restore'
+import InitRestore from '../screens/Init/Restore'
 import InitPassword from '../screens/Init/Password'
 import Loading from '../components/Loading'
 import NotesRedeem from '../screens/Wallet/Notes/Redeem'
@@ -24,8 +23,7 @@ import Settings from '../screens/Settings/Index'
 
 export enum Pages {
   Init,
-  InitNew,
-  InitOld,
+  InitRestore,
   InitPassword,
   InitConnect,
   Loading,
@@ -57,8 +55,7 @@ export enum Tabs {
 
 const pageTab = {
   [Pages.Init]: Tabs.None,
-  [Pages.InitNew]: Tabs.None,
-  [Pages.InitOld]: Tabs.None,
+  [Pages.InitRestore]: Tabs.None,
   [Pages.InitPassword]: Tabs.None,
   [Pages.InitConnect]: Tabs.None,
   [Pages.Loading]: Tabs.None,
@@ -86,10 +83,8 @@ export const pageComponent = (page: Pages): JSX.Element => {
       return <Init />
     case Pages.InitConnect:
       return <InitConnect />
-    case Pages.InitNew:
-      return <InitNew />
-    case Pages.InitOld:
-      return <InitOld />
+    case Pages.InitRestore:
+      return <InitRestore />
     case Pages.InitPassword:
       return <InitPassword />
     case Pages.Loading:

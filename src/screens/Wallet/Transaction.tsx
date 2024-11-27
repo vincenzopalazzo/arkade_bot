@@ -13,7 +13,6 @@ import { extractError } from '../../lib/error'
 import Loading from '../../components/Loading'
 import { openInNewTab } from '../../lib/explorers'
 import Modal from '../../components/Modal'
-import TipIcon from '../../icons/Tip'
 import Header from '../../components/Header'
 import Content from '../../components/Content'
 
@@ -70,22 +69,14 @@ export default function Transaction() {
     <>
       <Header text='Transaction' back={() => navigate(Pages.Wallet)} />
       <Content>
-        <Padded>
-          <Error error={Boolean(error)} text={error} />
-          {settling ? (
-            <Loading text='Settling transactions require a round, which can take a few seconds' />
-          ) : (
-            <>
-              <Table data={data} />
-              {tx.pending ? (
-                <div className='flex justify-center align-middle mt-4' onClick={() => setShowInfo(true)}>
-                  <TipIcon small />
-                  <p className='text-sm underline underline-offset-2 cursor-pointer'>What are pending transactions?</p>
-                </div>
-              ) : null}
-            </>
-          )}
-        </Padded>
+        {settling ? (
+          <Loading text='Settling transactions require a round, which can take a few seconds' />
+        ) : (
+          <Padded>
+            <Error error={Boolean(error)} text={error} />
+            <Table data={data} />
+          </Padded>
+        )}
       </Content>
       <ButtonsOnBottom>
         {showSettleButton ? (

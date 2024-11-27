@@ -27,7 +27,7 @@ export const StrengthLabel = ({ strength }: { strength: number }): JSX.Element =
       Strength:
     </Text>
     <Text smaller color={getColor(strength)}>
-      {getWord(strength)} {strength}
+      {getWord(strength)}
     </Text>
   </FlexRow>
 )

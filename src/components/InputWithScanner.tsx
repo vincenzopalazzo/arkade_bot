@@ -31,7 +31,7 @@ export default function InputWithScanner({
     <FlexCol gap='0.5rem'>
       <InputContainer label={label} error={error}>
         <IonInput onIonInput={handleInput} placeholder={placeholder} value={value}>
-          <IonText slot='end' style={{ color: 'var(--dark50)' }}>
+          <IonText slot='end' style={{ color: 'var(--dark80)', cursor: 'pointer' }}>
             <div onClick={openScan}>
               <ScanIcon />
             </div>

@@ -35,14 +35,18 @@ ion-header {
 }
 
 ion-tab-bar {
-  & svg {
-    color: var(--dark50);
-    &:hover {
+  border-top: 1px solid var(--dark20);
+  & ion-tab-button {
+    --color-selected: var(--ion-color-dark);
+    background-color: var(--ion-background-color);
+    &:hover,
+    &:hover svg,
+    &.tab-selected,
+    &.tab-selected svg {
       color: var(--ion-color-dark);
     }
   }
-  & ion-tab-button.tab-selected,
-  & ion-tab-button.tab-selected svg {
-    color: var(--ion-color-dark);
+  & svg {
+    color: var(--dark50);
   }
 }

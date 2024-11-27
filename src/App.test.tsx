@@ -5,8 +5,7 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { validateMnemonic } from 'bip39'
 import Wallet from './screens/Wallet/Index'
-import InitNew from './screens/Init/New'
-import InitOld from './screens/Init/Restore'
+import InitRestore from './screens/Init/Restore'
 import Settings from './screens/Settings/Index'
 
 const mnemonics = {
@@ -14,29 +13,9 @@ const mnemonics = {
   valid: 'all all all all all all all all all all all all',
 }
 
-describe('New wallet', () => {
-  test('has title and buttons', () => {
-    render(<InitNew />)
-    expect(screen.getByText(/Your new wallet/)).toBeDefined()
-    expect(screen.getByText(/Write down the following words/)).toBeDefined()
-    expect(screen.getByText(/Continue/)).toBeDefined()
-    expect(screen.getByText(/Cancel/)).toBeDefined()
-    document.querySelectorAll('fieldset p').forEach((p) => {
-      expect(p.textContent?.length).toBeGreaterThan(0)
-    })
-  })
-
-  test('has mnemonic', () => {
-    render(<InitNew />)
-    document.querySelectorAll('fieldset p').forEach((p) => {
-      expect(p.textContent?.length).toBeGreaterThan(0)
-    })
-  })
-})
-
 describe('Restore wallet', () => {
   test('has title and buttons', async () => {
-    render(<InitOld />)
+    render(<InitRestore />)
     expect(screen.getByText(/Restore wallet/)).toBeDefined()
     expect(screen.getByText(/Insert your secret words/)).toBeDefined()
     expect(screen.getByText(/Incomplete mnemonic/)).toBeDefined()
@@ -44,7 +23,7 @@ describe('Restore wallet', () => {
   })
 
   test('mnemonic is invalid', async () => {
-    render(<InitOld />)
+    render(<InitRestore />)
     document.querySelectorAll('fieldset input').forEach((input, idx) => {
       fireEvent.change(input, { target: { value: mnemonics.invalid.split(' ')[idx] } })
     })
@@ -53,7 +32,7 @@ describe('Restore wallet', () => {
   })
 
   test('mnemonic is valid', async () => {
-    render(<InitOld />)
+    render(<InitRestore />)
     document.querySelectorAll('fieldset input').forEach((input, idx) => {
       fireEvent.change(input, { target: { value: mnemonics.valid.split(' ')[idx] } })
     })
