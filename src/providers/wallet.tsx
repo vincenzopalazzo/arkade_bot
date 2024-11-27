@@ -3,18 +3,7 @@ import { readWalletFromStorage, saveWalletToStorage } from '../lib/storage'
 import { NavigationContext, Pages } from './navigation'
 import { Tx, Vtxo } from '../lib/types'
 import { getRestApiExplorerURL } from '../lib/explorers'
-import {
-  settleVtxos,
-  getBalance,
-  getReceivingAddresses,
-  getTxHistory,
-  getVtxos,
-  lock,
-  sendOffChain,
-  unlock,
-  walletLocked,
-  getAspInfo,
-} from '../lib/asp'
+import { settleVtxos, getBalance, getTxHistory, getVtxos, lock, unlock, walletLocked, getAspInfo } from '../lib/asp'
 import { AspContext } from './asp'
 import { NotificationsContext } from './notifications'
 import { ConfigContext } from './config'
@@ -191,9 +180,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const recycleVtxos = async () => {
-    const { offchainAddr } = await getReceivingAddresses()
-    const amount = wallet.vtxos.spendable.reduce((acc, cur) => acc + cur.amount, 0)
-    await sendOffChain(amount, offchainAddr)
+    await settleVtxos()
     await reloadWallet()
     notifyVtxosRecycled()
   }

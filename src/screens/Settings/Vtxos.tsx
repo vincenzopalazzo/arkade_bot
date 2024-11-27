@@ -59,17 +59,19 @@ export default function Vtxos() {
     <>
       <Header text='VTXOs' back all={() => setShowList(!showList)} />
       <Content>
-        <Padded>
-          {recycling ? (
-            <Loading text='Recycling your VTXOs require a round, which can take a few seconds' />
-          ) : showList ? (
+        {recycling ? (
+          <Loading text='Recycling your VTXOs require a round, which can take a few seconds' />
+        ) : showList ? (
+          <Padded>
             <FlexCol gap='0.5rem'>
               <Text smaller>Amount and expiration</Text>
               {wallet.vtxos.spendable?.map((v) => (
                 <VtxoLine key={v.txid} vtxo={v} />
               ))}
             </FlexCol>
-          ) : (
+          </Padded>
+        ) : (
+          <Padded>
             <FlexCol>
               {wallet.vtxos.spendable?.length > 0 ? (
                 <FlexCol gap='0.5rem'>
@@ -89,8 +91,8 @@ export default function Vtxos() {
                 The app will try to auto roll over all VTXOs which expire in less than 24 hours.
               </Text>
             </FlexCol>
-          )}
-        </Padded>
+          </Padded>
+        )}
       </Content>
       <ButtonsOnBottom>
         {wallet.vtxos.spendable?.length > 0 ? (
