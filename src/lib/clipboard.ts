@@ -1,12 +1,16 @@
 export const copyToClipboard = async (text: string): Promise<void> => {
   if (navigator.clipboard) {
-    return await navigator.clipboard.writeText(text)
+    try {
+      return await navigator.clipboard.writeText(text)
+    } catch {}
   }
 }
 
 export const pasteFromClipboard = async (): Promise<string> => {
   if (navigator.clipboard) {
-    return await navigator.clipboard.readText()
+    try {
+      return await navigator.clipboard.readText()
+    } catch {}
   }
   return ''
 }
