@@ -1,5 +1,4 @@
-import { ReactElement, ReactNode, createContext, useContext, useState } from 'react'
-import { WalletContext } from './wallet'
+import { ReactElement, ReactNode, createContext, useState } from 'react'
 import BackupIcon from '../icons/Backup'
 import AppearanceIcon from '../icons/Appearance'
 import InfoIcon from '../icons/Info'
@@ -91,30 +90,23 @@ const options: Option[] = [
   },
 ]
 
-interface OptionsResponse {
+interface SectionResponse {
   section: Sections
   options: Option[]
 }
 
-const allOptions: OptionsResponse[] = [Sections.General, Sections.Security, Sections.Advanced].map((section) => {
+const allOptions: SectionResponse[] = [Sections.General, Sections.Security, Sections.Advanced].map((section) => {
   return {
     section,
     options: options.filter((o) => o.section === section),
   }
 })
 
-const miniOptions: OptionsResponse[] = [
-  {
-    section: Sections.General,
-    options: options.filter((o) => [Options.About, Options.Appearance].includes(o.option)),
-  },
-]
-
 interface OptionsContextProps {
   option: Options
   goBack: () => void
   setOption: (o: Options) => void
-  validOptions: () => OptionsResponse[]
+  validOptions: () => SectionResponse[]
 }
 
 export const OptionsContext = createContext<OptionsContextProps>({
@@ -125,14 +117,12 @@ export const OptionsContext = createContext<OptionsContextProps>({
 })
 
 export const OptionsProvider = ({ children }: { children: ReactNode }) => {
-  const { wallet } = useContext(WalletContext)
-
   const [option, setOption] = useState(Options.Menu)
 
   const goBack = () => setOption(Options.Menu)
 
-  const validOptions = (): OptionsResponse[] => {
-    return wallet.initialized ? allOptions : miniOptions
+  const validOptions = (): SectionResponse[] => {
+    return allOptions
   }
 
   return (
