@@ -6,6 +6,7 @@ import Header from '../../../components/Header'
 import Content from '../../../components/Content'
 import Success from '../../../components/Success'
 import BackToWalletButton from '../../../components/BackToWalletButton'
+import { prettyNumber } from '../../../lib/format'
 
 export default function SendSuccess() {
   const { sendInfo } = useContext(FlowContext)
@@ -19,7 +20,7 @@ export default function SendSuccess() {
     <>
       <Header text='Sending' />
       <Content>
-        <Success text={`Sent ${sendInfo.satoshis} sats`} />
+        <Success text={`Sent ${prettyNumber(sendInfo.satoshis)} sats`} />
       </Content>
       <ButtonsOnBottom>
         <BackToWalletButton />
