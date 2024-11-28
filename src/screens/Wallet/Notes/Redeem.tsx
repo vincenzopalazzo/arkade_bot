@@ -11,7 +11,7 @@ import { redeemNotes } from '../../../lib/asp'
 import Details, { DetailsProps } from '../../../components/Details'
 import { ArkNote } from '../../../lib/arknote'
 import Loading from '../../../components/Loading'
-import Header from '../../Settings/Header'
+import Header from '../../../components/Header'
 
 export default function NotesRedeem() {
   const { noteInfo } = useContext(FlowContext)
@@ -37,6 +37,10 @@ export default function NotesRedeem() {
     })
   }, [noteInfo.note])
 
+  const handleBack = () => {
+    navigate(Pages.NotesForm)
+  }
+
   const handleRedeem = async () => {
     setError('')
     setRedeeming(true)
@@ -51,7 +55,7 @@ export default function NotesRedeem() {
 
   return (
     <>
-      <Header text='Redeem note' back />
+      <Header text='Redeem note' back={handleBack} />
       <Content>
         {redeeming ? (
           <Loading text='Redeeming a note require a round, which can take a few seconds' />

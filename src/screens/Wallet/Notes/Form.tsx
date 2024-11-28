@@ -8,14 +8,16 @@ import Padded from '../../../components/Padded'
 import Content from '../../../components/Content'
 import { ArkNote, isArkNote } from '../../../lib/arknote'
 import { ConfigContext } from '../../../providers/config'
-import Header from '../../Settings/Header'
+import Header from '../../../components/Header'
 import InputNote from '../../../components/InputNote'
 import Scanner from '../../../components/Scanner'
+import { Options, OptionsContext } from '../../../providers/options'
 
 export default function NotesForm() {
   const { showConfig, toggleShowConfig } = useContext(ConfigContext)
-  const { navigate } = useContext(NavigationContext)
   const { setNoteInfo } = useContext(FlowContext)
+  const { navigate } = useContext(NavigationContext)
+  const { setOption } = useContext(OptionsContext)
 
   const [error, setError] = useState('')
   const [note, setNote] = useState('')
@@ -35,6 +37,11 @@ export default function NotesForm() {
     setError('Invalid note')
   }, [note])
 
+  const handleBack = () => {
+    setOption(Options.Menu)
+    navigate(Pages.Settings)
+  }
+
   const handleContinue = () => {
     navigate(Pages.NotesRedeem)
   }
@@ -43,7 +50,7 @@ export default function NotesForm() {
 
   return (
     <>
-      <Header text='Note' back />
+      <Header text='Note' back={handleBack} />
       <Content>
         <Padded>
           <InputNote label='Ark note' onChange={setNote} openScan={() => setScan(true)} />
