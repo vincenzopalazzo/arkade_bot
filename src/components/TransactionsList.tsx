@@ -9,7 +9,6 @@ import SentIcon from '../icons/Sent'
 import FlexRow from './FlexRow'
 import { FlowContext } from '../providers/flow'
 import { NavigationContext, Pages } from '../providers/navigation'
-import { IonGrid, IonRow, IonCol } from '@ionic/react'
 
 const border = '1px solid var(--dark20)'
 
@@ -18,14 +17,18 @@ const TransactionLine = ({ tx }: { tx: Tx }) => {
   const { navigate } = useContext(NavigationContext)
 
   const prefix = tx.type === 'sent' ? '-' : '+'
-  const amount = `${prefix} ${prettyNumber(tx.amount)} sats`
+  const amount = `${prefix}${prettyNumber(tx.amount)}`
   const txid = tx.explorable ? `(${prettyLongText(tx.explorable, 3)})` : ''
 
   const Icon = () => (tx.pending ? <PendingIcon /> : tx.type === 'sent' ? <SentIcon /> : <ReceivedIcon />)
   const Kind = () => (tx.type === 'sent' ? <Text>Sent {txid}</Text> : <Text>Received {txid}</Text>)
   const Date = () => <TextSecondary>{prettyDate(tx.createdAt)}</TextSecondary>
   const Sats = () => (tx.type === 'sent' ? <Text>{amount}</Text> : <Text color='green'>{amount}</Text>)
-  const Last = () => (tx.type === 'sent' ? <Text>Sent</Text> : <Text color='green'>Received</Text>)
+  const Last = () => (
+    <Text small color={tx.type === 'received' ? 'green' : ''}>
+      sats
+    </Text>
+  )
 
   const handleClick = () => {
     setTxInfo(tx)
@@ -40,24 +43,20 @@ const TransactionLine = ({ tx }: { tx: Tx }) => {
   }
 
   return (
-    <div style={{ marginTop: '1px solid #000' }} onClick={handleClick}>
-      <IonGrid class='ion-no-padding'>
-        <IonRow style={rowStyle}>
-          <IonCol size='8'>
-            <FlexRow>
-              <Icon />
-              <div>
-                <Kind />
-                <Date />
-              </div>
-            </FlexRow>
-          </IonCol>
-          <IonCol class='ion-text-end'>
-            <Sats />
-            <Last />
-          </IonCol>
-        </IonRow>
-      </IonGrid>
+    <div style={rowStyle} onClick={handleClick}>
+      <FlexRow>
+        <FlexRow>
+          <Icon />
+          <div>
+            <Kind />
+            <Date />
+          </div>
+        </FlexRow>
+        <div style={{ textAlign: 'right' }}>
+          <Sats />
+          <Last />
+        </div>
+      </FlexRow>
     </div>
   )
 }
