@@ -1,43 +1,29 @@
 import { Satoshis } from './types'
 import { Decimal } from 'decimal.js'
 
-export const prettyLongText = (invoice?: string, showChars = 14): string => {
-  if (!invoice) return ''
-  return `${invoice.substring(0, showChars)}...${invoice.substring(invoice.length - showChars, invoice.length)}`
-}
-
-export const prettyNumber = (num?: number, maximumFractionDigits = 8): string => {
-  if (!num) return '0'
-  return new Intl.NumberFormat('en', { style: 'decimal', maximumFractionDigits }).format(num)
-}
-
-export const prettyUnixTimestamp = (num: number): string => {
-  if (!num) return ''
-  const date = new Date(num * 1000)
-  return new Intl.DateTimeFormat('en', {
-    dateStyle: 'full',
-    timeStyle: 'long',
-  }).format(date)
-}
-
-export const prettyDate = (num: number): string => {
-  if (!num) return ''
-  const date = new Date(num * 1000)
-  return new Intl.DateTimeFormat('en', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-    minute: '2-digit',
-    hour: '2-digit',
-  }).format(date)
-}
-
 export const fromSatoshis = (num: Satoshis): number => {
   return Decimal.div(num, 100_000_000).toNumber()
 }
 
 export const toSatoshis = (num: number): Satoshis => {
   return Decimal.mul(num, 100_000_000).toNumber()
+}
+
+export const prettyAgo = (timestamp: number | string): string => {
+  const unixts = typeof timestamp === 'string' ? Math.floor(new Date(timestamp).getTime() / 1000) : timestamp
+  const now = Math.floor(Date.now() / 1000)
+  const delta = Math.floor(now - unixts)
+  if (delta === 0) return 'just now'
+  if (delta > 0) return `${prettyDelta(delta)} ago`
+  if (delta < 0) return `in ${prettyDelta(delta)}`
+  return ''
+}
+
+export const prettyAmount = (sats: number, suffix = 'sats'): string => {
+  if (sats > 100_000_000_000) return `${prettyNumber(fromSatoshis(sats), 0)} btc`
+  if (sats > 100_000_000) return `${prettyNumber(fromSatoshis(sats), 3)} btc`
+  if (sats > 1_000_000) return `${prettyNumber(sats / 1_000_000, 3)}M ${suffix}`
+  return `${prettyNumber(sats)} ${suffix}`
 }
 
 export const prettyDelta = (seconds: number): string => {
@@ -61,12 +47,33 @@ export const prettyDelta = (seconds: number): string => {
   return ''
 }
 
-export const prettyAgo = (timestamp: number | string): string => {
-  const unixts = typeof timestamp === 'string' ? Math.floor(new Date(timestamp).getTime() / 1000) : timestamp
-  const now = Math.floor(Date.now() / 1000)
-  const delta = Math.floor(now - unixts)
-  if (delta === 0) return 'just now'
-  if (delta > 0) return `${prettyDelta(delta)} ago`
-  if (delta < 0) return `in ${prettyDelta(delta)}`
-  return ''
+export const prettyDate = (num: number): string => {
+  if (!num) return ''
+  const date = new Date(num * 1000)
+  return new Intl.DateTimeFormat('en', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    minute: '2-digit',
+    hour: '2-digit',
+  }).format(date)
+}
+
+export const prettyLongText = (invoice?: string, showChars = 14): string => {
+  if (!invoice) return ''
+  return `${invoice.substring(0, showChars)}...${invoice.substring(invoice.length - showChars, invoice.length)}`
+}
+
+export const prettyNumber = (num?: number, maximumFractionDigits = 8): string => {
+  if (!num) return '0'
+  return new Intl.NumberFormat('en', { style: 'decimal', maximumFractionDigits }).format(num)
+}
+
+export const prettyUnixTimestamp = (num: number): string => {
+  if (!num) return ''
+  const date = new Date(num * 1000)
+  return new Intl.DateTimeFormat('en', {
+    dateStyle: 'full',
+    timeStyle: 'long',
+  }).format(date)
 }

@@ -2,7 +2,7 @@ import { useContext } from 'react'
 import { WalletContext } from '../providers/wallet'
 import Text, { TextLabel, TextSecondary } from './Text'
 import { Tx } from '../lib/types'
-import { prettyDate, prettyLongText, prettyNumber } from '../lib/format'
+import { prettyAmount, prettyDate, prettyLongText } from '../lib/format'
 import PendingIcon from '../icons/Pending'
 import ReceivedIcon from '../icons/Received'
 import SentIcon from '../icons/Sent'
@@ -17,18 +17,14 @@ const TransactionLine = ({ tx }: { tx: Tx }) => {
   const { navigate } = useContext(NavigationContext)
 
   const prefix = tx.type === 'sent' ? '-' : '+'
-  const amount = `${prefix}${prettyNumber(tx.amount)}`
+  const amount = `${prefix} ${prettyAmount(tx.amount)}`
   const txid = tx.explorable ? `(${prettyLongText(tx.explorable, 3)})` : ''
 
   const Icon = () => (tx.pending ? <PendingIcon /> : tx.type === 'sent' ? <SentIcon /> : <ReceivedIcon />)
   const Kind = () => (tx.type === 'sent' ? <Text>Sent {txid}</Text> : <Text>Received {txid}</Text>)
   const Date = () => <TextSecondary>{prettyDate(tx.createdAt)}</TextSecondary>
   const Sats = () => (tx.type === 'sent' ? <Text>{amount}</Text> : <Text color='green'>{amount}</Text>)
-  const Last = () => (
-    <Text small color={tx.type === 'received' ? 'green' : ''}>
-      sats
-    </Text>
-  )
+  const Last = () => (tx.type === 'sent' ? <Text>Sent</Text> : <Text color='green'>Received</Text>)
 
   const handleClick = () => {
     setTxInfo(tx)
