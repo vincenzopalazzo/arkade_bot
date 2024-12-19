@@ -2,6 +2,7 @@ import { IonButton } from '@ionic/react'
 import { ReactElement } from 'react'
 
 interface ButtonProps {
+  clear?: boolean
   disabled?: boolean
   icon?: ReactElement
   label: string
@@ -11,7 +12,7 @@ interface ButtonProps {
   short?: boolean
 }
 
-export default function Button({ disabled, icon, label, onClick, red, secondary, short }: ButtonProps) {
+export default function Button({ clear, disabled, icon, label, onClick, red, secondary, short }: ButtonProps) {
   const style = {
     backgroundColor: red ? 'var(--redbg)' : undefined,
     color: red ? 'var(--red)' : undefined,
@@ -23,7 +24,7 @@ export default function Button({ disabled, icon, label, onClick, red, secondary,
       color={red ? 'danger' : 'dark'}
       disabled={disabled}
       expand={short ? undefined : 'block'}
-      fill={secondary ? 'outline' : 'solid'}
+      fill={secondary ? 'outline' : clear ? 'clear' : 'solid'}
       onClick={onClick}
       style={style}
     >

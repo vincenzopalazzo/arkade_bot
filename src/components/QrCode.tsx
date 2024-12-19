@@ -32,7 +32,7 @@ export default function QrCode({ short, value }: QrCodeProps) {
         </div>
       ) : null}
       <Text>{prettyLongText(short ?? value)}</Text>
-      {canCopy ? <Button icon={<CopyIcon />} label={buttonLabel} onClick={handleCopy} secondary short /> : null}
+      {canCopy ? <Button clear icon={<CopyIcon />} label={buttonLabel} onClick={handleCopy} short /> : null}
     </FlexCol>
   )
 }
