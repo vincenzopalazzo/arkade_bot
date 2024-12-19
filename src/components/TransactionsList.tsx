@@ -72,7 +72,7 @@ export default function TransactionsList({ short }: { short?: boolean }) {
   const ordered = [...pending, ...settled]
   const showTxs = short ? ordered.slice(0, showMax) : ordered
 
-  const key = (tx: Tx) => `${tx.createdAt}${tx.boardingTxid}${tx.roundTxid}${tx.redeemTxid}`
+  const key = (tx: Tx) => `${tx.amount}${tx.createdAt}${tx.boardingTxid}${tx.roundTxid}${tx.redeemTxid}${tx.type}`
 
   return (
     <>
