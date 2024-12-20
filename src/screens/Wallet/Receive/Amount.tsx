@@ -71,7 +71,7 @@ export default function ReceiveAmount() {
     }
   }
 
-  const showFaucetButton = wallet.balance !== 0 && wallet.network === NetworkName.Signet
+  const showFaucetButton = wallet.balance === 0 && wallet.network === NetworkName.Signet
 
   if (showKeys) {
     return <Keyboard back={() => setShowKeys(false)} hideBalance onChange={handleChange} value={amount} />
