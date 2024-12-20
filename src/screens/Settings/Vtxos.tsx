@@ -60,7 +60,7 @@ export default function Vtxos() {
       <Header text='VTXOs' back all={() => setShowList(!showList)} />
       <Content>
         {recycling ? (
-          <Loading text='Recycling your VTXOs require a round, which can take a few seconds' />
+          <Loading text='Recycling your VTXOs requires a round, which can take a few seconds' />
         ) : showList ? (
           <Padded>
             <FlexCol gap='0.5rem'>

@@ -70,7 +70,7 @@ export default function Transaction() {
       <Header text='Transaction' back={() => navigate(Pages.Wallet)} />
       <Content>
         {settling ? (
-          <Loading text='Settling transactions require a round, which can take a few seconds' />
+          <Loading text='Settling transactions requires a round, which can take a few seconds' />
         ) : (
           <Padded>
             <Error error={Boolean(error)} text={error} />
