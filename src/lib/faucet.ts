@@ -1,13 +1,12 @@
-export const faucet = async (address: string, sats: number): Promise<boolean> => {
-  const url = 'https://faucet.mutinynet.com/api/onchain'
-  const response = await fetch(url, {
-    body: JSON.stringify({ address, sats }),
+export const getNote = async (amount: number, aspUrl: string): Promise<string> => {
+  const url = `${aspUrl}/v1/admin/note`
+  const res = await fetch(url, {
+    body: JSON.stringify({ amount, quantity: 1 }),
     headers: { 'Content-Type': 'application/json' },
     method: 'POST',
   })
-  return response.ok
-}
-
-export const sleep = async (seconds: number) => {
-  return new Promise((resolve) => setTimeout(resolve, seconds * 1000))
+  if (!res.ok) throw 'Unable to contact faucet'
+  const json = await res.json()
+  if (!json.notes?.[0]) throw 'Faucet is dry'
+  return json.notes[0]
 }

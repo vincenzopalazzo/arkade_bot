@@ -5,7 +5,7 @@ import { NavigationContext, Pages } from '../../../providers/navigation'
 import { FlowContext } from '../../../providers/flow'
 import Padded from '../../../components/Padded'
 import Error from '../../../components/Error'
-import { getReceivingAddresses } from '../../../lib/asp'
+import { getReceivingAddresses, redeemNotes } from '../../../lib/asp'
 import { extractError } from '../../../lib/error'
 import Header from '../../../components/Header'
 import InputAmount from '../../../components/InputAmount'
@@ -14,14 +14,17 @@ import FlexCol from '../../../components/FlexCol'
 import Keyboard from '../../../components/Keyboard'
 import { WalletContext } from '../../../providers/wallet'
 import { NetworkName } from '../../../lib/network'
-import { faucet, sleep } from '../../../lib/faucet'
+import { getNote } from '../../../lib/faucet'
 import Loading from '../../../components/Loading'
 import { prettyNumber } from '../../../lib/format'
+import Success from '../../../components/Success'
+import { ConfigContext } from '../../../providers/config'
 
 export default function ReceiveAmount() {
+  const { config } = useContext(ConfigContext)
   const { setRecvInfo } = useContext(FlowContext)
   const { navigate } = useContext(NavigationContext)
-  const { reloadWallet, wallet } = useContext(WalletContext)
+  const { wallet } = useContext(WalletContext)
 
   const defaultButtonLabel = 'Continue without amount'
 
@@ -30,6 +33,7 @@ export default function ReceiveAmount() {
   const [error, setError] = useState('')
   const [fauceting, setFauceting] = useState(false)
   const [showKeys, setShowKeys] = useState(false)
+  const [success, setSuccess] = useState(false)
 
   const handleChange = (sats: number) => {
     setAmount(sats)
@@ -39,17 +43,14 @@ export default function ReceiveAmount() {
   const handleFaucet = async () => {
     try {
       if (!amount) throw 'Invalid amount'
-      const { boardingAddr } = await getReceivingAddresses()
-      if (!boardingAddr) throw 'Unable to get boarding address'
       setFauceting(true)
-      const ok = await faucet(boardingAddr, amount)
-      if (!ok) throw 'Error accessing faucet'
-      await sleep(2) // give time for server to find out about tx
-      reloadWallet() // before reloading the wallet
-      navigate(Pages.Wallet)
-    } catch (err) {
+      const note = await getNote(amount, config.aspUrl)
+      await redeemNotes([note])
       setFauceting(false)
+      setSuccess(true)
+    } catch (err) {
       setError(extractError(err))
+      setFauceting(false)
     }
   }
 
@@ -70,7 +71,7 @@ export default function ReceiveAmount() {
     }
   }
 
-  const showFaucetButton = wallet.balance === 0 && wallet.network === NetworkName.Signet
+  const showFaucetButton = wallet.balance !== 0 && wallet.network === NetworkName.Signet
 
   if (showKeys) {
     return <Keyboard back={() => setShowKeys(false)} hideBalance onChange={handleChange} value={amount} />
@@ -81,7 +82,18 @@ export default function ReceiveAmount() {
       <>
         <Header text='Fauceting' />
         <Content>
-          <Loading text={`Getting ${prettyNumber(amount)} sats from signet faucet, this can take a few seconds`} />
+          <Loading text='Getting sats from a faucet requires a round, which can take a few seconds' />
+        </Content>
+      </>
+    )
+  }
+
+  if (success) {
+    return (
+      <>
+        <Header text='Success' />
+        <Content>
+          <Success text={`${prettyNumber(amount)} sats fauceted`} />
         </Content>
       </>
     )
