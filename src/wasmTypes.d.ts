@@ -5,6 +5,7 @@ declare global {
     collaborativeRedeem: (addr: string, amount: number, withExpiryCoinselect: boolean) => Promise<string>
     dump: () => Promise<string>
     getTransactionHistory: () => Promise<any>
+    getVersion: () => Promise<string>
     // getTransactionStream: (callback: any) => Promise<any>
     init: (
       walletType: string,

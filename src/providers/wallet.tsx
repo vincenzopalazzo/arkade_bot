@@ -24,6 +24,7 @@ export interface Wallet {
     spendable: Vtxo[]
     spent: Vtxo[]
   }
+  wasmVersion: string
 }
 
 const defaultWallet: Wallet = {
@@ -39,6 +40,7 @@ const defaultWallet: Wallet = {
     spendable: [],
     spent: [],
   },
+  wasmVersion: '',
 }
 
 interface WalletContextProps {
@@ -223,8 +225,9 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     }
   }
 
-  const updateWallet = (data: Wallet) => {
-    setWallet(data)
+  const updateWallet = async (data: Wallet) => {
+    const wasmVersion = await window.getVersion()
+    setWallet({ ...data, wasmVersion })
     saveWalletToStorage(data)
   }
 

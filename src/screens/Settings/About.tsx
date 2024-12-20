@@ -5,9 +5,11 @@ import Header from './Header'
 import Table from '../../components/Table'
 import Padded from '../../components/Padded'
 import Content from '../../components/Content'
+import { WalletContext } from '../../providers/wallet'
 
 export default function About() {
   const { aspInfo } = useContext(AspContext)
+  const { wallet } = useContext(WalletContext)
 
   const days = Math.round(aspInfo.roundLifetime / 60 / 60 / 24)
 
@@ -20,6 +22,7 @@ export default function About() {
     ['Server Pubkey', prettyLongText(aspInfo.pubkey, 10)],
     ['Unilateral Exit Delay', `${aspInfo.unilateralExitDelay} secs`],
     ['URL', aspInfo.url],
+    ['WASM version', wallet.wasmVersion],
   ]
 
   return (
