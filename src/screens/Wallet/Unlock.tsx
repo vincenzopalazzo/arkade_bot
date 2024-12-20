@@ -50,7 +50,11 @@ export default function Unlock() {
       <Header text='Unlock' />
       <Content>
         <Padded>
-          {unlocking ? null : <InputPassword label='Insert password' onChange={handleChange} />}
+          {unlocking ? null : (
+            <form>
+              <InputPassword label='Insert password' onChange={handleChange} />
+            </form>
+          )}
           <Error error={Boolean(error)} text={error} />
         </Padded>
       </Content>
