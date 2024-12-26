@@ -12,6 +12,7 @@ import Details, { DetailsProps } from '../../../components/Details'
 import { ArkNote } from '../../../lib/arknote'
 import Loading from '../../../components/Loading'
 import Header from '../../../components/Header'
+import FlexCol from '../../../components/FlexCol'
 
 export default function NotesRedeem() {
   const { noteInfo } = useContext(FlowContext)
@@ -61,8 +62,10 @@ export default function NotesRedeem() {
           <Loading text='Redeeming a note requires a round, which can take a few seconds' />
         ) : (
           <Padded>
-            <Error error={Boolean(error)} text={error} />
-            <Details details={details} />
+            <FlexCol gap='2rem'>
+              <Error error={Boolean(error)} text={error} />
+              <Details details={details} />
+            </FlexCol>
           </Padded>
         )}
       </Content>

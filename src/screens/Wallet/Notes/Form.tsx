@@ -12,6 +12,8 @@ import Header from '../../../components/Header'
 import InputNote from '../../../components/InputNote'
 import Scanner from '../../../components/Scanner'
 import { Options, OptionsContext } from '../../../providers/options'
+import { extractError } from '../../../lib/error'
+import FlexCol from '../../../components/FlexCol'
 
 export default function NotesForm() {
   const { showConfig, toggleShowConfig } = useContext(ConfigContext)
@@ -32,9 +34,12 @@ export default function NotesForm() {
         setNoteInfo({ note, satoshis: decoded.data.value })
         if (showConfig) toggleShowConfig()
         return navigate(Pages.NotesRedeem)
-      } catch (_) {}
+      } catch (err) {
+        setError(extractError(err))
+        console.error(err)
+      }
     }
-    setError('Invalid note')
+    if (!error) setError('Invalid note')
   }, [note])
 
   const handleBack = () => {
@@ -53,8 +58,10 @@ export default function NotesForm() {
       <Header text='Note' back={handleBack} />
       <Content>
         <Padded>
-          <InputNote label='Ark note' onChange={setNote} openScan={() => setScan(true)} />
-          <Error error={Boolean(error)} text={error} />
+          <FlexCol gap='2rem'>
+            <Error error={Boolean(error)} text={error} />
+            <InputNote label='Ark note' onChange={setNote} openScan={() => setScan(true)} />
+          </FlexCol>
         </Padded>
       </Content>
       <ButtonsOnBottom>
