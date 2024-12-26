@@ -1,3 +1,4 @@
+import Padded from './Padded'
 import Shadow from './Shadow'
 import Text from './Text'
 
@@ -10,9 +11,11 @@ export default function Error({ error, text }: ErrorProps) {
   if (!error) return null
   return (
     <Shadow red>
-      <Text bold centered color='white' small>
-        {text}
-      </Text>
+      <Padded>
+        <Text bold centered color='white' small>
+          {text}
+        </Text>
+      </Padded>
     </Shadow>
   )
 }
