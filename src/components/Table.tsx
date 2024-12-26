@@ -9,10 +9,12 @@ export default function Table({ data }: { data: string[][] }) {
     return 'dark50'
   }
 
+  const key = (t: string, v: string) => `${t}${v}`
+
   return (
     <FlexCol gap='0.5rem'>
       {data.map(([title, value]) => (
-        <FlexRow between key={title}>
+        <FlexRow between key={key(title, value)}>
           <Text>{title}</Text>
           <Text color={color(value)}>{value}</Text>
         </FlexRow>
