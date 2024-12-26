@@ -1,4 +1,4 @@
-import { consoleLog } from './logs'
+import { consoleError, consoleLog } from './logs'
 import { invalidNpub } from './privateKey'
 import { Satoshis, Tx, Vtxo } from './types'
 
@@ -67,7 +67,10 @@ export const getAspInfo = async (url: string): Promise<AspInfo> => {
           })
         },
       )
-      .catch(() => resolve({ ...emptyAspInfo, unreachable: true }))
+      .catch((err) => {
+        consoleError('error getting asp info', err)
+        resolve({ ...emptyAspInfo, unreachable: true })
+      })
   })
 }
 
@@ -80,7 +83,10 @@ export const getBalance = async (): Promise<Satoshis> => {
         const { offchainBalance, onchainBalance } = balance
         resolve(offchainBalance + onchainBalance.spendable + onchainBalance.locked)
       })
-      .catch(() => resolve(0))
+      .catch((err) => {
+        consoleError('error getting balance', err)
+        resolve(0)
+      })
   })
 }
 
@@ -116,7 +122,8 @@ export const getTxHistory = async (): Promise<Tx[]> => {
         type: type.toLowerCase(),
       })
     }
-  } catch (_) {
+  } catch (err) {
+    consoleError('error getting tx history', err)
     return []
   }
   return txs.sort((a: Tx, b: Tx) => a.createdAt - b.createdAt)

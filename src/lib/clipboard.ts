@@ -4,7 +4,9 @@ export const copyToClipboard = async (text: string): Promise<void> => {
   if (navigator.clipboard) {
     try {
       return await navigator.clipboard.writeText(text)
-    } catch {}
+    } catch (err) {
+      consoleError('error writing to clipboard', err)
+    }
   }
 }
 

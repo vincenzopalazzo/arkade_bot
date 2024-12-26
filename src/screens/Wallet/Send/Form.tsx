@@ -19,6 +19,7 @@ import FlexCol from '../../../components/FlexCol'
 import Keyboard from '../../../components/Keyboard'
 import Text from '../../../components/Text'
 import Scanner from '../../../components/Scanner'
+import { consoleError } from '../../../lib/logs'
 
 export default function SendForm() {
   const { aspInfo } = useContext(AspContext)
@@ -62,7 +63,9 @@ export default function SendForm() {
         const anote = ArkNote.fromString(recipient)
         setNoteInfo({ note: recipient, satoshis: anote.data.value })
         return navigate(Pages.NotesRedeem)
-      } catch (_) {}
+      } catch (err) {
+        consoleError('error parsing ark note', err)
+      }
     }
     setError('Invalid recipient address')
   }, [recipient])

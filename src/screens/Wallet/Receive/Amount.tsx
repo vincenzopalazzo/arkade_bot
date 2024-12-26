@@ -19,6 +19,7 @@ import Loading from '../../../components/Loading'
 import { prettyNumber } from '../../../lib/format'
 import Success from '../../../components/Success'
 import { ConfigContext } from '../../../providers/config'
+import { consoleError } from '../../../lib/logs'
 
 export default function ReceiveAmount() {
   const { config } = useContext(ConfigContext)
@@ -49,6 +50,7 @@ export default function ReceiveAmount() {
       setFauceting(false)
       setSuccess(true)
     } catch (err) {
+      consoleError('error fauceting', err)
       setError(extractError(err))
       setFauceting(false)
     }
@@ -67,6 +69,7 @@ export default function ReceiveAmount() {
       setRecvInfo({ boardingAddr, offchainAddr, satoshis: amount })
       navigate(Pages.ReceiveQRCode)
     } catch (err) {
+      consoleError('error getting addresses', err)
       setError(extractError(err))
     }
   }

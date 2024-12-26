@@ -13,6 +13,7 @@ import { ArkNote } from '../../../lib/arknote'
 import Loading from '../../../components/Loading'
 import Header from '../../../components/Header'
 import FlexCol from '../../../components/FlexCol'
+import { consoleError } from '../../../lib/logs'
 
 export default function NotesRedeem() {
   const { noteInfo } = useContext(FlowContext)
@@ -49,6 +50,7 @@ export default function NotesRedeem() {
       await redeemNotes([noteInfo.note])
       navigate(Pages.NotesSuccess)
     } catch (err) {
+      consoleError('error redeeming note', err)
       setError(extractError(err))
     }
     setRedeeming(false)

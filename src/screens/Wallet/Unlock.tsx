@@ -9,6 +9,7 @@ import Error from '../../components/Error'
 import { extractError } from '../../lib/error'
 import InputPassword from '../../components/InputPassword'
 import Header from '../../components/Header'
+import { consoleError } from '../../lib/logs'
 
 export default function Unlock() {
   const { navigate } = useContext(NavigationContext)
@@ -28,7 +29,7 @@ export default function Unlock() {
     setPassword(pass)
     unlockWallet(pass)
       .then(() => navigate(Pages.Wallet))
-      .catch(() => {})
+      .catch()
   }
 
   const handleUnlock = async () => {
@@ -40,6 +41,7 @@ export default function Unlock() {
         navigate(Pages.Wallet)
       })
       .catch((err) => {
+        consoleError('error unlocking wallet', err)
         setError(extractError(err))
         setUnlocking(false)
       })

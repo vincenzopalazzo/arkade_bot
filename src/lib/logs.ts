@@ -1,3 +1,5 @@
+import { extractError } from './error'
+
 enum LogLevel {
   Log = 'log',
   Error = 'error',
@@ -33,7 +35,8 @@ export const consoleLog = (...args: any[]) => {
   console.log(...args)
 }
 
-export const consoleError = (...args: any[]) => {
-  addLog(LogLevel.Error, args)
-  console.error(...args)
+export const consoleError = (msg: string, err: any) => {
+  const str = `${msg}: ${extractError(err)}`
+  addLog(LogLevel.Error, [str])
+  console.error(str)
 }

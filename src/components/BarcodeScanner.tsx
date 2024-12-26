@@ -14,7 +14,12 @@ export default function BarcodeScanner({ setError, setData }: BarcodeScannerProp
   const [stream, setStream] = useState<MediaStream>()
 
   useEffect(() => {
-    navigator.mediaDevices.getUserMedia({ video: true }).then(setStream).catch(consoleError)
+    navigator.mediaDevices
+      .getUserMedia({ video: true })
+      .then(setStream)
+      .catch((err) => {
+        consoleError('error getting video stream', err)
+      })
   }, [])
 
   useEffect(() => {

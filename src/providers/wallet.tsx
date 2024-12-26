@@ -142,7 +142,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
       const { value } = ArkNote.fromString(note).data
       setNoteInfo({ note, satoshis: value })
       window.location.hash = ''
-    } catch (_) {}
+    } catch {}
     // startListenTransactionStream(reloadWallet)
   }, [walletUnlocked])
 
@@ -168,7 +168,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   const lockedWallet = async () => {
     try {
       return await walletLocked()
-    } catch (err) {
+    } catch {
       return true
     }
   }
@@ -177,7 +177,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     try {
       await lock(password)
       setWalletUnlocked(false)
-    } catch (err) {
+    } catch {
       throw 'Invalid password'
     }
   }
@@ -221,7 +221,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
       await unlock(password)
       setWalletUnlocked(true)
       reloadWallet()
-    } catch (err) {
+    } catch {
       throw 'Invalid password'
     }
   }

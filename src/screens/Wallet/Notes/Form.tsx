@@ -37,7 +37,7 @@ export default function NotesForm() {
         return navigate(Pages.NotesRedeem)
       } catch (err) {
         setError(extractError(err))
-        consoleError(err)
+        consoleError('error decoding note', err)
       }
     }
     if (!error) setError('Invalid note')

@@ -94,8 +94,8 @@ function registerValidSW(swUrl, config) {
         }
       }
     })
-    .catch((error) => {
-      consoleError('Error during service worker registration:', error)
+    .catch((err) => {
+      consoleError('error during service worker registration', err)
     })
 }
 
@@ -120,7 +120,7 @@ function checkValidServiceWorker(swUrl, config) {
       }
     })
     .catch(() => {
-      console.log('No internet connection found. App is running in offline mode.')
+      consoleLog('No internet connection found. App is running in offline mode.')
     })
 }
 
@@ -130,8 +130,8 @@ export function unregister() {
       .then((registration) => {
         registration.unregister()
       })
-      .catch((error) => {
-        consoleError(error.message)
+      .catch((err) => {
+        consoleError('error during service worker unregistration', err)
       })
   }
 }

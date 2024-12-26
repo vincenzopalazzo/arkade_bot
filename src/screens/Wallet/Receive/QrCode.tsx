@@ -13,6 +13,7 @@ import { WalletContext } from '../../../providers/wallet'
 import { NotificationsContext } from '../../../providers/notifications'
 import Header from '../../../components/Header'
 import Content from '../../../components/Content'
+import { consoleError } from '../../../lib/logs'
 
 export default function ReceiveQRCode() {
   const { recvInfo, setRecvInfo } = useContext(FlowContext)
@@ -38,8 +39,9 @@ export default function ReceiveQRCode() {
           }
         })
       }, 1000)
-    } catch (error) {
-      setError(extractError(error))
+    } catch (err) {
+      consoleError('error waiting for payment', err)
+      setError(extractError(err))
     }
     return () => clearInterval(poolAspIntervalId.current)
   }, [])

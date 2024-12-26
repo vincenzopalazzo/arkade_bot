@@ -15,6 +15,7 @@ import FlexCol from '../../../components/FlexCol'
 import { collaborativeRedeem, sendOffChain } from '../../../lib/asp'
 import { extractError } from '../../../lib/error'
 import Loading from '../../../components/Loading'
+import { consoleError } from '../../../lib/logs'
 
 export default function SendDetails() {
   const { navigate } = useContext(NavigationContext)
@@ -54,8 +55,9 @@ export default function SendDetails() {
     navigate(Pages.SendSuccess)
   }
 
-  const handleError = (error: any) => {
-    setError(extractError(error))
+  const handleError = (err: any) => {
+    consoleError('error sending payment', err)
+    setError(extractError(err))
     setSending(false)
   }
 
