@@ -52,8 +52,8 @@ export class ArkNote {
     }
 
     const encoded = noteStr.slice(arknoteHRP.length)
-    if (encoded.length !== 104) {
-      throw new Error(`invalid note length: expected 76 chars, got ${encoded.length}`)
+    if (encoded.length < 103 || encoded.length > 104) {
+      throw new Error(`invalid note length: expected 103 or 104 chars, got ${encoded.length}`)
     }
 
     const decoded = base58.decode(encoded)
