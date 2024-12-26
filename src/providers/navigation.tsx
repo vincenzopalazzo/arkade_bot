@@ -12,7 +12,6 @@ import ReceiveQRCode from '../screens/Wallet/Receive/QrCode'
 import ReceiveSuccess from '../screens/Wallet/Receive/Success'
 import SendForm from '../screens/Wallet/Send/Form'
 import SendDetails from '../screens/Wallet/Send/Details'
-import SendPayment from '../screens/Wallet/Send/Pay'
 import SendSuccess from '../screens/Wallet/Send/Success'
 import Transaction from '../screens/Wallet/Transaction'
 import Unlock from '../screens/Wallet/Unlock'
@@ -34,7 +33,6 @@ export enum Pages {
   ReceiveSuccess,
   SendForm,
   SendDetails,
-  SendPayment,
   SendSuccess,
   Settings,
   Transaction,
@@ -65,7 +63,6 @@ const pageTab = {
   [Pages.ReceiveSuccess]: Tabs.Receive,
   [Pages.SendForm]: Tabs.Send,
   [Pages.SendDetails]: Tabs.Send,
-  [Pages.SendPayment]: Tabs.Send,
   [Pages.SendSuccess]: Tabs.Send,
   [Pages.Settings]: Tabs.Settings,
   [Pages.Transaction]: Tabs.Home,
@@ -102,8 +99,6 @@ export const pageComponent = (page: Pages): JSX.Element => {
       return <SendForm />
     case Pages.SendDetails:
       return <SendDetails />
-    case Pages.SendPayment:
-      return <SendPayment />
     case Pages.SendSuccess:
       return <SendSuccess />
     case Pages.Settings:

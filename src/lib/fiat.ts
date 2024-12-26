@@ -1,4 +1,5 @@
 import { extractError } from './error'
+import { consoleError } from './logs'
 
 export interface FiatPrices {
   eur: number
@@ -21,6 +22,6 @@ export const getPriceFeed = async (): Promise<FiatPrices | undefined> => {
       usd: json.USD?.last,
     }
   } catch (err) {
-    console.log('error fetching fiat prices:', extractError(err))
+    consoleError('error fetching fiat prices:', extractError(err))
   }
 }

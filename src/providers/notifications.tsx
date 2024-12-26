@@ -5,6 +5,7 @@ import { prettyNumber } from '../lib/format'
 import { finalizeEvent, getPublicKey, Relay } from 'nostr-tools'
 import { hexToBytes } from '@noble/hashes/utils'
 import { getPrivateKey } from '../lib/asp'
+import { consoleLog } from '../lib/logs'
 
 interface NotificationsContextProps {
   notifyPaymentReceived: (s: number) => void
@@ -45,7 +46,7 @@ export const NotificationsProvider = ({ children }: { children: ReactNode }) => 
       ],
       {
         onevent(event: any) {
-          console.log('got event:', event)
+          consoleLog('got event:', event)
         },
       },
     )

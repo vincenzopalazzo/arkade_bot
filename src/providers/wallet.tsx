@@ -10,6 +10,7 @@ import { ConfigContext } from './config'
 import { FlowContext } from './flow'
 import { ArkNote, arkNoteInUrl } from '../lib/arknote'
 import { fetchWasm } from '../lib/fetch'
+import { consoleLog } from '../lib/logs'
 
 export interface Wallet {
   arkAddress: string
@@ -87,7 +88,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     WebAssembly.instantiateStreaming(wasm, go.importObject).then((result) => {
       go.run(result.instance)
       setWasmLoaded(true)
-      console.log('wasm loaded')
+      consoleLog('wasm loaded')
     })
   }
 
@@ -188,7 +189,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const reloadWallet = async () => {
-    console.log('reloading wallet')
+    consoleLog('reloading wallet')
     const vtxos = await getVtxos()
     const balance = await getBalance()
     const txs = await getTxHistory()

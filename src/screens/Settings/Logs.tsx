@@ -1,48 +1,56 @@
 import Header from './Header'
-import Table from '../../components/Table'
-import Padded from '../../components/Padded'
+import Text from '../../components/Text'
 import Content from '../../components/Content'
 import { useEffect, useState } from 'react'
 import { prettyAgo, prettyLongText } from '../../lib/format'
+import { clearLogs, getLogs, LogLine } from '../../lib/logs'
+import FlexCol from '../../components/FlexCol'
+import FlexRow from '../../components/FlexRow'
 
-type DataLine = [string, string]
+function LogsTable({ logs }: { logs: LogLine[] }) {
+  const color = (level: string): string => {
+    if (level === 'info') return ''
+    if (level === 'warn') return 'yellow'
+    if (level === 'error') return 'red'
+    return ''
+  }
 
-type LogLine = {
-  msg: string
-  time: string
-  level: string
+  if (logs.length === 0) return <p>No logs</p>
+
+  return (
+    <div style={{ margin: '1rem' }}>
+      <FlexCol gap='0.5rem'>
+        {logs.reverse().map(({ time, msg, level }) => (
+          <FlexRow between key={`${time}${msg}`}>
+            <Text color={color(level)}>{prettyAgo(time)}</Text>
+            <Text color='dark50'>{prettyLongText(msg.replace('...', ''))}</Text>
+          </FlexRow>
+        ))}
+      </FlexCol>
+    </div>
+  )
 }
 
 export default function Logs() {
-  const [data, setData] = useState<DataLine[]>([])
+  const [logs, setLogs] = useState<LogLine[]>([])
   const [load, setLoad] = useState(true)
 
   useEffect(() => {
     if (!load) return
-    const data: DataLine[] = []
-    const logs = localStorage.getItem('logs')
-    const json = JSON.parse(logs ?? '[]') as LogLine[]
-    for (const item of json) {
-      if (item.time && item.msg) {
-        const time = prettyAgo(item.time)
-        const mesg = prettyLongText(item.msg.replaceAll('...', ''))
-        data.push([time, mesg])
-      }
-    }
-    setData(data)
+    setLogs(getLogs())
     setLoad(false)
   }, [load])
 
   const clear = () => {
-    localStorage.removeItem('logs')
-    setLoad(true)
+    clearLogs() // clear logs from local storage
+    setLoad(true) // to reload page and show empty logs
   }
 
   return (
     <>
       <Header text='Logs' back clear={clear} />
       <Content>
-        <Padded>{data.length > 0 ? <Table data={data} /> : <p>No logs</p>}</Padded>
+        <LogsTable logs={logs} />
       </Content>
     </>
   )

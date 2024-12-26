@@ -1,3 +1,5 @@
+import { consoleError } from './logs'
+
 export const copyToClipboard = async (text: string): Promise<void> => {
   if (navigator.clipboard) {
     try {
@@ -11,7 +13,7 @@ export const pasteFromClipboard = async (): Promise<string> => {
     try {
       return await navigator.clipboard.readText()
     } catch (err) {
-      console.error('error pasting from clipboard', err)
+      consoleError('error pasting from clipboard', err)
     }
   }
   return ''

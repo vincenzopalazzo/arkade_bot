@@ -1,3 +1,4 @@
+import { consoleLog } from './logs'
 import { invalidNpub } from './privateKey'
 import { Satoshis, Tx, Vtxo } from './types'
 
@@ -152,7 +153,7 @@ export const lock = async (password: string): Promise<void> => {
 }
 
 export const redeemNotes = async (notes: string[]): Promise<void> => {
-  console.log('redeeming notes', notes)
+  consoleLog('redeeming notes', notes)
   try {
     await window.redeemNotes(notes)
   } catch {
@@ -161,17 +162,17 @@ export const redeemNotes = async (notes: string[]): Promise<void> => {
 }
 
 export const sendOffChain = async (sats: number, address: string): Promise<string> => {
-  console.log('sending offchain', sats, address)
+  consoleLog('sending offchain', sats, address)
   return await window.sendOffChain(false, [{ To: address, Amount: sats }])
 }
 
 export const sendOnChain = async (sats: number, address: string): Promise<string> => {
-  console.log('sending onchain', sats, address)
+  consoleLog('sending onchain', sats, address)
   return await window.sendOnChain([{ To: address, Amount: sats }])
 }
 
 export const settleVtxos = async (): Promise<void> => {
-  console.log('settling vtxos')
+  consoleLog('settling vtxos')
   try {
     await window.settle()
   } catch {
@@ -185,7 +186,7 @@ export const setNostrNotificationRecipient = async (npub: string): Promise<void>
 }
 
 export const startListenTransactionStream = async (callback: () => {}) => {
-  console.log('start listening', typeof callback)
+  consoleLog('start listening', typeof callback)
   // return await window.getTransactionStream(callback)
 }
 

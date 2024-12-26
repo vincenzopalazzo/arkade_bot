@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState } from 'react'
 import { BrowserMultiFormatReader } from '@zxing/library'
+import { consoleError } from '../lib/logs'
 
 interface BarcodeScannerProps {
   setError: (arg0: string) => void
@@ -13,7 +14,7 @@ export default function BarcodeScanner({ setError, setData }: BarcodeScannerProp
   const [stream, setStream] = useState<MediaStream>()
 
   useEffect(() => {
-    navigator.mediaDevices.getUserMedia({ video: true }).then(setStream).catch(console.error)
+    navigator.mediaDevices.getUserMedia({ video: true }).then(setStream).catch(consoleError)
   }, [])
 
   useEffect(() => {

@@ -14,6 +14,7 @@ import Scanner from '../../../components/Scanner'
 import { Options, OptionsContext } from '../../../providers/options'
 import { extractError } from '../../../lib/error'
 import FlexCol from '../../../components/FlexCol'
+import { consoleError } from '../../../lib/logs'
 
 export default function NotesForm() {
   const { showConfig, toggleShowConfig } = useContext(ConfigContext)
@@ -36,7 +37,7 @@ export default function NotesForm() {
         return navigate(Pages.NotesRedeem)
       } catch (err) {
         setError(extractError(err))
-        console.error(err)
+        consoleError(err)
       }
     }
     if (!error) setError('Invalid note')

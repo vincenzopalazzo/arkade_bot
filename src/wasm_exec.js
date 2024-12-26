@@ -4,7 +4,7 @@
 
 'use strict'
 
-const consoleLog = (log) => {
+const saveLog = (log) => {
   const logs = localStorage.getItem('logs')
   const json = JSON.parse(logs ?? '[]')
   const rexp = /time="(.+)?"\slevel=(\w+)\smsg="(.+)?"/
@@ -17,6 +17,7 @@ const consoleLog = (log) => {
     })
   }
   localStorage.setItem('logs', JSON.stringify(json))
+  console.log(log)
 }
 
 ;(() => {
@@ -34,7 +35,7 @@ const consoleLog = (log) => {
         outputBuf += decoder.decode(buf)
         const nl = outputBuf.lastIndexOf('\n')
         if (nl != -1) {
-          consoleLog(outputBuf.substring(0, nl))
+          saveLog(outputBuf.substring(0, nl))
           outputBuf = outputBuf.substring(nl + 1)
         }
         return buf.length
@@ -537,7 +538,7 @@ const consoleLog = (log) => {
           },
 
           debug: (value) => {
-            consoleLog(value)
+            saveLog(value)
           },
         },
       }
