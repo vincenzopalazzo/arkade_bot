@@ -3,6 +3,22 @@
 // license that can be found in the LICENSE file.
 
 'use strict'
+
+const consoleLog = (log) => {
+  const logs = localStorage.getItem('logs')
+  const json = JSON.parse(logs ?? '[]')
+  const rexp = /time="(.+)?"\slevel=(\w+)\smsg="(.+)?"/
+  const mate = log.match(rexp)
+  if (mate?.length > 3) {
+    json.push({
+      time: mate[1],
+      level: mate[2],
+      msg: mate[3],
+    })
+  }
+  localStorage.setItem('logs', JSON.stringify(json))
+}
+
 ;(() => {
   const enosys = () => {
     const err = new Error('not implemented')
@@ -18,7 +34,7 @@
         outputBuf += decoder.decode(buf)
         const nl = outputBuf.lastIndexOf('\n')
         if (nl != -1) {
-          console.log(outputBuf.substring(0, nl))
+          consoleLog(outputBuf.substring(0, nl))
           outputBuf = outputBuf.substring(nl + 1)
         }
         return buf.length
@@ -521,7 +537,7 @@
           },
 
           debug: (value) => {
-            console.log(value)
+            consoleLog(value)
           },
         },
       }

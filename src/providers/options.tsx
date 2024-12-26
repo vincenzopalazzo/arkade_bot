@@ -9,6 +9,7 @@ import ResetIcon from '../icons/Reset'
 import NoteIcon from '../icons/Note'
 import VtxosIcon from '../icons/Vtxos'
 import ServerIcon from '../icons/Server'
+import LogsIcon from '../icons/Logs'
 
 export enum Sections {
   Advanced = 'Advanced',
@@ -22,6 +23,7 @@ export enum Options {
   Appearance = 'appearance',
   Backup = 'backup',
   Lock = 'lock wallet',
+  Logs = 'logs',
   Notifications = 'notifications',
   Nostr = 'nostr',
   Notes = 'notes',
@@ -57,6 +59,11 @@ const options: Option[] = [
     icon: <LockIcon />,
     option: Options.Lock,
     section: Sections.Security,
+  },
+  {
+    icon: <LogsIcon />,
+    option: Options.Logs,
+    section: Sections.Advanced,
   },
   {
     icon: <NostrIcon />,

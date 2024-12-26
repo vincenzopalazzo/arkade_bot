@@ -7,11 +7,12 @@ import FlexRow from './FlexRow'
 interface HeaderProps {
   all?: () => void
   back?: () => void
+  clear?: () => void
   max?: () => void
   text: string
 }
 
-export default function Header({ all, back, max, text }: HeaderProps) {
+export default function Header({ all, back, clear, max, text }: HeaderProps) {
   const SideButton = (text: string, onClick: () => void) => (
     <Shadow onClick={onClick}>
       <Text color='dark80' centered tiny wrap>
@@ -36,7 +37,15 @@ export default function Header({ all, back, max, text }: HeaderProps) {
         </div>
         <IonTitle class='ion-text-center'>{text}</IonTitle>
         <div style={{ minWidth: '4rem', paddingRight: '1rem' }}>
-          {max ? SideButton('Max', max) : all ? SideButton('All', all) : <p>&nbsp;</p>}
+          {max ? (
+            SideButton('Max', max)
+          ) : all ? (
+            SideButton('All', all)
+          ) : clear ? (
+            SideButton('Clear', clear)
+          ) : (
+            <p>&nbsp;</p>
+          )}
         </div>
       </FlexRow>
     </IonHeader>

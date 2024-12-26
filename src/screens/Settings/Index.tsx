@@ -11,6 +11,7 @@ import NotesForm from '../Wallet/Notes/Form'
 import Server from './Server'
 import { Options, OptionsContext } from '../../providers/options'
 import Menu from './Menu'
+import Logs from './Logs'
 
 export default function Settings() {
   const { option } = useContext(OptionsContext)
@@ -21,6 +22,7 @@ export default function Settings() {
       {option === Options.About && <About />}
       {option === Options.Backup && <Backup />}
       {option === Options.Lock && <Lock />}
+      {option === Options.Logs && <Logs />}
       {option === Options.Nostr && <Nostr />}
       {option === Options.Notes && <NotesForm />}
       {option === Options.Notifications && <Notifications />}
