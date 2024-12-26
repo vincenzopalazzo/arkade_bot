@@ -59,9 +59,12 @@ export const prettyDate = (num: number): string => {
   }).format(date)
 }
 
-export const prettyLongText = (invoice?: string, showChars = 14): string => {
-  if (!invoice) return ''
-  return `${invoice.substring(0, showChars)}...${invoice.substring(invoice.length - showChars, invoice.length)}`
+export const prettyLongText = (str?: string, showChars = 14): string => {
+  if (!str) return ''
+  if (str.length <= showChars * 2 + 4) return str
+  const left = str.substring(0, showChars)
+  const right = str.substring(str.length - showChars, str.length)
+  return `${left}...${right}`
 }
 
 export const prettyNumber = (num?: number, maximumFractionDigits = 8): string => {
