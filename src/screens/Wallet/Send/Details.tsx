@@ -12,15 +12,19 @@ import { defaultFee } from '../../../lib/constants'
 import { prettyNumber } from '../../../lib/format'
 import Content from '../../../components/Content'
 import FlexCol from '../../../components/FlexCol'
+import { collaborativeRedeem, sendOffChain } from '../../../lib/asp'
+import { extractError } from '../../../lib/error'
+import Loading from '../../../components/Loading'
 
 export default function SendDetails() {
   const { navigate } = useContext(NavigationContext)
-  const { sendInfo } = useContext(FlowContext)
+  const { sendInfo, setSendInfo } = useContext(FlowContext)
   const { wallet } = useContext(WalletContext)
 
   const [buttonLabel, setButtonLabel] = useState('')
   const [details, setDetails] = useState<DetailsProps>()
   const [error, setError] = useState('')
+  const [sending, setSending] = useState(false)
 
   const { address, arkAddress, satoshis } = sendInfo
   const feeInSats = defaultFee
@@ -44,18 +48,45 @@ export default function SendDetails() {
     }
   }, [sendInfo])
 
-  const handleContinue = () => navigate(Pages.SendPayment)
+  const handleTxid = (txid: string) => {
+    if (!txid) return setError('Error sending transaction')
+    setSendInfo({ ...sendInfo, txid })
+    navigate(Pages.SendSuccess)
+  }
+
+  const handleError = (error: any) => {
+    setError(extractError(error))
+    setSending(false)
+  }
+
+  const handleContinue = () => {
+    if (!satoshis) return
+    setSending(true)
+    if (arkAddress) {
+      sendOffChain(satoshis, arkAddress).then(handleTxid).catch(handleError)
+    } else if (address) {
+      collaborativeRedeem(satoshis, address).then(handleTxid).catch(handleError)
+    }
+  }
+
+  const text = arkAddress
+    ? 'Paying inside the Ark'
+    : 'Payments to mainnet require a round, which can take a few seconds'
 
   return (
     <>
       <Header text='Sign transaction' back={() => navigate(Pages.SendForm)} />
       <Content>
-        <Padded>
-          <FlexCol>
-            <Error error={Boolean(error)} text={error} />
-            <Details details={details} />
-          </FlexCol>
-        </Padded>
+        {sending ? (
+          <Loading text={text} />
+        ) : (
+          <Padded>
+            <FlexCol>
+              <Error error={Boolean(error)} text={error} />
+              <Details details={details} />
+            </FlexCol>
+          </Padded>
+        )}
       </Content>
       <ButtonsOnBottom>
         <Button onClick={handleContinue} label={buttonLabel} disabled={Boolean(error)} />
