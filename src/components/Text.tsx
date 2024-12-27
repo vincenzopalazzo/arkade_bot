@@ -2,36 +2,31 @@ import { IonText } from '@ionic/react'
 import { ReactNode } from 'react'
 
 interface TextProps {
+  big?: boolean
+  bigger?: boolean
   bold?: boolean
   capitalize?: boolean
   centered?: boolean
   children: ReactNode
   color?: string
-  wrap?: boolean
-  tiny?: boolean
   smaller?: boolean
   small?: boolean
-  big?: boolean
-  bigger?: boolean
-  dark50?: boolean
-  dark80?: boolean
-  green?: boolean
-  red?: boolean
-  white?: boolean
+  tiny?: boolean
+  wrap?: boolean
 }
 
 export default function Text({
+  big,
+  bigger,
   bold,
   capitalize,
   centered,
   color,
   children,
-  wrap,
-  tiny,
   smaller,
   small,
-  big,
-  bigger,
+  tiny,
+  wrap,
 }: TextProps) {
   const fontSize = tiny ? 12 : smaller ? 13 : small ? 14 : big ? 24 : bigger ? 28 : 16
 
