@@ -1,6 +1,7 @@
 import Text from './Text'
 import FlexRow from './FlexRow'
 import FlexCol from './FlexCol'
+import { prettyLongText } from '../lib/format'
 
 export default function Table({ data }: { data: string[][] }) {
   const color = (text: string): string => {
@@ -9,14 +10,16 @@ export default function Table({ data }: { data: string[][] }) {
     return 'dark50'
   }
 
-  const key = (t: string, v: string) => `${t}${v}`
+  const numChars = (v: string) => Math.floor((36 - v.length) / 2)
 
   return (
     <FlexCol gap='0.5rem'>
       {data.map(([title, value]) => (
-        <FlexRow between key={key(title, value)}>
+        <FlexRow between key={`${title}${value}`}>
           <Text>{title}</Text>
-          <Text color={color(value)}>{value}</Text>
+          <Text color={color(value)} copy={value}>
+            {prettyLongText(value, numChars(title))}
+          </Text>
         </FlexRow>
       ))}
     </FlexCol>

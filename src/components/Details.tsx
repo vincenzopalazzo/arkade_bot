@@ -1,4 +1,4 @@
-import { prettyLongText, prettyNumber } from '../lib/format'
+import { prettyNumber } from '../lib/format'
 import Table from './Table'
 
 export interface DetailsProps {
@@ -18,9 +18,9 @@ export default function Details({ details }: { details?: DetailsProps }) {
 
   const table = []
 
-  if (arknote) table.push(['Arknote', prettyLongText(arknote)])
-  if (invoice) table.push(['Invoice', prettyLongText(invoice)])
-  if (address) table.push(['Address', prettyLongText(address)])
+  if (arknote) table.push(['Arknote', arknote])
+  if (invoice) table.push(['Invoice', invoice])
+  if (address) table.push(['Address', address])
   if (comment) table.push(['Comment', comment])
   if (satoshis) table.push(['Amount', `${prettyNumber(satoshis)} sats`])
   if (fees) table.push(['Network fees', `${prettyNumber(fees)} sats`])

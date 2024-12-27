@@ -1,5 +1,6 @@
 import { IonText } from '@ionic/react'
 import { ReactNode } from 'react'
+import { copyToClipboard } from '../lib/clipboard'
 
 interface TextProps {
   big?: boolean
@@ -9,6 +10,7 @@ interface TextProps {
   centered?: boolean
   children: ReactNode
   color?: string
+  copy?: string
   smaller?: boolean
   small?: boolean
   tiny?: boolean
@@ -21,8 +23,9 @@ export default function Text({
   bold,
   capitalize,
   centered,
-  color,
   children,
+  color,
+  copy,
   smaller,
   small,
   tiny,
@@ -32,6 +35,7 @@ export default function Text({
 
   const style: any = {
     color: `var(--${color})`,
+    cursor: copy ? 'pointer' : undefined,
     fontSize,
     fontWeight: bold ? '600' : undefined,
     lineHeight: '1.5',
@@ -42,9 +46,16 @@ export default function Text({
     whiteSpace: wrap ? undefined : 'nowrap',
   }
 
+  const handleClick = () => {
+    if (!copy) return
+    copyToClipboard(copy)
+  }
+
   return (
     <IonText>
-      <p style={style}>{children}</p>
+      <p onClick={handleClick} style={style}>
+        {children}
+      </p>
     </IonText>
   )
 }

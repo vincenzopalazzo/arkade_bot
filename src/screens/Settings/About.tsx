@@ -1,6 +1,5 @@
 import { useContext } from 'react'
 import { AspContext } from '../../providers/asp'
-import { prettyLongText } from '../../lib/format'
 import Header from './Header'
 import Table from '../../components/Table'
 import Padded from '../../components/Padded'
@@ -15,11 +14,11 @@ export default function About() {
 
   const data = [
     ['Dust', `${aspInfo.dust} sats`],
-    ['Forfeit address', prettyLongText(aspInfo.forfeitAddress, 10)],
+    ['Forfeit address', aspInfo.forfeitAddress],
     ['Network', aspInfo.network],
     ['Round Interval', `${aspInfo.roundInterval} secs`],
     ['Round Lifetime', `${days} days`],
-    ['Server Pubkey', prettyLongText(aspInfo.pubkey, 10)],
+    ['Server Pubkey', aspInfo.pubkey],
     ['Unilateral Exit Delay', `${aspInfo.unilateralExitDelay} secs`],
     ['URL', aspInfo.url],
     ['WASM version', wallet.wasmVersion],
