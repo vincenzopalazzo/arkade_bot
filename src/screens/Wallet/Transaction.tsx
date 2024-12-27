@@ -58,6 +58,7 @@ export default function Transaction() {
 
   const data = [
     ['State', tx.pending ? 'Pending' : 'Settled'],
+    ['Kind', tx.type === 'sent' ? 'Sent' : 'Received'],
     ['When', prettyAgo(tx.createdAt)],
     ['Date', prettyDate(tx.createdAt)],
     ['Amount', `${prettyNumber(tx.type === 'sent' ? tx.amount - defaultFee : tx.amount)} sats`],
