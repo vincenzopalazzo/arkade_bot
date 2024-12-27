@@ -15,22 +15,24 @@ function LogsTable({ logs }: { logs: LogLine[] }) {
     return ''
   }
 
-  if (logs.length === 0) return <p>No logs</p>
-
   const numChars = (v: string) => Math.floor((36 - v.length) / 2)
 
   return (
     <div style={{ margin: '1rem' }}>
-      <FlexCol gap='0.5rem'>
-        {[...logs].reverse().map(({ time, msg, level }) => (
-          <FlexRow between key={`${time}${msg}`}>
-            <Text color={color(level)}>{prettyAgo(time)}</Text>
-            <Text color='dark50' copy={msg}>
-              {prettyLongText(msg.replace('...', ''), numChars(prettyAgo(time)))}
-            </Text>
-          </FlexRow>
-        ))}
-      </FlexCol>
+      {logs.length === 0 ? (
+        <p>No logs</p>
+      ) : (
+        <FlexCol gap='0.5rem'>
+          {[...logs].reverse().map(({ time, msg, level }) => (
+            <FlexRow between key={`${time}${msg}`}>
+              <Text color={color(level)}>{prettyAgo(time)}</Text>
+              <Text color='dark50' copy={msg}>
+                {prettyLongText(msg.replace('...', ''), numChars(prettyAgo(time)))}
+              </Text>
+            </FlexRow>
+          ))}
+        </FlexCol>
+      )}
     </div>
   )
 }
