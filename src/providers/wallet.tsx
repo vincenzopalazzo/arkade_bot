@@ -10,7 +10,7 @@ import { ConfigContext } from './config'
 import { FlowContext } from './flow'
 import { ArkNote, arkNoteInUrl } from '../lib/arknote'
 import { fetchWasm } from '../lib/fetch'
-import { consoleLog } from '../lib/logs'
+import { consoleError, consoleLog } from '../lib/logs'
 
 export interface Wallet {
   arkAddress: string
@@ -105,7 +105,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   }, [])
 
   useEffect(() => {
-    if (!wasmLoaded || walletUnlocked) return
+    if (!wasmLoaded) return
     const wallet = readWalletFromStorage()
     if (!wallet || !wallet.initialized) {
       updateWallet(defaultWallet)

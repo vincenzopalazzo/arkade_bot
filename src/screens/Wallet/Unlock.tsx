@@ -27,9 +27,7 @@ export default function Unlock() {
   const handleChange = (ev: Event) => {
     const pass = (ev.target as HTMLInputElement).value
     setPassword(pass)
-    unlockWallet(pass)
-      .then(() => navigate(Pages.Wallet))
-      .catch()
+    unlockWallet(pass).catch()
   }
 
   const handleUnlock = async () => {
