@@ -3,7 +3,7 @@ import { readWalletFromStorage, saveWalletToStorage } from '../lib/storage'
 import { NavigationContext, Pages } from './navigation'
 import { Tx, Vtxo } from '../lib/types'
 import { getRestApiExplorerURL } from '../lib/explorers'
-import { settleVtxos, getBalance, getTxHistory, getVtxos, lock, unlock, getAspInfo } from '../lib/asp'
+import { settleVtxos, getBalance, getTxHistory, getVtxos, lock, unlock } from '../lib/asp'
 import { AspContext } from './asp'
 import { NotificationsContext } from './notifications'
 import { ConfigContext } from './config'
@@ -73,8 +73,8 @@ export const WalletContext = createContext<WalletContextProps>({
 })
 
 export const WalletProvider = ({ children }: { children: ReactNode }) => {
-  const { setAspInfo, aspInfo } = useContext(AspContext)
-  const { config, resetConfig } = useContext(ConfigContext)
+  const { aspInfo } = useContext(AspContext)
+  const { resetConfig } = useContext(ConfigContext)
   const { noteInfo, setNoteInfo } = useContext(FlowContext)
   const { navigate } = useContext(NavigationContext)
   const { notifyVtxosRecycled, notifyTxSettled } = useContext(NotificationsContext)
@@ -117,9 +117,8 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (!wasmLoaded) return
     const wallet = readWalletFromStorage()
-    const ok = wallet?.initialized
-    updateWallet(ok ? wallet : defaultWallet)
-    navigate(ok ? Pages.Unlock : Pages.Init)
+    updateWallet(wallet?.initialized ? wallet : defaultWallet)
+    navigate(wallet?.initialized ? Pages.Unlock : Pages.Init)
   }, [wasmLoaded])
 
   // if voucher present, go to redeem page
@@ -137,11 +136,6 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     if (urgent) settleVtxos().then(recycleVtxos)
   }, [walletUnlocked, wallet.nextRecycle])
 
-  useEffect(() => {
-    if (!config.aspUrl) return
-    getAspInfo(config.aspUrl).then(setAspInfo)
-  }, [config.aspUrl])
-
   const initWallet = async (password: string, privateKey: string) => {
     const aspUrl = aspInfo.url
     const chain = 'bitcoin'
@@ -149,7 +143,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     const walletType = 'singlekey'
     const explorerUrl = getRestApiExplorerURL(wallet.network) ?? ''
     await window.init(walletType, clientType, aspUrl, privateKey, password, chain, explorerUrl)
-    updateWallet({ ...wallet, initialized: true })
+    updateWallet({ ...wallet, initialized: true, network: aspInfo.network })
   }
 
   const lockWallet = async (password: string) => {
@@ -195,13 +189,9 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const unlockWallet = async (password: string) => {
-    try {
-      await unlock(password)
-      setWalletUnlocked(true)
-      reloadWallet()
-    } catch {
-      throw 'Invalid password'
-    }
+    await unlock(password)
+    setWalletUnlocked(true)
+    reloadWallet()
   }
 
   const updateWallet = async (data: Wallet) => {

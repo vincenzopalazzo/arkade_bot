@@ -29,15 +29,17 @@ import SettingsIcon from './icons/Settings'
 import SendIcon from './icons/Send'
 import { Options, OptionsContext } from './providers/options'
 import { emptyRecvInfo, emptySendInfo, FlowContext } from './providers/flow'
+import { AspContext } from './providers/asp'
 
 setupIonicReact()
 
 export default function App() {
+  const { aspInfo } = useContext(AspContext)
   const { configLoaded } = useContext(ConfigContext)
   const { setRecvInfo, setSendInfo } = useContext(FlowContext)
   const { navigate, screen, tab } = useContext(NavigationContext)
   const { setOption } = useContext(OptionsContext)
-  const { reloadWallet, wasmLoaded, walletUnlocked, wallet } = useContext(WalletContext)
+  const { reloadWallet, wasmLoaded } = useContext(WalletContext)
 
   const handleHome = () => {
     reloadWallet()
@@ -59,8 +61,7 @@ export default function App() {
     navigate(Pages.Settings)
   }
 
-  const page =
-    !configLoaded || !wasmLoaded ? Pages.Loading : wallet.initialized && !walletUnlocked ? Pages.Unlock : screen
+  const page = !configLoaded || !wasmLoaded || !aspInfo.pubkey ? Pages.Loading : screen
 
   const comp = pageComponent(page)
 
