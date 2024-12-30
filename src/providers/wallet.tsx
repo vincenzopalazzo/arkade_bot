@@ -189,7 +189,6 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const reloadWallet = async () => {
-    consoleLog('reloading wallet')
     const vtxos = await getVtxos()
     const balance = await getBalance()
     const txs = await getTxHistory()
