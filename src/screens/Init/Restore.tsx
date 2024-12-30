@@ -10,34 +10,32 @@ import { invalidPrivateKey, nsecToSeed } from '../../lib/privateKey'
 import Textarea from '../../components/Textarea'
 import Header from '../../components/Header'
 import FlexCol from '../../components/FlexCol'
-
-enum ButtonLabel {
-  Invalid = 'Invalid private key',
-  Ok = 'Continue',
-}
+import { extractError } from '../../lib/error'
 
 export default function InitRestore() {
   const { navigate } = useContext(NavigationContext)
   const { setInitInfo } = useContext(FlowContext)
 
+  const buttonLabel = 'Continue'
+
   const [error, setError] = useState('')
-  const [label, setLabel] = useState(ButtonLabel.Ok)
+  const [label, setLabel] = useState(buttonLabel)
   const [privateKey, setPrivateKey] = useState('')
   const [someKey, setSomeKey] = useState('')
 
   useEffect(() => {
-    const err = invalidPrivateKey(privateKey)
-    setLabel(err ? ButtonLabel.Invalid : ButtonLabel.Ok)
-    setError(err)
-  }, [privateKey])
-
-  useEffect(() => {
-    setPrivateKey(someKey.match(/^nsec/) ? nsecToSeed(someKey) : someKey)
+    let privateKey = someKey
+    try {
+      if (someKey.match(/^nsec/)) privateKey = nsecToSeed(someKey)
+      const invalid = invalidPrivateKey(privateKey)
+      setLabel(invalid ? 'Invalid private key' : buttonLabel)
+      setError(invalid)
+    } catch (err) {
+      setLabel('Invalid nsec')
+      setError(extractError(err))
+    }
+    setPrivateKey(privateKey)
   }, [someKey])
-
-  const handleChange = (key: string) => {
-    setSomeKey(key)
-  }
 
   const handleCancel = () => navigate(Pages.Init)
 
@@ -46,7 +44,7 @@ export default function InitRestore() {
     navigate(Pages.InitPassword)
   }
 
-  const disabled = privateKey.length > 0 && error.length > 0
+  const disabled = Boolean(!privateKey || error)
 
   return (
     <>
@@ -54,7 +52,7 @@ export default function InitRestore() {
       <Content>
         <Padded>
           <FlexCol>
-            <Textarea label='Private key' onChange={handleChange} />
+            <Textarea label='Private key' onChange={setSomeKey} value={someKey} />
             <Error error={Boolean(error)} text={error} />
           </FlexCol>
         </Padded>
