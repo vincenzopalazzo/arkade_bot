@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 import Button from '../../components/Button'
 import ButtonsOnBottom from '../../components/ButtonsOnBottom'
-import { NavigationContext, Pages } from '../../providers/navigation'
 import Padded from '../../components/Padded'
 import Content from '../../components/Content'
 import { WalletContext } from '../../providers/wallet'
@@ -12,8 +11,7 @@ import Header from '../../components/Header'
 import { consoleError } from '../../lib/logs'
 
 export default function Unlock() {
-  const { navigate } = useContext(NavigationContext)
-  const { reloadWallet, unlockWallet } = useContext(WalletContext)
+  const { unlockWallet } = useContext(WalletContext)
 
   const [error, setError] = useState('')
   const [label, setLabel] = useState('Unlock')
@@ -25,24 +23,19 @@ export default function Unlock() {
   }, [unlocking])
 
   const handleChange = (ev: Event) => {
-    const pass = (ev.target as HTMLInputElement).value
-    setPassword(pass)
-    unlockWallet(pass).catch()
+    const password = (ev.target as HTMLInputElement).value
+    setPassword(password)
+    unlockWallet(password).catch()
   }
 
   const handleUnlock = async () => {
     if (!password) return
     setUnlocking(true)
-    unlockWallet(password)
-      .then(() => {
-        reloadWallet()
-        navigate(Pages.Wallet)
-      })
-      .catch((err) => {
-        consoleError('error unlocking wallet', err)
-        setError(extractError(err))
-        setUnlocking(false)
-      })
+    unlockWallet(password).catch((err) => {
+      consoleError('error unlocking wallet', err)
+      setError(extractError(err))
+      setUnlocking(false)
+    })
   }
 
   return (

@@ -3,7 +3,7 @@ import { readWalletFromStorage, saveWalletToStorage } from '../lib/storage'
 import { NavigationContext, Pages } from './navigation'
 import { Tx, Vtxo } from '../lib/types'
 import { getRestApiExplorerURL } from '../lib/explorers'
-import { settleVtxos, getBalance, getTxHistory, getVtxos, lock, unlock, walletLocked, getAspInfo } from '../lib/asp'
+import { settleVtxos, getBalance, getTxHistory, getVtxos, lock, unlock, getAspInfo } from '../lib/asp'
 import { AspContext } from './asp'
 import { NotificationsContext } from './notifications'
 import { ConfigContext } from './config'
@@ -100,40 +100,10 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
       .catch((err) => consoleError('error loading wasm', err))
   }, [])
 
-  useEffect(() => {
-    if (!wasmLoaded) return
-    const wallet = readWalletFromStorage()
-    if (!wallet || !wallet.initialized) {
-      updateWallet(defaultWallet)
-      navigate(Pages.Init)
-    } else {
-      updateWallet(wallet)
-      lockedWallet().then((locked) => {
-        navigate(locked ? Pages.Unlock : Pages.Wallet)
-      })
-    }
-  }, [wasmLoaded])
-
-  // auto settle vtxos if next recycle in less than 24 hours
-  useEffect(() => {
-    if (!wallet.nextRecycle || !walletUnlocked) return
-    const now = Math.floor(new Date().getTime() / 1000)
-    const threshold = 60 * 60 * 24 // one day in seconds
-    const urgent = wallet.nextRecycle - now < threshold
-    if (urgent) settleVtxos().then(() => recycleVtxos())
-  }, [wallet.nextRecycle, walletUnlocked])
-
-  // if voucher present, go to redeem page
-  useEffect(() => {
-    if (!walletUnlocked || !wallet.initialized) return
-    if (noteInfo.satoshis) navigate(Pages.NotesRedeem)
-    // startListenTransactionStream(reloadWallet)
-  }, [walletUnlocked, wallet.initialized])
-
   // if voucher on url, add it to state and remove from url
   useEffect(() => {
-    if (walletUnlocked || !arkNoteInUrl()) return
     const note = arkNoteInUrl()
+    if (!note) return
     try {
       const { value } = ArkNote.fromString(note).data
       setNoteInfo({ note, satoshis: value })
@@ -141,17 +111,36 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     } catch (err) {
       consoleError('error decoding ark note', err)
     }
-    // startListenTransactionStream(reloadWallet)
+  }, [])
+
+  // load wallet from storage
+  useEffect(() => {
+    if (!wasmLoaded) return
+    const wallet = readWalletFromStorage()
+    const ok = wallet?.initialized
+    updateWallet(ok ? wallet : defaultWallet)
+    navigate(ok ? Pages.Unlock : Pages.Init)
+  }, [wasmLoaded])
+
+  // if voucher present, go to redeem page
+  useEffect(() => {
+    if (!walletUnlocked) return
+    navigate(noteInfo.satoshis ? Pages.NotesRedeem : Pages.Wallet)
   }, [walletUnlocked])
 
+  // auto settle vtxos if next recycle in less than 24 hours
   useEffect(() => {
-    getAspInfo(config.aspUrl).then(setAspInfo)
-  }, [config.aspUrl])
+    if (!wallet.nextRecycle || !walletUnlocked) return
+    const now = Math.floor(new Date().getTime() / 1000)
+    const threshold = 60 * 60 * 24 // one day in seconds
+    const urgent = wallet.nextRecycle - now < threshold
+    if (urgent) settleVtxos().then(recycleVtxos)
+  }, [walletUnlocked, wallet.nextRecycle])
 
   useEffect(() => {
-    if (!wasmLoaded || !aspInfo.network) return
-    updateWallet({ ...wallet, network: aspInfo.network })
-  }, [aspInfo.network, wasmLoaded])
+    if (!config.aspUrl) return
+    getAspInfo(config.aspUrl).then(setAspInfo)
+  }, [config.aspUrl])
 
   const initWallet = async (password: string, privateKey: string) => {
     const aspUrl = aspInfo.url
@@ -161,14 +150,6 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     const explorerUrl = getRestApiExplorerURL(wallet.network) ?? ''
     await window.init(walletType, clientType, aspUrl, privateKey, password, chain, explorerUrl)
     updateWallet({ ...wallet, initialized: true })
-  }
-
-  const lockedWallet = async () => {
-    try {
-      return await walletLocked()
-    } catch {
-      return true
-    }
   }
 
   const lockWallet = async (password: string) => {
