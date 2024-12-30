@@ -142,7 +142,9 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
       const { value } = ArkNote.fromString(note).data
       setNoteInfo({ note, satoshis: value })
       window.location.hash = ''
-    } catch {}
+    } catch (err) {
+      consoleError('error decoding ark note', err)
+    }
     // startListenTransactionStream(reloadWallet)
   }, [walletUnlocked])
 
