@@ -33,6 +33,8 @@ export default function Text({
 }: TextProps) {
   const fontSize = tiny ? 12 : smaller ? 13 : small ? 14 : big ? 24 : bigger ? 28 : 16
 
+  const className = capitalize ? 'first-letter' : ''
+
   const style: any = {
     color: `var(--${color})`,
     cursor: copy ? 'pointer' : undefined,
@@ -42,7 +44,6 @@ export default function Text({
     overflow: wrap ? undefined : 'hidden',
     textAlign: centered ? 'center' : undefined,
     textOverflow: wrap ? undefined : 'ellipsis',
-    textTransform: capitalize ? 'capitalize' : undefined,
     whiteSpace: wrap ? undefined : 'nowrap',
   }
 
@@ -53,7 +54,7 @@ export default function Text({
 
   return (
     <IonText>
-      <p onClick={handleClick} style={style}>
+      <p className={className} onClick={handleClick} style={style}>
         {children}
       </p>
     </IonText>
