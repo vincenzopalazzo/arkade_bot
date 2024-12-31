@@ -14,8 +14,6 @@ interface ButtonProps {
 
 export default function Button({ clear, disabled, icon, label, onClick, red, secondary, short }: ButtonProps) {
   const style = {
-    backgroundColor: red ? 'var(--redbg)' : undefined,
-    color: red ? 'var(--red)' : undefined,
     marginTop: '1rem',
   }
 
