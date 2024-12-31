@@ -17,9 +17,9 @@ export default function Menu() {
 
   const rowStyle = (option: Options) => ({
     alignItems: 'center',
-    backgroundColor: option === Options.Reset ? 'var(--redbg)' : 'var(--dark10)',
+    backgroundColor: option === Options.Reset ? 'var(--red)' : 'var(--dark10)',
     borderBottom: border,
-    color: option === Options.Reset ? 'var(--red)' : 'var(--dark)',
+    color: option === Options.Reset ? 'var(--white)' : 'var(--dark)',
     cursor: 'pointer',
     display: 'flex',
     justifyContent: 'space-between',
@@ -39,7 +39,7 @@ export default function Menu() {
                 <div key={option} onClick={() => setOption(option)} style={rowStyle(option)}>
                   <FlexRow>
                     {icon}
-                    <Text color={option === Options.Reset ? 'red' : ''} capitalize>
+                    <Text color={option === Options.Reset ? 'white' : ''} capitalize>
                       {option}
                     </Text>
                   </FlexRow>

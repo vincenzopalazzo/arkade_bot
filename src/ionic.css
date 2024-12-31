@@ -5,11 +5,25 @@
   --dark20: rgba(var(--ion-color-dark-rgb), 0.2);
   --dark10: rgba(var(--ion-color-dark-rgb), 0.1);
   --dark05: rgba(var(--ion-color-dark-rgb), 0.05);
-  --green: rgb(45, 213, 91);
-  --redbg: rgb(56, 0, 8);
-  --red: rgb(255, 79, 79);
-  --white: rgb(251, 251, 251);
-  --yellow: rgb(255, 221, 70);
+  --green: #2c760a;
+  --greenbg: #054a19;
+  --orange: #e98349;
+  --orangebg: #572d00;
+  --red: #a51515;
+  --redbg: #390209;
+  --white: #fbfbfb;
+  --yellow: #e2c546;
+}
+
+.ion-palette-dark {
+  --green: #69ae48;
+  --greenbg: #092d13;
+  --orange: #e98349;
+  --orangebg: #2e1800;
+  --red: #e04d4d;
+  --redbg: #380008;
+  --white: #030303;
+  --yellow: #ffdd46;
 }
 
 ion-button {
