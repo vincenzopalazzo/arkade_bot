@@ -1,6 +1,5 @@
 import { IonCheckbox } from '@ionic/react'
 import FlexRow from './FlexRow'
-import { TextSecondary } from './Text'
 
 interface CheckboxProps {
   onChange: () => void
@@ -11,14 +10,15 @@ export default function Checkbox({ onChange, text }: CheckboxProps) {
   const style = {
     border: '1px solid var(--dark50)',
     borderRadius: '0.5rem',
-    padding: '1rem',
-    width: '100%',
+    margin: '0 2px',
+    padding: '.6rem',
   }
   return (
     <div style={style}>
-      <FlexRow>
-        <IonCheckbox onIonChange={onChange} />
-        <TextSecondary>{text}</TextSecondary>
+      <FlexRow gap='1rem'>
+        <IonCheckbox labelPlacement='end' onIonChange={onChange}>
+          {text}
+        </IonCheckbox>
       </FlexRow>
     </div>
   )
