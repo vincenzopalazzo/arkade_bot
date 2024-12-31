@@ -6,9 +6,10 @@ interface FlexColProps {
   children: ReactNode
   end?: boolean
   gap?: string
+  margin?: string
 }
 
-export default function FlexCol({ between, centered, children, end, gap }: FlexColProps) {
+export default function FlexCol({ between, centered, children, end, gap, margin }: FlexColProps) {
   const style: any = {
     alignItems: centered ? 'center' : end ? 'end' : 'start',
     display: 'flex',
@@ -16,6 +17,7 @@ export default function FlexCol({ between, centered, children, end, gap }: FlexC
     gap: gap ?? '1rem',
     height: between ? '100%' : undefined,
     justifyContent: between ? 'space-between' : undefined,
+    margin,
     width: '100%',
   }
 

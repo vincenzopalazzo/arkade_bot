@@ -23,7 +23,7 @@ export default function InputContainer({ children, error, label, right }: InputC
 
   return (
     <FlexCol>
-      <FlexCol gap='0.25rem'>
+      <FlexCol gap='0.5rem'>
         {label || right ? <TopLabel /> : null}
         <Shadow>
           <Padded>{children}</Padded>

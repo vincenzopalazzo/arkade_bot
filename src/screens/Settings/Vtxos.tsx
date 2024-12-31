@@ -72,25 +72,25 @@ export default function Vtxos() {
           </Padded>
         ) : (
           <Padded>
-            <FlexCol>
-              {wallet.vtxos.spendable?.length > 0 ? (
-                <FlexCol gap='0.5rem'>
+            {wallet.vtxos.spendable?.length > 0 ? (
+              <>
+                <FlexCol gap='0.5rem' margin='0 0 1rem 0'>
                   <Text small>Next roll over</Text>
                   <Box>
                     <p>{prettyDate(wallet.nextRecycle)}</p>
                     <p className='mr-2'>{prettyAgo(wallet.nextRecycle)}</p>
                   </Box>
                 </FlexCol>
-              ) : (
-                <WarningBox red text="You don't have any VTXOs" />
-              )}
-              <Text color='dark50' small wrap>
-                Your VTXOs have a lifetime of 7 days and they need to be rolled over prior to expiration.
-              </Text>
-              <Text color='dark50' small wrap>
-                The app will try to auto roll over all VTXOs which expire in less than 24 hours.
-              </Text>
-            </FlexCol>
+                <Text color='dark50' small wrap>
+                  Your VTXOs have a lifetime of 7 days and they need to be rolled over prior to expiration.
+                </Text>
+                <Text color='dark50' small wrap>
+                  The app will try to auto roll over all VTXOs which expire in less than 24 hours.
+                </Text>
+              </>
+            ) : (
+              <WarningBox red text="You don't have any VTXOs" />
+            )}
           </Padded>
         )}
       </Content>

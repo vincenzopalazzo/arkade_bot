@@ -10,7 +10,7 @@ import Error from '../../components/Error'
 import { setNostrNotificationRecipient } from '../../lib/asp'
 import Header from './Header'
 import Toggle from '../../components/Toggle'
-import { TextLabel, TextSecondary } from '../../components/Text'
+import { TextSecondary } from '../../components/Text'
 import FlexCol from '../../components/FlexCol'
 import InputNpub from '../../components/InputNpub'
 import Scanner from '../../components/Scanner'
@@ -57,10 +57,9 @@ export default function Nostr() {
     <>
       <Header text='Nostr' back />
       <Content>
-        <TextLabel>Nostr</TextLabel>
-        <Toggle checked={config.nostr} onClick={handleCheck} text='Allow Nostr' />
+        <Toggle checked={config.nostr} label='Nostr' onClick={handleCheck} text='Allow Nostr' />
         <Padded>
-          <FlexCol gap='3rem'>
+          <FlexCol>
             <TextSecondary wrap>
               If you let your VTXOs expire, you will receive, on Nostr, via encrypted DM, an arknote with the same
               value, that you will be able to redeem later.

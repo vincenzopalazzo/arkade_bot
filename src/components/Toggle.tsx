@@ -1,24 +1,29 @@
-import Text from './Text'
+import Text, { TextLabel } from './Text'
 import { IonToggle } from '@ionic/react'
 import FlexRow from './FlexRow'
 import Padded from './Padded'
 import Shadow from './Shadow'
+import FlexCol from './FlexCol'
 
 interface ToggleProps {
   checked: boolean
+  label: string
   onClick: () => void
   text: string
 }
 
-export default function Toggle({ checked, onClick, text }: ToggleProps) {
+export default function Toggle({ checked, label, onClick, text }: ToggleProps) {
   return (
-    <Shadow squared>
-      <Padded>
-        <FlexRow between>
-          <Text>{text}</Text>
-          <IonToggle checked={checked} onClick={onClick} />
-        </FlexRow>
-      </Padded>
-    </Shadow>
+    <FlexCol gap='0' margin='0 0 1rem 0'>
+      <TextLabel>{label}</TextLabel>
+      <Shadow squared>
+        <Padded>
+          <FlexRow between>
+            <Text>{text}</Text>
+            <IonToggle checked={checked} onClick={onClick} />
+          </FlexRow>
+        </Padded>
+      </Shadow>
+    </FlexCol>
   )
 }

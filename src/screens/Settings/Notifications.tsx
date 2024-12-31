@@ -4,7 +4,7 @@ import Padded from '../../components/Padded'
 import { notificationApiSupport, requestPermission, sendTestNotification } from '../../lib/notifications'
 import Header from './Header'
 import Content from '../../components/Content'
-import { TextLabel, TextSecondary } from '../../components/Text'
+import { TextSecondary } from '../../components/Text'
 import Toggle from '../../components/Toggle'
 
 export default function Notifications() {
@@ -26,8 +26,12 @@ export default function Notifications() {
     <>
       <Header text='Notifications' back />
       <Content>
-        <TextLabel>Notifications</TextLabel>
-        <Toggle checked={config.notifications} onClick={handleChange} text='Allow notifications' />
+        <Toggle
+          checked={config.notifications}
+          label='Notifications'
+          onClick={handleChange}
+          text='Allow notifications'
+        />
         <Padded>
           {notificationApiSupport ? (
             <>
