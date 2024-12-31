@@ -9,6 +9,7 @@ import { extractError } from '../../lib/error'
 import InputPassword from '../../components/InputPassword'
 import Header from '../../components/Header'
 import { consoleError } from '../../lib/logs'
+import FlexCol from '../../components/FlexCol'
 
 export default function Unlock() {
   const { unlockWallet } = useContext(WalletContext)
@@ -43,12 +44,14 @@ export default function Unlock() {
       <Header text='Unlock' />
       <Content>
         <Padded>
-          {unlocking ? null : (
-            <form>
-              <InputPassword label='Insert password' onChange={handleChange} />
-            </form>
-          )}
-          <Error error={Boolean(error)} text={error} />
+          <FlexCol gap='1rem'>
+            {unlocking ? null : (
+              <form style={{ width: '100%' }}>
+                <InputPassword label='Insert password' onChange={handleChange} />
+              </form>
+            )}
+            <Error error={Boolean(error)} text={error} />
+          </FlexCol>
         </Padded>
       </Content>
       <ButtonsOnBottom>
