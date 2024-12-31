@@ -10,8 +10,8 @@ interface WarningProps {
 }
 
 export default function WarningBox({ green, red, text }: WarningProps) {
-  const backgroundColor = red ? '#380008' : green ? '#092d13' : '#2E1800'
-  const borderColor = red ? '#FF4F4F' : green ? '#2dd55c' : '#FC8C0B'
+  const backgroundColor = red ? 'var(--redbg)' : green ? 'var(--greenbg)' : 'var(--orangebg)'
+  const borderColor = red ? 'var(--red)' : green ? 'var(--green)' : 'var(--orange)'
   const Icon = () => (red ? <ForbidIcon /> : <InfoIcon />)
 
   const style = {
