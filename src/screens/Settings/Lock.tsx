@@ -10,6 +10,8 @@ import Error from '../../components/Error'
 import Loading from '../../components/Loading'
 import InputPassword from '../../components/InputPassword'
 import Header from './Header'
+import FlexCol from '../../components/FlexCol'
+import { TextSecondary } from '../../components/Text'
 
 export default function Lock() {
   const { navigate } = useContext(NavigationContext)
@@ -53,11 +55,11 @@ export default function Lock() {
           <Loading />
         ) : (
           <Padded>
-            <div className='flex flex-col gap-4 mt-10'>
+            <FlexCol>
               <InputPassword label='Insert password' onChange={handleChange} />
               <Error error={Boolean(error)} text={error} />
-              <p className='mt-10 mb-4 mx-auto'>After locking you'll need to re-enter your password to unlock</p>
-            </div>
+              <TextSecondary>After locking you'll need to re-enter your password to unlock.</TextSecondary>
+            </FlexCol>
           </Padded>
         )}
       </Content>
