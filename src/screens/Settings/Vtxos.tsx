@@ -64,7 +64,9 @@ export default function Vtxos() {
         ) : showList ? (
           <Padded>
             <FlexCol gap='0.5rem'>
-              <Text smaller>Amount and expiration</Text>
+              <Text capitalize color='dark50' smaller>
+                Amount and expiration
+              </Text>
               {wallet.vtxos.spendable?.map((v) => (
                 <VtxoLine key={v.txid} vtxo={v} />
               ))}
@@ -75,10 +77,12 @@ export default function Vtxos() {
             {wallet.vtxos.spendable?.length > 0 ? (
               <>
                 <FlexCol gap='0.5rem' margin='0 0 1rem 0'>
-                  <Text small>Next roll over</Text>
+                  <Text capitalize color='dark50' smaller>
+                    Next roll over
+                  </Text>
                   <Box>
-                    <p>{prettyDate(wallet.nextRecycle)}</p>
-                    <p className='mr-2'>{prettyAgo(wallet.nextRecycle)}</p>
+                    <Text>{prettyDate(wallet.nextRecycle)}</Text>
+                    <Text>{prettyAgo(wallet.nextRecycle)}</Text>
                   </Box>
                 </FlexCol>
                 <Text color='dark50' small wrap>
