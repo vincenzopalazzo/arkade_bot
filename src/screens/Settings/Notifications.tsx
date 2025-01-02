@@ -35,14 +35,14 @@ export default function Notifications() {
         <Padded>
           {notificationApiSupport ? (
             <>
-              <TextSecondary>Get notified when an update is available or a payment is received</TextSecondary>
-              <TextSecondary>You'll need to grant permission if asked</TextSecondary>
+              <TextSecondary>Get notified when an update is available or a payment is received.</TextSecondary>
+              <TextSecondary>You'll need to grant permission if asked.</TextSecondary>
             </>
           ) : (
             <>
-              <TextSecondary>Your browser does not support the Notifications API</TextSecondary>
+              <TextSecondary>Your browser does not support the Notifications API.</TextSecondary>
               <TextSecondary>
-                If on iOS you'll need to 'Add to homescreen' and be running iOS 16.4 or higher
+                If on iOS you'll need to 'Add to homescreen' and be running iOS 16.4 or higher.
               </TextSecondary>
             </>
           )}

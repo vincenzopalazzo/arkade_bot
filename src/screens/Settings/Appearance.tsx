@@ -20,7 +20,7 @@ export default function Theme() {
       <Content>
         <Toggle checked={config.theme === Themes.Dark} label='Theme' onClick={handleChange} text='Dark theme' />
         <Padded>
-          <TextSecondary>Dark theme is easier on the eyes</TextSecondary>
+          <TextSecondary>Dark theme is easier on the eyes.</TextSecondary>
         </Padded>
       </Content>
     </>

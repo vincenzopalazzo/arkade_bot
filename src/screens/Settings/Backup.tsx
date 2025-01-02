@@ -36,7 +36,7 @@ export default function Backup() {
         <Padded>
           <FlexCol>
             <Textarea label='Private key' value={nsec} />
-            <TextSecondary>This is enough to restore your wallet</TextSecondary>
+            <TextSecondary>This is enough to restore your wallet.</TextSecondary>
           </FlexCol>
         </Padded>
       </Content>
