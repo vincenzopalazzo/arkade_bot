@@ -22,5 +22,10 @@ export const pasteFromClipboard = async (): Promise<string> => {
 }
 
 export const queryPastePermission = async (): Promise<PermissionState> => {
-  return (await navigator.permissions.query({ name: 'clipboard-read' as PermissionName })).state
+  try {
+    return (await navigator.permissions.query({ name: 'clipboard-read' as PermissionName })).state
+  } catch (err) {
+    consoleError('error querying clipboard-read permission', err)
+    return 'denied'
+  }
 }
