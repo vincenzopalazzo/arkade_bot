@@ -18,7 +18,7 @@ export default function Shadow({ children, lighter, onClick, red, squared }: Sha
   }
 
   return (
-    <div className={squared ? 'fullScreen' : ''} style={style} onClick={onClick}>
+    <div style={style} onClick={onClick}>
       {children}
     </div>
   )
