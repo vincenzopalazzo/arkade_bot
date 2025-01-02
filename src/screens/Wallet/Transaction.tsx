@@ -12,7 +12,6 @@ import Error from '../../components/Error'
 import { extractError } from '../../lib/error'
 import Loading from '../../components/Loading'
 import { openInNewTab } from '../../lib/explorers'
-import Modal from '../../components/Modal'
 import Header from '../../components/Header'
 import Content from '../../components/Content'
 
@@ -26,7 +25,6 @@ export default function Transaction() {
 
   const [buttonLabel, setButtonLabel] = useState(defaultButtonLabel)
   const [showSettleButton, setShowSettleButton] = useState(false)
-  const [showInfo, setShowInfo] = useState(false)
   const [settling, setSettling] = useState(false)
   const [error, setError] = useState('')
 
@@ -86,15 +84,6 @@ export default function Transaction() {
           <Button onClick={handleExplorer} label='View on explorer' />
         ) : null}
       </ButtonsOnBottom>
-      <Modal open={showInfo} onClose={() => setShowInfo(false)}>
-        <div className='flex flex-col gap-4 text-left'>
-          <p className='font-semibold text-center'>Pending transactions</p>
-          <p>
-            This transaction is not yet final. The sender can still cancel or redirect it to another recipient. Funds
-            will become non-reversible once the transaction is settled.
-          </p>
-        </div>
-      </Modal>
     </>
   )
 }
