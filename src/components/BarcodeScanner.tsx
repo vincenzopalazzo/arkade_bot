@@ -53,5 +53,5 @@ export default function BarcodeScanner({ setError, setData }: BarcodeScannerProp
     }
   }, [stream, videoRef])
 
-  return <video className='aspect-[1/1] mx-auto' ref={videoRef} />
+  return <video style={{ aspectRatio: '1/1', margin: '0 auto' }} ref={videoRef} />
 }
