@@ -5,6 +5,7 @@ import Table from '../../components/Table'
 import Padded from '../../components/Padded'
 import Content from '../../components/Content'
 import { WalletContext } from '../../providers/wallet'
+import { gitCommit } from '../../_gitCommit'
 
 export default function About() {
   const { aspInfo } = useContext(AspContext)
@@ -22,6 +23,7 @@ export default function About() {
     ['Unilateral exit delay', `${aspInfo.unilateralExitDelay} secs`],
     ['URL', aspInfo.url],
     ['WASM version', wallet.wasmVersion],
+    ['Git commit hash', gitCommit],
   ]
 
   return (

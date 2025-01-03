@@ -60,11 +60,12 @@
     "ws-electrumx-client": "^1.0.5"
   },
   "scripts": {
-    "start": "craco start",
-    "build": "craco build",
+    "start": "yarn git-info; craco start",
+    "build": "yarn git-info; craco build",
     "test": "craco test",
     "lint": "eslint --ext .ts,.tsx src",
-    "eject": "craco eject"
+    "eject": "craco eject",
+    "git-info": "echo export const gitCommit = \\'$(git rev-parse --short HEAD)\\' > src/_gitCommit.ts"
   },
   "eslintConfig": {
     "extends": [
