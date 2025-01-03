@@ -65,7 +65,7 @@
     "test": "craco test",
     "lint": "eslint --ext .ts,.tsx src",
     "eject": "craco eject",
-    "git-info": "echo export const gitCommit = \\'$(git rev-parse --short HEAD)\\' > src/_gitCommit.ts"
+    "git-info": "echo export const gitCommit = \\'$(cat .git/refs/heads/master | cut -c 1-8)\\' > src/_gitCommit.ts"
   },
   "eslintConfig": {
     "extends": [
