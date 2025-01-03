@@ -133,7 +133,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     const now = Math.floor(new Date().getTime() / 1000)
     const threshold = 60 * 60 * 24 // one day in seconds
     const urgent = wallet.nextRecycle - now < threshold
-    if (urgent) settleVtxos().then(recycleVtxos)
+    if (urgent) recycleVtxos()
   }, [walletUnlocked, wallet.nextRecycle])
 
   const initWallet = async (password: string, privateKey: string) => {
