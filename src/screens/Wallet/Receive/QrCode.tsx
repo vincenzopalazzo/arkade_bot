@@ -13,7 +13,8 @@ import { WalletContext } from '../../../providers/wallet'
 import { NotificationsContext } from '../../../providers/notifications'
 import Header from '../../../components/Header'
 import Content from '../../../components/Content'
-import { consoleError } from '../../../lib/logs'
+import { consoleError, consoleLog } from '../../../lib/logs'
+import { canBrowserShareData, shareData } from '../../../lib/share'
 
 export default function ReceiveQRCode() {
   const { recvInfo, setRecvInfo } = useContext(FlowContext)
@@ -22,6 +23,7 @@ export default function ReceiveQRCode() {
   const { wallet } = useContext(WalletContext)
 
   const [error, setError] = useState('')
+  const [sharing, setSharing] = useState(false)
 
   const poolAspIntervalId = useRef<NodeJS.Timeout>()
 
@@ -44,7 +46,7 @@ export default function ReceiveQRCode() {
       setError(extractError(err))
     }
     return () => clearInterval(poolAspIntervalId.current)
-  }, [])
+  }, [wallet])
 
   const onFinish = (satoshis: number) => {
     clearInterval(poolAspIntervalId.current)
@@ -54,8 +56,14 @@ export default function ReceiveQRCode() {
   }
 
   const handleShare = () => {
-    // TODO
+    setSharing(true)
+    shareData(data)
+      .catch(consoleLog)
+      .finally(() => setSharing(false))
   }
+
+  const data = { title: 'Receive', text: bip21uri }
+  const disabled = !canBrowserShareData(data) || sharing
 
   return (
     <>
@@ -67,7 +75,7 @@ export default function ReceiveQRCode() {
         </Padded>
       </Content>
       <ButtonsOnBottom>
-        <Button onClick={handleShare} label='Share' disabled />
+        <Button onClick={handleShare} label='Share' disabled={disabled} />
       </ButtonsOnBottom>
     </>
   )
