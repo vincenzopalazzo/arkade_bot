@@ -20,8 +20,8 @@ export default function About() {
     ['Round interval', `${aspInfo.roundInterval} secs`],
     ['Round lifetime', `${days} days`],
     ['Server pubkey', aspInfo.pubkey],
+    ['Server URL', aspInfo.url],
     ['Unilateral exit delay', `${aspInfo.unilateralExitDelay} secs`],
-    ['URL', aspInfo.url],
     ['WASM version', wallet.wasmVersion],
     ['Git commit hash', gitCommit],
   ]
