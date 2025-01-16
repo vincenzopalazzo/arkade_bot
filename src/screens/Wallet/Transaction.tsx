@@ -75,7 +75,7 @@ export default function Transaction() {
         ) : (
           <Padded>
             <FlexCol>
-              {!tx.pending ? (
+              {tx.pending ? (
                 <Info
                   color='yellow'
                   title='Pending'
