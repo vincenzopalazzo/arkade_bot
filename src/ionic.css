@@ -10,9 +10,9 @@
   --orange: #e98349;
   --orangebg: #572d00;
   --red: #a51515;
-  --redbg: #390209;
+  --redbg: #68222b;
   --white: #fbfbfb;
-  --yellow: #e9c93d;
+  --yellow: #e2c542;
 }
 
 .ion-palette-dark {
@@ -62,4 +62,19 @@ ion-tab-bar {
   & svg {
     color: var(--dark50);
   }
+}
+
+ion-checkbox {
+  --border-color: var(--dark10);
+  --border-color-checked: var(--redbg);
+  --border-radius: 6px;
+  --checkbox-background: var(--dark10);
+  --checkbox-background-checked: var(--redbg);
+  --checkmark-color: var(--red);
+  --checkmark-width: 2px;
+  --size: 24px;
+}
+
+ion-checkbox::part(label) {
+  font-size: 13px;
 }

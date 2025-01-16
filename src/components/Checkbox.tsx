@@ -11,7 +11,7 @@ export default function Checkbox({ onChange, text }: CheckboxProps) {
     border: '1px solid var(--dark50)',
     borderRadius: '0.5rem',
     margin: '0 2px',
-    padding: '.6rem',
+    padding: '.8rem',
   }
   return (
     <div style={style}>
