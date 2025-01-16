@@ -61,9 +61,8 @@ export const prettyDate = (num: number): string => {
 
 export const prettyHide = (str: string): string => {
   if (!str) return ''
-  return Array(str.length * 2)
-    .fill('·')
-    .join('')
+  const length = str.length * 2 > 6 ? str.length * 2 : 6
+  return Array(length).fill('·').join('')
 }
 
 export const prettyLongText = (str?: string, showChars = 14): string => {
