@@ -14,7 +14,7 @@ interface ButtonProps {
 
 export default function Button({ clear, disabled, icon, label, onClick, red, secondary, short }: ButtonProps) {
   const style = {
-    marginTop: '1rem',
+    marginTop: clear ? undefined : '1rem',
   }
 
   return (
