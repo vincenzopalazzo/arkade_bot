@@ -13,14 +13,14 @@ export const AspContext = createContext<AspContextProps>({
 })
 
 export const AspProvider = ({ children }: { children: ReactNode }) => {
-  const { config } = useContext(ConfigContext)
+  const { config, configLoaded } = useContext(ConfigContext)
 
   const [aspInfo, setAspInfo] = useState(emptyAspInfo)
 
   useEffect(() => {
-    if (!config.aspUrl) return
+    if (!config.aspUrl || !configLoaded) return
     getAspInfo(config.aspUrl).then(setAspInfo)
-  }, [config.aspUrl])
+  }, [config.aspUrl, configLoaded])
 
   return <AspContext.Provider value={{ aspInfo, setAspInfo }}>{children}</AspContext.Provider>
 }

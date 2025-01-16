@@ -5,7 +5,7 @@ import Content from '../../components/Content'
 import Padded from '../../components/Padded'
 import Error from '../../components/Error'
 import { ConfigContext } from '../../providers/config'
-import { getAspInfo } from '../../lib/asp'
+import { AspInfo, getAspInfo } from '../../lib/asp'
 import { clearStorage } from '../../lib/storage'
 import { WalletContext } from '../../providers/wallet'
 import { NavigationContext, Pages } from '../../providers/navigation'
@@ -22,7 +22,7 @@ export default function Server() {
 
   const [aspUrl, setAspUrl] = useState('')
   const [error, setError] = useState('')
-  const [found, setFound] = useState(false)
+  const [info, setInfo] = useState<AspInfo>()
   const [scan, setScan] = useState(false)
 
   useEffect(() => {
@@ -33,15 +33,16 @@ export default function Server() {
       setError('')
       getAspInfo(aspUrl).then((info) => {
         setError(info.unreachable ? 'Unable to connect' : '')
-        setFound(Boolean(info.pubkey))
+        setInfo(info)
       })
     }
   }, [aspUrl])
 
   const handleNewServer = () => {
+    if (!info) return
     clearStorage()
     updateConfig({ ...config, aspUrl })
-    updateWallet({ ...wallet, initialized: false })
+    updateWallet({ ...wallet, network: info.network, initialized: false })
     navigate(Pages.Init)
   }
 
@@ -55,13 +56,13 @@ export default function Server() {
           <FlexCol>
             <InputUrl label='Server URL' onChange={setAspUrl} openScan={() => setScan(true)} value={aspUrl} />
             <Error error={Boolean(error)} text={error} />
-            {found && !error ? <WarningBox green text='Server found' /> : null}
+            {info && !error ? <WarningBox green text='Server found' /> : null}
             <WarningBox text='Your wallet will be reseted. Make sure you backup your wallet first.' />
           </FlexCol>
         </Padded>
       </Content>
       <ButtonsOnBottom>
-        <Button onClick={handleNewServer} label='Connect to server' disabled={!found || Boolean(error)} />
+        <Button onClick={handleNewServer} label='Connect to server' disabled={!info || Boolean(error)} />
       </ButtonsOnBottom>
     </>
   )
