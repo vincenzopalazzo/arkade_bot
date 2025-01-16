@@ -1,16 +1,17 @@
 import { ReactNode } from 'react'
 
 interface FlexRowProps {
+  alignItems?: string
   between?: boolean
   children: ReactNode
   gap?: string
   onClick?: () => void
 }
 
-export default function FlexRow({ between, children, gap, onClick }: FlexRowProps) {
+export default function FlexRow({ alignItems, between, children, gap, onClick }: FlexRowProps) {
   const justifyContent = between ? 'space-between' : 'start'
   const style = {
-    alignItems: 'center',
+    alignItems: alignItems ?? 'center',
     display: 'flex',
     gap: gap ?? '.5rem',
     justifyContent,

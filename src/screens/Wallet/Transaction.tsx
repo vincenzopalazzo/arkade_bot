@@ -14,6 +14,8 @@ import Loading from '../../components/Loading'
 import { openInNewTab } from '../../lib/explorers'
 import Header from '../../components/Header'
 import Content from '../../components/Content'
+import Info from '../../components/Info'
+import FlexCol from '../../components/FlexCol'
 
 export default function Transaction() {
   const { txInfo, setTxInfo } = useContext(FlowContext)
@@ -55,7 +57,7 @@ export default function Transaction() {
   if (!tx) return <></>
 
   const data = [
-    ['State', tx.pending ? 'Pending' : 'Settled'],
+    // ['State', tx.pending ? 'Pending' : 'Settled'],
     ['Kind', tx.type === 'sent' ? 'Sent' : 'Received'],
     ['When', prettyAgo(tx.createdAt)],
     ['Date', prettyDate(tx.createdAt)],
@@ -72,8 +74,17 @@ export default function Transaction() {
           <Loading text='Settling transactions requires a round, which can take a few seconds' />
         ) : (
           <Padded>
-            <Error error={Boolean(error)} text={error} />
-            <Table data={data} />
+            <FlexCol>
+              {!tx.pending ? (
+                <Info
+                  color='yellow'
+                  title='Pending'
+                  text='This transaction is not yet final. Funds will become non-reversible once the transaction is settled.'
+                />
+              ) : null}
+              <Error error={Boolean(error)} text={error} />
+              <Table data={data} />
+            </FlexCol>
           </Padded>
         )}
       </Content>
