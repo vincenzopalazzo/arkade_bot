@@ -75,13 +75,13 @@ export default function TransactionsList({ short }: { short?: boolean }) {
   const key = (tx: Tx) => `${tx.amount}${tx.createdAt}${tx.boardingTxid}${tx.roundTxid}${tx.redeemTxid}${tx.type}`
 
   return (
-    <>
+    <div style={{ marginTop: '2rem' }}>
       <TextLabel>Transaction history</TextLabel>
       <div style={{ borderBottom: border }}>
         {showTxs.map((tx) => (
           <TransactionLine key={key(tx)} tx={tx} />
         ))}
       </div>
-    </>
+    </div>
   )
 }

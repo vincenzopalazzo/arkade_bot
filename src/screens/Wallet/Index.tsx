@@ -22,11 +22,9 @@ function Wallet() {
     <Content>
       <Padded>
         <LogoIcon />
-        <div style={{ marginTop: '3rem' }} />
-        <Balance sats={wallet.balance} />
+        <Balance amount={wallet.balance} />
         <Error error={error} text='Asp unreachable' />
       </Padded>
-      <div style={{ marginTop: '2rem' }} />
       <TransactionsList />
     </Content>
   )
