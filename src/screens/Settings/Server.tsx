@@ -8,7 +8,6 @@ import { ConfigContext } from '../../providers/config'
 import { AspInfo, getAspInfo } from '../../lib/asp'
 import { clearStorage } from '../../lib/storage'
 import { WalletContext } from '../../providers/wallet'
-import { NavigationContext, Pages } from '../../providers/navigation'
 import Header from './Header'
 import WarningBox from '../../components/Warning'
 import InputUrl from '../../components/InputUrl'
@@ -17,7 +16,6 @@ import Scanner from '../../components/Scanner'
 
 export default function Server() {
   const { config, updateConfig } = useContext(ConfigContext)
-  const { navigate } = useContext(NavigationContext)
   const { updateWallet, wallet } = useContext(WalletContext)
 
   const [aspUrl, setAspUrl] = useState('')
@@ -43,7 +41,7 @@ export default function Server() {
     clearStorage()
     updateConfig({ ...config, aspUrl })
     updateWallet({ ...wallet, network: info.network, initialized: false })
-    navigate(Pages.Init)
+    location.reload() // reload app or else weird things happen
   }
 
   if (scan) return <Scanner close={() => setScan(false)} label='Server URL' setData={setAspUrl} setError={setError} />
