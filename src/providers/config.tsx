@@ -19,6 +19,7 @@ export interface Config {
   nostr: boolean
   notifications: boolean
   npub: string
+  showBalance: boolean
   theme: Themes
   unit: Unit
 }
@@ -28,6 +29,7 @@ const defaultConfig: Config = {
   nostr: false,
   notifications: false,
   npub: '',
+  showBalance: true,
   theme: Themes.Dark,
   unit: Unit.BTC,
 }

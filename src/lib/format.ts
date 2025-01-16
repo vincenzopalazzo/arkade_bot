@@ -59,6 +59,13 @@ export const prettyDate = (num: number): string => {
   }).format(date)
 }
 
+export const prettyHide = (str: string): string => {
+  if (!str) return ''
+  return Array(str.length * 2)
+    .fill('·')
+    .join('')
+}
+
 export const prettyLongText = (str?: string, showChars = 14): string => {
   if (!str) return ''
   if (str.length <= showChars * 2 + 4) return str
