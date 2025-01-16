@@ -26,11 +26,9 @@ export default function Header({ all, back, clear, max, text }: HeaderProps) {
       <FlexRow between>
         <div style={{ minWidth: '4rem' }}>
           {back ? (
-            <IonButtons>
-              <IonButton onClick={back}>
-                <BackIcon />
-              </IonButton>
-            </IonButtons>
+            <div onClick={back} style={{ cursor: 'pointer', marginLeft: '0.5rem' }}>
+              <BackIcon />
+            </div>
           ) : (
             <p>&nbsp;</p>
           )}
