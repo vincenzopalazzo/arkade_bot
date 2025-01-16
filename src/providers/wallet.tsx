@@ -6,7 +6,6 @@ import { getRestApiExplorerURL } from '../lib/explorers'
 import { settleVtxos, getBalance, getTxHistory, getVtxos, lock, unlock } from '../lib/asp'
 import { AspContext } from './asp'
 import { NotificationsContext } from './notifications'
-import { ConfigContext } from './config'
 import { FlowContext } from './flow'
 import { ArkNote, arkNoteInUrl } from '../lib/arknote'
 import { fetchWasm } from '../lib/fetch'
@@ -74,7 +73,6 @@ export const WalletContext = createContext<WalletContextProps>({
 
 export const WalletProvider = ({ children }: { children: ReactNode }) => {
   const { aspInfo } = useContext(AspContext)
-  const { resetConfig } = useContext(ConfigContext)
   const { noteInfo, setNoteInfo } = useContext(FlowContext)
   const { navigate } = useContext(NavigationContext)
   const { notifyVtxosRecycled, notifyTxSettled } = useContext(NotificationsContext)
@@ -176,10 +174,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const resetWallet = async () => {
-    resetConfig()
     updateWallet(defaultWallet)
-    setWalletUnlocked(false)
-    navigate(Pages.Init)
   }
 
   const settlePending = async () => {

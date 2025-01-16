@@ -5,12 +5,10 @@ import { WalletContext } from '../../providers/wallet'
 import Padded from '../../components/Padded'
 import Content from '../../components/Content'
 import Header from './Header'
-import { NavigationContext, Pages } from '../../providers/navigation'
 import Text from '../../components/Text'
 import Checkbox from '../../components/Checkbox'
 
 export default function Reset() {
-  const { navigate } = useContext(NavigationContext)
   const { resetWallet } = useContext(WalletContext)
 
   const [disabled, setDisabled] = useState(true)
@@ -21,7 +19,7 @@ export default function Reset() {
 
   const handleReset = () => {
     resetWallet()
-    navigate(Pages.Init)
+    location.reload()
   }
 
   return (
