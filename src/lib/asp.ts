@@ -151,11 +151,15 @@ export const getVtxos = async (): Promise<{ spendable: Vtxo[]; spent: Vtxo[] }> 
       vout: v.VOut,
     }
   }
-  const json = await window.listVtxos()
-  const data = JSON.parse(json)
-  const spendable = data.spendable?.map(toVtxo)
-  const spent = data.spent?.map(toVtxo)
-  return { spendable, spent }
+  try {
+    const json = await window.listVtxos()
+    const data = JSON.parse(json)
+    const spendable = data.spendable?.map(toVtxo)
+    const spent = data.spent?.map(toVtxo)
+    return { spendable, spent }
+  } catch {
+    return { spendable: [], spent: [] }
+  }
 }
 
 export const lock = async (password: string): Promise<void> => {
