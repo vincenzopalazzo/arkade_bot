@@ -52,7 +52,7 @@ export default function SendForm() {
     }
     if (isArkAddress(lowerCaseData)) {
       const { aspKey } = decodeArkAddress(lowerCaseData)
-      if (aspKey !== aspInfo.pubkey.slice(2)) return setError('Invalid ASP pubkey')
+      if (aspKey !== aspInfo.pubkey.slice(2)) return setError('Invalid Ark server pubkey')
       return setSendInfo({ arkAddress: lowerCaseData })
     }
     if (isBTCAddress(lowerCaseData)) {

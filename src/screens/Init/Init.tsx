@@ -43,7 +43,7 @@ export default function Init() {
             <Text bigger>Arkade</Text>
             <Text color='dark50'>Ark wallet PoC</Text>
           </FlexCol>
-          <Error error={error} text='ASP unreachable, try again later' />
+          <Error error={error} text='Ark server unreachable' />
         </CenterScreen>
       </Content>
       <ButtonsOnBottom>
