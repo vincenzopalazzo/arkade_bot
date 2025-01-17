@@ -15,7 +15,6 @@ import SendDetails from '../screens/Wallet/Send/Details'
 import SendSuccess from '../screens/Wallet/Send/Success'
 import Transaction from '../screens/Wallet/Transaction'
 import Unlock from '../screens/Wallet/Unlock'
-import Unreachable from '../components/Unreachable'
 import Vtxos from '../screens/Settings/Vtxos'
 import Wallet from '../screens/Wallet/Index'
 import Settings from '../screens/Settings/Index'
@@ -38,7 +37,6 @@ export enum Pages {
   Settings,
   Transaction,
   Unlock,
-  Unreachable,
   Vtxos,
   Wallet,
 }
@@ -69,7 +67,6 @@ const pageTab = {
   [Pages.Settings]: Tabs.Settings,
   [Pages.Transaction]: Tabs.Home,
   [Pages.Unlock]: Tabs.None,
-  [Pages.Unreachable]: Tabs.None,
   [Pages.Vtxos]: Tabs.Settings,
   [Pages.Wallet]: Tabs.Home,
 }
@@ -110,8 +107,6 @@ export const pageComponent = (page: Pages): JSX.Element => {
       return <Transaction />
     case Pages.Unlock:
       return <Unlock />
-    case Pages.Unreachable:
-      return <Unreachable />
     case Pages.Vtxos:
       return <Vtxos />
     case Pages.Wallet:
