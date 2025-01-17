@@ -25,7 +25,7 @@ export default function Balance({ amount }: BalanceProps) {
   const toggleShow = () => updateConfig({ ...config, showBalance: !config.showBalance })
 
   return (
-    <FlexCol gap='4px' margin='3rem 0 0 0'>
+    <FlexCol gap='4px' margin='3rem 0 2rem 0'>
       <Text color='dark50' smaller>
         My balance
       </Text>
