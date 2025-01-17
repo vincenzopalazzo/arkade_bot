@@ -61,7 +61,7 @@ export default function App() {
     navigate(Pages.Settings)
   }
 
-  const page = !configLoaded || !wasmLoaded ? Pages.Loading : aspInfo.unreachable ? Pages.Unreachable : screen
+  const page = configLoaded && wasmLoaded && (aspInfo.pubkey || aspInfo.unreachable) ? screen : Pages.Loading
 
   const comp = pageComponent(page)
 

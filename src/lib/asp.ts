@@ -42,8 +42,12 @@ export const collaborativeRedeem = async (amount: number, address: string): Prom
 export const getAspInfo = async (url: string): Promise<AspInfo> => {
   return new Promise((resolve) => {
     get('/v1/info', url)
-      .then(
-        ({
+      .then((info) => {
+        if (info?.code === 5) {
+          console.error('invalid response from server')
+          resolve({ ...emptyAspInfo, unreachable: true })
+        }
+        const {
           boardingDescriptorTemplate,
           dust,
           forfeitAddress,
@@ -52,21 +56,20 @@ export const getAspInfo = async (url: string): Promise<AspInfo> => {
           roundInterval,
           roundLifetime,
           unilateralExitDelay,
-        }) => {
-          resolve({
-            boardingDescriptorTemplate,
-            dust,
-            forfeitAddress,
-            network,
-            pubkey,
-            roundInterval,
-            roundLifetime: Number(roundLifetime),
-            unilateralExitDelay: Number(unilateralExitDelay),
-            unreachable: false,
-            url,
-          })
-        },
-      )
+        } = info
+        resolve({
+          boardingDescriptorTemplate,
+          dust,
+          forfeitAddress,
+          network,
+          pubkey,
+          roundInterval,
+          roundLifetime: Number(roundLifetime),
+          unilateralExitDelay: Number(unilateralExitDelay),
+          unreachable: false,
+          url,
+        })
+      })
       .catch((err) => {
         consoleError('error getting asp info', err)
         resolve({ ...emptyAspInfo, unreachable: true })
