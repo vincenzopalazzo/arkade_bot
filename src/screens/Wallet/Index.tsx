@@ -23,7 +23,7 @@ function Wallet() {
       <Padded>
         <LogoIcon />
         <Balance amount={wallet.balance} />
-        <Error error={error} text='Asp unreachable' />
+        <Error error={error} text='Ark server unreachable' />
       </Padded>
       <TransactionsList />
     </Content>

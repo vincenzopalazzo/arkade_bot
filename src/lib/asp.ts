@@ -4,6 +4,7 @@ import { Satoshis, Tx, Vtxo } from './types'
 
 export interface AspInfo {
   boardingDescriptorTemplate: string
+  code?: number
   dust: number
   forfeitAddress: string
   network: string
@@ -42,7 +43,7 @@ export const collaborativeRedeem = async (amount: number, address: string): Prom
 export const getAspInfo = async (url: string): Promise<AspInfo> => {
   return new Promise((resolve) => {
     get('/v1/info', url)
-      .then((info) => {
+      .then((info: AspInfo) => {
         if (info?.code === 5) {
           console.error('invalid response from server')
           resolve({ ...emptyAspInfo, unreachable: true })
