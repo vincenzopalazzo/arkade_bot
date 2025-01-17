@@ -13,6 +13,7 @@
   --redbg: #68222b;
   --white: #fbfbfb;
   --yellow: #e2c542;
+  --yellowoutlier: #debb20;
 }
 
 .ion-palette-dark {
@@ -23,6 +24,7 @@
   --red: #e04d4d;
   --redbg: #380008;
   --yellow: #ffdd46;
+  --yellowoutlier: #ffdd46;
 }
 
 ion-button {
@@ -77,4 +79,13 @@ ion-checkbox {
 
 ion-checkbox::part(label) {
   font-size: 13px;
+}
+
+ion-content {
+  --offset-bottom: auto !important;
+  --overflow: hidden;
+  overflow: auto;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }

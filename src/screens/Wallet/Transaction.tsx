@@ -77,7 +77,7 @@ export default function Transaction() {
             <FlexCol>
               {tx.pending ? (
                 <Info
-                  color='yellow'
+                  color='yellowoutlier'
                   title='Pending'
                   text='This transaction is not yet final. Funds will become non-reversible once the transaction is settled.'
                 />
