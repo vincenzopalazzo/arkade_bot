@@ -42,5 +42,5 @@ export const isArkAddress = (data: string): boolean => {
 }
 
 export const isBTCAddress = (data: string): boolean => {
-  return /^bc1/.test(data) || /^tb1/.test(data)
+  return /^bc1/.test(data) || /^tb1/.test(data) || /^bcrt1/.test(data)
 }
