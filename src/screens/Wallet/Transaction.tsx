@@ -31,8 +31,8 @@ export default function Transaction() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    if (tx) setShowSettleButton(tx.pending)
-  }, [tx?.pending])
+    if (tx) setShowSettleButton(!tx.settled)
+  }, [tx?.settled])
 
   useEffect(() => {
     setButtonLabel(settling ? 'Settling...' : defaultButtonLabel)
@@ -75,7 +75,7 @@ export default function Transaction() {
         ) : (
           <Padded>
             <FlexCol>
-              {tx.pending ? (
+              {!tx.settled ? (
                 <Info
                   color='yellowoutlier'
                   title='Pending'
