@@ -141,6 +141,7 @@ export const getVtxos = async (): Promise<{ spendable: Vtxo[]; spent: Vtxo[] }> 
   const toVtxo = (v: any): Vtxo => {
     return {
       amount: v.Amount,
+      createdAt: v.CreatedAt,
       descriptor: v.Descriptor,
       expireAt: v.ExpiresAt,
       pending: v.Pending,
