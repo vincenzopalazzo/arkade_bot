@@ -3,7 +3,7 @@ import { readWalletFromStorage, saveWalletToStorage } from '../lib/storage'
 import { NavigationContext, Pages } from './navigation'
 import { Tx, Vtxo } from '../lib/types'
 import { getRestApiExplorerURL } from '../lib/explorers'
-import { settleVtxos, getBalance, getTxHistory, getVtxos, lock, unlock } from '../lib/asp'
+import { settleVtxos, getBalance, getVtxos, lock, unlock, mockTxHistory } from '../lib/asp'
 import { AspContext } from './asp'
 import { NotificationsContext } from './notifications'
 import { FlowContext } from './flow'
@@ -162,7 +162,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   const reloadWallet = async () => {
     const vtxos = await getVtxos()
     const balance = await getBalance()
-    const txs = await getTxHistory()
+    const txs = await mockTxHistory()
     const now = Math.floor(new Date().getTime() / 1000)
     const nextRecycle = vtxos.spendable
       ? vtxos.spendable.reduce((acc, cur) => {
