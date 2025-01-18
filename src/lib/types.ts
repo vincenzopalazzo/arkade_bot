@@ -29,6 +29,7 @@ export type Transactions = Record<NetworkName, Transaction[]>
 
 export type Vtxo = {
   amount: number
+  createdAt: string
   descriptor: string
   expireAt: number
   pending: boolean
