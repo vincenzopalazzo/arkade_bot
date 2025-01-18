@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import Button from '../../../components/Button'
 import ButtonsOnBottom from '../../../components/ButtonsOnBottom'
 import { NavigationContext, Pages } from '../../../providers/navigation'
@@ -20,8 +20,10 @@ import { prettyNumber } from '../../../lib/format'
 import Success from '../../../components/Success'
 import { ConfigContext } from '../../../providers/config'
 import { consoleError } from '../../../lib/logs'
+import { AspContext } from '../../../providers/asp'
 
 export default function ReceiveAmount() {
+  const { aspInfo } = useContext(AspContext)
   const { config } = useContext(ConfigContext)
   const { setRecvInfo } = useContext(FlowContext)
   const { navigate } = useContext(NavigationContext)
@@ -35,6 +37,10 @@ export default function ReceiveAmount() {
   const [fauceting, setFauceting] = useState(false)
   const [showKeys, setShowKeys] = useState(false)
   const [success, setSuccess] = useState(false)
+
+  useEffect(() => {
+    setError(aspInfo.unreachable ? 'Ark server unreachable' : '')
+  }, [aspInfo.unreachable])
 
   const handleChange = (sats: number) => {
     setAmount(sats)
