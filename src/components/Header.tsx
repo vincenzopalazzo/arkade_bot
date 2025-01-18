@@ -1,4 +1,4 @@
-import { IonButton, IonButtons, IonHeader, IonTitle } from '@ionic/react'
+import { IonHeader, IonTitle } from '@ionic/react'
 import BackIcon from '../icons/Back'
 import Shadow from './Shadow'
 import Text from './Text'
