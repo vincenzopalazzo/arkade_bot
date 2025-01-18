@@ -28,6 +28,7 @@ export default function SendForm() {
   const { wallet } = useContext(WalletContext)
 
   const [error, setError] = useState('')
+  const [label, setLabel] = useState('')
   const [keys, setKeys] = useState(false)
   const [scan, setScan] = useState(false)
 
@@ -41,7 +42,7 @@ export default function SendForm() {
   }, [])
 
   useEffect(() => {
-    setError('')
+    smartSetError('')
     if (!recipient) return
     const lowerCaseData = recipient.toLowerCase()
     if (bip21.isBip21(lowerCaseData)) {
@@ -74,6 +75,11 @@ export default function SendForm() {
     setSendInfo({ ...sendInfo, satoshis: amount })
   }, [amount])
 
+  useEffect(() => {
+    setError(aspInfo.unreachable ? 'Ark server unreachable' : '')
+    setLabel(aspInfo.unreachable ? 'Server unreachable' : 'Continue')
+  }, [aspInfo.unreachable])
+
   const handleContinue = () => {
     setSendInfo({ ...sendInfo, satoshis: amount })
     navigate(Pages.SendDetails)
@@ -84,6 +90,10 @@ export default function SendForm() {
     if (isMobile) setKeys(true)
   }
 
+  const smartSetError = (str: string) => {
+    setError(str === '' ? (aspInfo.unreachable ? 'Ark server unreachable' : '') : str)
+  }
+
   const Available = () => (
     <Text color='dark50' smaller>
       {`${prettyNumber(wallet.balance)} sats available`}
@@ -91,10 +101,12 @@ export default function SendForm() {
   )
 
   const { address, arkAddress, satoshis } = sendInfo
-  const disabled = !((address || arkAddress) && satoshis && satoshis > 0)
+  const disabled = !((address || arkAddress) && satoshis && satoshis > 0) || aspInfo.unreachable
 
   if (scan)
-    return <Scanner close={() => setScan(false)} label='Recipient address' setData={setRecipient} setError={setError} />
+    return (
+      <Scanner close={() => setScan(false)} label='Recipient address' setData={setRecipient} setError={smartSetError} />
+    )
 
   if (keys) return <Keyboard back={() => setKeys(false)} onChange={setAmount} value={amount} />
 
@@ -122,7 +134,7 @@ export default function SendForm() {
         </Padded>
       </Content>
       <ButtonsOnBottom>
-        <Button onClick={handleContinue} label='Continue' disabled={disabled} />
+        <Button onClick={handleContinue} label={label} disabled={disabled} />
       </ButtonsOnBottom>
     </>
   )
