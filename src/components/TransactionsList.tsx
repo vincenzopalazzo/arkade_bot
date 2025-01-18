@@ -20,11 +20,18 @@ const TransactionLine = ({ tx }: { tx: Tx }) => {
   const amount = `${prefix} ${prettyAmount(tx.amount)}`
   const txid = tx.explorable ? `(${prettyLongText(tx.explorable, 3)})` : ''
 
-  const Icon = () => (tx.pending ? <PendingIcon /> : tx.type === 'sent' ? <SentIcon /> : <ReceivedIcon />)
+  const Icon = () => (!tx.settled ? <PendingIcon /> : tx.type === 'sent' ? <SentIcon /> : <ReceivedIcon />)
   const Kind = () => (tx.type === 'sent' ? <Text>Sent {txid}</Text> : <Text>Received {txid}</Text>)
   const Date = () => <TextSecondary>{prettyDate(tx.createdAt)}</TextSecondary>
   const Sats = () => (tx.type === 'sent' ? <Text>{amount}</Text> : <Text color='green'>{amount}</Text>)
-  const Last = () => (tx.type === 'sent' ? <Text>Sent</Text> : <Text color='green'>Received</Text>)
+  const Last = () =>
+    tx.type === 'sent' ? (
+      <Text small>Sent</Text>
+    ) : (
+      <Text color='green' small>
+        Received
+      </Text>
+    )
 
   const handleClick = () => {
     setTxInfo(tx)
@@ -57,28 +64,22 @@ const TransactionLine = ({ tx }: { tx: Tx }) => {
   )
 }
 
-export default function TransactionsList({ short }: { short?: boolean }) {
-  const { wallet } = useContext(WalletContext)
+export default function TransactionsList() {
+  const { reloadWallet, wallet } = useContext(WalletContext)
 
   const transactions = wallet.txs
 
   if (transactions?.length === 0) return <></>
 
-  const sortFunction = (a: Tx, b: Tx) => (!a.createdAt ? -1 : !b.createdAt ? 1 : b.createdAt - a.createdAt)
-
-  const showMax = 4
-  const pending = wallet.txs.filter((tx) => tx.pending).sort(sortFunction)
-  const settled = wallet.txs.filter((tx) => !tx.pending).sort(sortFunction)
-  const ordered = [...pending, ...settled]
-  const showTxs = short ? ordered.slice(0, showMax) : ordered
-
   const key = (tx: Tx) => `${tx.amount}${tx.createdAt}${tx.boardingTxid}${tx.roundTxid}${tx.redeemTxid}${tx.type}`
 
   return (
     <>
-      <TextLabel>Transaction history</TextLabel>
+      <div onClick={reloadWallet}>
+        <TextLabel>Transaction history</TextLabel>
+      </div>
       <div style={{ borderBottom: border }}>
-        {showTxs.map((tx) => (
+        {transactions.map((tx) => (
           <TransactionLine key={key(tx)} tx={tx} />
         ))}
       </div>
