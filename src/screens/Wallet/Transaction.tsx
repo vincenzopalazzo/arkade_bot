@@ -20,7 +20,7 @@ import FlexCol from '../../components/FlexCol'
 export default function Transaction() {
   const { txInfo, setTxInfo } = useContext(FlowContext)
   const { navigate } = useContext(NavigationContext)
-  const { settlePending, wallet } = useContext(WalletContext)
+  const { reloadWallet, settlePending, wallet } = useContext(WalletContext)
 
   const tx = txInfo
   const defaultButtonLabel = 'Settle pending'
@@ -38,6 +38,15 @@ export default function Transaction() {
     setButtonLabel(settling ? 'Settling...' : defaultButtonLabel)
   }, [settling])
 
+  const handleBack = () => {
+    reloadWallet()
+    navigate(Pages.Wallet)
+  }
+
+  const handleExplorer = () => {
+    if (tx?.explorable) openInNewTab(tx.explorable, wallet)
+  }
+
   const handleSettle = async () => {
     setError('')
     setSettling(true)
@@ -48,10 +57,6 @@ export default function Transaction() {
       setError(extractError(err))
     }
     setSettling(false)
-  }
-
-  const handleExplorer = () => {
-    if (tx?.explorable) openInNewTab(tx.explorable, wallet)
   }
 
   if (!tx) return <></>
@@ -68,7 +73,7 @@ export default function Transaction() {
 
   return (
     <>
-      <Header text='Transaction' back={() => navigate(Pages.Wallet)} />
+      <Header text='Transaction' back={handleBack} />
       <Content>
         {settling ? (
           <Loading text='Settling transactions requires a round, which can take a few seconds' />
