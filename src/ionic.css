@@ -68,11 +68,11 @@ ion-tab-bar {
 
 ion-checkbox {
   --border-color: var(--dark10);
-  --border-color-checked: var(--redbg);
+  --border-color-checked: var(--ion-color-danger);
   --border-radius: 6px;
   --checkbox-background: var(--dark10);
-  --checkbox-background-checked: var(--redbg);
-  --checkmark-color: var(--red);
+  --checkbox-background-checked: var(--ion-color-danger);
+  --checkmark-color: #fbfbfb;
   --checkmark-width: 2px;
   --size: 24px;
 }
