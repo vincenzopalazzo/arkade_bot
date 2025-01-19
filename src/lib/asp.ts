@@ -144,10 +144,10 @@ export const mockTxHistory = async (): Promise<Tx[]> => {
 
   // receivals
 
-  // all spent vtxos are receivals UNLESS:
+  // all vtxos are receivals UNLESS:
   // - they resulted from a settlement
   // - they are change from a payment
-  for (const vtxo of spent) {
+  for (const vtxo of [...spendable, ...spent]) {
     const settleVtxos = spent.filter((v) => v.spentBy === vtxo.roundTxid)
     const settleAmount = settleVtxos.reduce((acc, v) => acc + v.amount, 0)
     if (vtxo.amount == settleAmount) continue // settlement, ignore
@@ -173,47 +173,11 @@ export const mockTxHistory = async (): Promise<Tx[]> => {
       createdAt: toUnixTime(vtxo.createdAt),
       explorable: '',
       pending: vtxo.pending,
-      settled: true,
+      settled: Boolean(vtxo.spentBy) || !vtxo.pending,
       redeemTxid: vtxo.redeemTx,
       roundTxid: vtxo.roundTxid,
       type: 'received',
     })
-  }
-  // all spendable vtxos are receivals UNLESS:
-  // - they resulted from a settlement
-  // - they are change from a payment
-  for (const vtxo of spendable) {
-    if (vtxo.roundTxid) {
-      const settleVtxos = spent.filter((v) => v.spentBy === vtxo.roundTxid)
-      const settleAmount = settleVtxos.reduce((acc, v) => acc + v.amount, 0)
-      if (vtxo.amount === settleAmount) continue // settlement, ignore
-      if (vtxo.amount < settleAmount) continue // change, ignore
-
-      const spentVtxos = spent.filter((v) => v.spentBy === vtxo.txid)
-      const spentAmount = spentVtxos.reduce((acc, v) => acc + v.amount, 0)
-      if (vtxo.amount < spentAmount) continue // change, ignore
-
-      const amount = vtxo.amount - settleAmount
-
-      console.log('two', {
-        totalAmount: amount,
-        vtxoAmount: vtxo.amount,
-        spentAmount,
-        settleAmount,
-        txid: vtxo.txid,
-      })
-      txs.push({
-        amount: amount,
-        boardingTxid: vtxo.roundTxid,
-        createdAt: toUnixTime(vtxo.createdAt),
-        explorable: '',
-        pending: vtxo.pending,
-        settled: !vtxo.pending,
-        redeemTxid: vtxo.redeemTx,
-        roundTxid: vtxo.roundTxid,
-        type: 'received',
-      })
-    }
   }
 
   // sendings
