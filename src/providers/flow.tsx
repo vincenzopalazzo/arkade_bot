@@ -23,6 +23,7 @@ export type SendInfo = {
   arkAddress?: string
   recipient?: string
   satoshis?: number
+  total?: number
   txid?: string
 }
 
@@ -62,6 +63,7 @@ export const emptySendInfo: SendInfo = {
   arkAddress: '',
   recipient: '',
   satoshis: 0,
+  total: 0,
   txid: '',
 }
 

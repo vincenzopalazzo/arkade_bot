@@ -13,14 +13,14 @@ export default function SendSuccess() {
   const { notifyPaymentSent } = useContext(NotificationsContext)
 
   useEffect(() => {
-    if (sendInfo.satoshis) notifyPaymentSent(sendInfo.satoshis)
-  }, [sendInfo.satoshis])
+    if (sendInfo.total) notifyPaymentSent(sendInfo.total)
+  }, [sendInfo.total])
 
   return (
     <>
-      <Header text='Sending' />
+      <Header text='Success' />
       <Content>
-        <Success text={`Sent ${prettyNumber(sendInfo.satoshis)} sats`} />
+        <Success text={`Sent ${prettyNumber(sendInfo.total)} sats`} />
       </Content>
       <ButtonsOnBottom>
         <BackToWalletButton />

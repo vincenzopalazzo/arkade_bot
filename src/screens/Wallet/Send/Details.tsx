@@ -28,7 +28,7 @@ export default function SendDetails() {
   const [sending, setSending] = useState(false)
 
   const { address, arkAddress, satoshis } = sendInfo
-  const feeInSats = defaultFee
+  const feeInSats = arkAddress ? defaultFee : 0
 
   useEffect(() => {
     if (!address && !arkAddress) return setError('Missing address')
@@ -51,7 +51,7 @@ export default function SendDetails() {
 
   const handleTxid = (txid: string) => {
     if (!txid) return setError('Error sending transaction')
-    setSendInfo({ ...sendInfo, txid })
+    setSendInfo({ ...sendInfo, total: (satoshis ?? 0) + feeInSats, txid })
     navigate(Pages.SendSuccess)
   }
 

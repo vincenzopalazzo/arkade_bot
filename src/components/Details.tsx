@@ -23,7 +23,7 @@ export default function Details({ details }: { details?: DetailsProps }) {
   if (address) table.push(['Address', address])
   if (comment) table.push(['Comment', comment])
   if (satoshis) table.push(['Amount', `${prettyNumber(satoshis)} sats`])
-  if (fees) table.push(['Network fees', `${prettyNumber(fees)} sats`])
+  if (fees === 0 || fees) table.push(['Network fees', `${prettyNumber(fees)} sats`])
   if (total) table.push(['Total', `${prettyNumber(total)} sats`])
 
   return <Table data={table} />
