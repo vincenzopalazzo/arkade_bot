@@ -18,7 +18,7 @@ export default function ReceiveSuccess() {
 
   return (
     <>
-      <Header text='Received' />
+      <Header text='Success' />
       <Content>
         <Success text={`Received ${prettyNumber(recvInfo.satoshis)} sats`} />
       </Content>
