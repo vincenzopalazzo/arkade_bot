@@ -6,6 +6,7 @@ export enum NetworkName {
   Testnet = 'testnet',
   Regtest = 'regtest',
   Signet = 'signet',
+  Mutinynet = 'mutinynet',
 }
 
 export const getNetworkNames = (): [NetworkName, string][] => {
@@ -13,6 +14,7 @@ export const getNetworkNames = (): [NetworkName, string][] => {
     [NetworkName.Liquid, 'Liquid'],
     [NetworkName.Testnet, 'Testnet'],
     [NetworkName.Regtest, 'Regtest'],
+    [NetworkName.Mutinynet, 'Mutinynet'],
   ]
 }
 
