@@ -24,6 +24,10 @@ const explorers: Explorers = {
     api: 'https://mempool.space/testnet/api',
     web: 'https://mempool.space/testnet',
   },
+  mutinynet: {
+    api: 'https://mutinynet.com/api',
+    web: 'https://mutinynet.com',
+  },
 }
 
 export const getRestApiExplorerURL = (network: string): string => {
