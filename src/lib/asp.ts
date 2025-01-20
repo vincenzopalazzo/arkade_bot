@@ -102,18 +102,13 @@ export const getTxHistory = async (): Promise<Tx[]> => {
   const txs: Tx[] = []
   try {
     const res = await window.getTransactionHistory()
+    console.log('tx history', res)
     if (!res) return []
     for (const tx of JSON.parse(res)) {
       const date = new Date(tx.createdAt)
       const unix = Math.floor(date.getTime() / 1000)
       const { boardingTxid, settled, redeemTxid, roundTxid, type } = tx
-      const explorable = boardingTxid
-        ? boardingTxid
-        : roundTxid
-        ? roundTxid === redeemTxid // TODO: remove after bug is fixed
-          ? undefined
-          : roundTxid
-        : undefined
+      const explorable = boardingTxid ? boardingTxid : roundTxid ? roundTxid : undefined
       txs.push({
         amount: Math.abs(parseInt(tx.amount, 10)),
         boardingTxid,
