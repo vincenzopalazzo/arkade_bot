@@ -25,15 +25,17 @@ export default function Server() {
 
   useEffect(() => {
     if (!aspUrl) return
-    if (aspUrl === config.aspUrl) {
-      setError('Same server')
-    } else {
-      setError('')
-      getAspInfo(aspUrl).then((info) => {
-        setError(info.unreachable ? 'Unable to connect' : '')
-        setInfo(info)
-      })
-    }
+    // fix prefixes in localhost urls
+    if (aspUrl.startsWith('localhost')) return setAspUrl('http://' + aspUrl)
+    if (aspUrl.startsWith('127.0.0.1')) return setAspUrl('http://' + aspUrl)
+    // don't don anything if same server
+    if (aspUrl === config.aspUrl) return setError('Same server')
+    // test connection
+    setError('')
+    getAspInfo(aspUrl).then((info) => {
+      setError(info.unreachable ? 'Unable to connect' : '')
+      setInfo(info)
+    })
   }, [aspUrl])
 
   const handleNewServer = () => {
