@@ -154,9 +154,11 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const recycleVtxos = async () => {
-    await settleVtxos()
-    await reloadWallet()
-    notifyVtxosRecycled()
+    try {
+      await settleVtxos()
+      await reloadWallet()
+      notifyVtxosRecycled()
+    } catch {}
   }
 
   const reloadWallet = async () => {

@@ -187,7 +187,10 @@ export const settleVtxos = async (): Promise<void> => {
   consoleLog('settling vtxos')
   try {
     await window.settle()
-  } catch {}
+  } catch (err) {
+    consoleError('error settling vtxos', err)
+    throw err
+  }
 }
 
 export const setNostrNotificationRecipient = async (npub: string): Promise<void> => {
