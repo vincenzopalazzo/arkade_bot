@@ -102,7 +102,6 @@ export const getTxHistory = async (): Promise<Tx[]> => {
   const txs: Tx[] = []
   try {
     const res = await window.getTransactionHistory()
-    console.log('tx history', res)
     if (!res) return []
     for (const tx of JSON.parse(res)) {
       const date = new Date(tx.createdAt)
@@ -115,7 +114,7 @@ export const getTxHistory = async (): Promise<Tx[]> => {
         createdAt: unix,
         explorable,
         pending: !settled,
-        settled,
+        settled: type === 'SENT' ? true : settled, // show all sent tx as settled
         redeemTxid,
         roundTxid,
         type: type.toLowerCase(),
