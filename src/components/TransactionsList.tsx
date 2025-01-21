@@ -9,6 +9,8 @@ import SentIcon from '../icons/Sent'
 import FlexRow from './FlexRow'
 import { FlowContext } from '../providers/flow'
 import { NavigationContext, Pages } from '../providers/navigation'
+import { defaultFee } from '../lib/constants'
+import SelfSendIcon from '../icons/SelfSend'
 
 const border = '1px solid var(--dark20)'
 
@@ -20,7 +22,18 @@ const TransactionLine = ({ tx }: { tx: Tx }) => {
   const amount = `${prefix} ${prettyAmount(tx.amount)}`
   const txid = tx.explorable ? `(${prettyLongText(tx.explorable, 3)})` : ''
 
-  const Icon = () => (!tx.settled ? <PendingIcon /> : tx.type === 'sent' ? <SentIcon /> : <ReceivedIcon />)
+  const Icon = () =>
+    !tx.settled ? (
+      <PendingIcon />
+    ) : tx.type === 'sent' ? (
+      tx.amount === defaultFee ? (
+        <SelfSendIcon />
+      ) : (
+        <SentIcon />
+      )
+    ) : (
+      <ReceivedIcon />
+    )
   const Kind = () => (tx.type === 'sent' ? <Text>Sent {txid}</Text> : <Text>Received {txid}</Text>)
   const Date = () => <TextSecondary>{prettyDate(tx.createdAt)}</TextSecondary>
   const Sats = () => (tx.type === 'sent' ? <Text>{amount}</Text> : <Text color='green'>{amount}</Text>)
@@ -68,6 +81,7 @@ export default function TransactionsList() {
   const { reloadWallet, wallet } = useContext(WalletContext)
 
   const transactions = wallet.txs
+  console.log('transactions', transactions)
 
   if (transactions?.length === 0) return <></>
 
