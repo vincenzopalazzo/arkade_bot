@@ -10,10 +10,11 @@ export interface AspInfo {
   network: string
   pubkey: string
   roundInterval: number
-  roundLifetime: number
+  roundLifetime?: number // TODO: remove after being renamed to vtxoTreeExpiry
   unilateralExitDelay: number
   unreachable: boolean
   url: string
+  vtxoTreeExpiry?: number // TODO: remove optionality (aka '?') after being renamed from roundLifetime
 }
 
 export const emptyAspInfo: AspInfo = {
@@ -27,6 +28,7 @@ export const emptyAspInfo: AspInfo = {
   unilateralExitDelay: 0,
   unreachable: false,
   url: '',
+  vtxoTreeExpiry: 0,
 }
 
 const headers = { 'Content-Type': 'application/json' }
@@ -55,8 +57,9 @@ export const getAspInfo = async (url: string): Promise<AspInfo> => {
           network,
           pubkey,
           roundInterval,
-          roundLifetime,
+          roundLifetime, // TODO: remove after being renamed to vtxoTreeExpiry
           unilateralExitDelay,
+          vtxoTreeExpiry,
         } = info
         resolve({
           boardingDescriptorTemplate,
@@ -65,10 +68,11 @@ export const getAspInfo = async (url: string): Promise<AspInfo> => {
           network,
           pubkey,
           roundInterval,
-          roundLifetime: Number(roundLifetime),
+          roundLifetime: Number(roundLifetime ?? '0'), // TODO: remove after being renamed to vtxoTreeExpiry
           unilateralExitDelay: Number(unilateralExitDelay),
           unreachable: false,
           url,
+          vtxoTreeExpiry: Number(vtxoTreeExpiry ?? '0'),
         })
       })
       .catch((err) => {
