@@ -5,7 +5,7 @@ import { NavigationContext, Pages } from '../../../providers/navigation'
 import { FlowContext } from '../../../providers/flow'
 import Padded from '../../../components/Padded'
 import Error from '../../../components/Error'
-import { getReceivingAddresses, redeemNotes } from '../../../lib/asp'
+import { getReceivingAddresses } from '../../../lib/asp'
 import { extractError } from '../../../lib/error'
 import Header from '../../../components/Header'
 import InputAmount from '../../../components/InputAmount'
@@ -13,19 +13,16 @@ import Content from '../../../components/Content'
 import FlexCol from '../../../components/FlexCol'
 import Keyboard from '../../../components/Keyboard'
 import { WalletContext } from '../../../providers/wallet'
-import { NetworkName } from '../../../lib/network'
-import { getNote } from '../../../lib/faucet'
+import { callFaucet, hasFaucet } from '../../../lib/faucet'
 import Loading from '../../../components/Loading'
 import { prettyNumber } from '../../../lib/format'
 import Success from '../../../components/Success'
-import { ConfigContext } from '../../../providers/config'
 import { consoleError } from '../../../lib/logs'
 import { AspContext } from '../../../providers/asp'
 
 export default function ReceiveAmount() {
   const { aspInfo } = useContext(AspContext)
-  const { config } = useContext(ConfigContext)
-  const { setRecvInfo } = useContext(FlowContext)
+  const { recvInfo, setRecvInfo } = useContext(FlowContext)
   const { navigate } = useContext(NavigationContext)
   const { wallet } = useContext(WalletContext)
 
@@ -36,11 +33,24 @@ export default function ReceiveAmount() {
   const [error, setError] = useState('')
   const [fauceting, setFauceting] = useState(false)
   const [showKeys, setShowKeys] = useState(false)
-  const [success, setSuccess] = useState(false)
+  const [faucetSuccess, setFaucetSuccess] = useState(false)
 
   useEffect(() => {
     setError(aspInfo.unreachable ? 'Ark server unreachable' : '')
   }, [aspInfo.unreachable])
+
+  useEffect(() => {
+    getReceivingAddresses()
+      .then(({ offchainAddr, boardingAddr }) => {
+        if (!offchainAddr) throw 'Unable to get offchain address'
+        if (!boardingAddr) throw 'Unable to get boarding address'
+        setRecvInfo({ boardingAddr, offchainAddr, satoshis: 0 })
+      })
+      .catch((err) => {
+        consoleError('error getting addresses', err)
+        setError(extractError(err))
+      })
+  }, [])
 
   const handleChange = (sats: number) => {
     setAmount(sats)
@@ -51,10 +61,10 @@ export default function ReceiveAmount() {
     try {
       if (!amount) throw 'Invalid amount'
       setFauceting(true)
-      const note = await getNote(amount, config.aspUrl)
-      await redeemNotes([note])
+      const ok = await callFaucet(recvInfo.offchainAddr, amount, wallet.network)
+      if (!ok) throw 'Faucet failed'
       setFauceting(false)
-      setSuccess(true)
+      setFaucetSuccess(true)
     } catch (err) {
       consoleError('error fauceting', err)
       setError(extractError(err))
@@ -69,10 +79,7 @@ export default function ReceiveAmount() {
 
   const handleProceed = async () => {
     try {
-      const { offchainAddr, boardingAddr } = await getReceivingAddresses()
-      if (!offchainAddr) throw 'Unable to get offchain address'
-      if (!boardingAddr) throw 'Unable to get boarding address'
-      setRecvInfo({ boardingAddr, offchainAddr, satoshis: amount })
+      setRecvInfo({ ...recvInfo, satoshis: amount })
       navigate(Pages.ReceiveQRCode)
     } catch (err) {
       consoleError('error getting addresses', err)
@@ -80,8 +87,7 @@ export default function ReceiveAmount() {
     }
   }
 
-  const availableNetworks = [NetworkName.Mutinynet, NetworkName.Regtest, NetworkName.Signet]
-  const showFaucetButton = wallet.balance === 0 && availableNetworks.includes(wallet.network as NetworkName)
+  const showFaucetButton = wallet.balance === 0 && hasFaucet(wallet.network)
 
   if (showKeys) {
     return <Keyboard back={() => setShowKeys(false)} hideBalance onChange={handleChange} value={amount} />
@@ -98,7 +104,7 @@ export default function ReceiveAmount() {
     )
   }
 
-  if (success) {
+  if (faucetSuccess) {
     return (
       <>
         <Header text='Success' />

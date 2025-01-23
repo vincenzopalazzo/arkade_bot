@@ -1,12 +1,20 @@
-export const getNote = async (amount: number, aspUrl: string): Promise<string> => {
-  const url = `${aspUrl}/v1/admin/note`
+type Faucets = Record<string, string>
+
+const faucets: Faucets = {
+  mutinynet: 'https://faucet.mutinynet.arklabs.to',
+  regtest: 'http://localhost:9999',
+}
+
+export const hasFaucet = (network: string): boolean => !!faucets[network]
+
+export const callFaucet = async (address: string, amount: number, network: string): Promise<boolean> => {
+  const faucetServerUrl = faucets[network]
+  if (!faucetServerUrl) return false
+  const url = `${faucetServerUrl}/faucet`
   const res = await fetch(url, {
-    body: JSON.stringify({ amount, quantity: 1 }),
+    body: JSON.stringify({ address, amount }),
     headers: { 'Content-Type': 'application/json' },
     method: 'POST',
   })
-  if (!res.ok) throw 'Unable to contact faucet'
-  const json = await res.json()
-  if (!json.notes?.[0]) throw 'Faucet is dry'
-  return json.notes[0]
+  return res.ok
 }
