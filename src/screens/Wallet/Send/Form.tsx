@@ -3,7 +3,7 @@ import Button from '../../../components/Button'
 import Error from '../../../components/Error'
 import ButtonsOnBottom from '../../../components/ButtonsOnBottom'
 import { NavigationContext, Pages } from '../../../providers/navigation'
-import { FlowContext } from '../../../providers/flow'
+import { FlowContext, SendInfo } from '../../../providers/flow'
 import Padded from '../../../components/Padded'
 import { decodeArkAddress, isArkAddress, isBTCAddress } from '../../../lib/address'
 import { AspContext } from '../../../providers/asp'
@@ -20,11 +20,15 @@ import Keyboard from '../../../components/Keyboard'
 import Text from '../../../components/Text'
 import Scanner from '../../../components/Scanner'
 import { consoleError } from '../../../lib/logs'
+import { Addresses } from '../../../lib/types'
+import { getReceivingAddresses } from '../../../lib/asp'
+import { Options, OptionsContext } from '../../../providers/options'
 
 export default function SendForm() {
   const { aspInfo } = useContext(AspContext)
-  const { navigate } = useContext(NavigationContext)
   const { sendInfo, setNoteInfo, setSendInfo } = useContext(FlowContext)
+  const { setOption } = useContext(OptionsContext)
+  const { navigate } = useContext(NavigationContext)
   const { wallet } = useContext(WalletContext)
 
   const [error, setError] = useState('')
@@ -35,10 +39,14 @@ export default function SendForm() {
   const [amount, setAmount] = useState(0)
   const [recipient, setRecipient] = useState('')
 
+  const [receivingAddresses, setReceivingAddresses] = useState<Addresses>()
+  const [tryingToSelfSend, setTryingToSelfSend] = useState(false)
+
   useEffect(() => {
     const { recipient, satoshis } = sendInfo
     setRecipient(recipient ?? '')
     setAmount(satoshis ?? 0)
+    getReceivingAddresses().then(setReceivingAddresses)
   }, [])
 
   useEffect(() => {
@@ -49,15 +57,15 @@ export default function SendForm() {
       const { address, arkAddress, satoshis } = bip21.decode(lowerCaseData)
       if (!address && !arkAddress) return setError('Unable to parse bip21')
       setAmount(satoshis ?? 0)
-      return setSendInfo({ address, arkAddress, recipient, satoshis })
+      return setState({ address, arkAddress, recipient, satoshis })
     }
     if (isArkAddress(lowerCaseData)) {
       const { aspKey } = decodeArkAddress(lowerCaseData)
       if (aspKey !== aspInfo.pubkey.slice(2)) return setError('Invalid Ark server pubkey')
-      return setSendInfo({ arkAddress: lowerCaseData })
+      return setState({ arkAddress: lowerCaseData })
     }
     if (isBTCAddress(lowerCaseData)) {
-      return setSendInfo({ address: lowerCaseData })
+      return setState({ address: lowerCaseData })
     }
     if (isArkNote(lowerCaseData)) {
       try {
@@ -72,7 +80,7 @@ export default function SendForm() {
   }, [recipient])
 
   useEffect(() => {
-    setSendInfo({ ...sendInfo, satoshis: amount })
+    setState({ ...sendInfo, satoshis: amount })
   }, [amount])
 
   useEffect(() => {
@@ -80,8 +88,24 @@ export default function SendForm() {
     setLabel(aspInfo.unreachable ? 'Server unreachable' : 'Continue')
   }, [aspInfo.unreachable])
 
+  const setState = (info: SendInfo) => {
+    setSendInfo(info)
+    if (!receivingAddresses) return
+    const { address, arkAddress } = info
+    const { boardingAddr, offchainAddr } = receivingAddresses
+    if (address === boardingAddr || arkAddress === offchainAddr) {
+      setError('Cannot send to yourself')
+      setTryingToSelfSend(true)
+    }
+  }
+
+  const gotoRecycle = () => {
+    setOption(Options.Vtxos)
+    navigate(Pages.Settings)
+  }
+
   const handleContinue = () => {
-    setSendInfo({ ...sendInfo, satoshis: amount })
+    setState({ ...sendInfo, satoshis: amount })
     navigate(Pages.SendDetails)
   }
 
@@ -101,7 +125,8 @@ export default function SendForm() {
   )
 
   const { address, arkAddress, satoshis } = sendInfo
-  const disabled = !((address || arkAddress) && satoshis && satoshis > 0) || aspInfo.unreachable
+
+  const disabled = !((address || arkAddress) && satoshis && satoshis > 0) || aspInfo.unreachable || tryingToSelfSend
 
   if (scan)
     return (
@@ -130,6 +155,13 @@ export default function SendForm() {
               right={<Available />}
               value={amount}
             />
+            {tryingToSelfSend ? (
+              <div style={{ width: '100%' }}>
+                <Text centered color='dark50' small>
+                  Did you mean <a onClick={gotoRecycle}>recycle your VTXOs</a>?
+                </Text>
+              </div>
+            ) : null}
           </FlexCol>
         </Padded>
       </Content>
