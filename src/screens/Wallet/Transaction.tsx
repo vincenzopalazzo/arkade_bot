@@ -27,6 +27,7 @@ export default function Transaction() {
 
   const [buttonLabel, setButtonLabel] = useState(defaultButtonLabel)
   const [showSettleButton, setShowSettleButton] = useState(false)
+  const [settleSuccess, setSettleSuccess] = useState(false)
   const [settling, setSettling] = useState(false)
   const [error, setError] = useState('')
 
@@ -52,6 +53,7 @@ export default function Transaction() {
     setSettling(true)
     try {
       await settlePending()
+      setSettleSuccess(true)
       if (tx) setTxInfo({ ...tx, pending: false, settled: true })
     } catch (err) {
       setError(extractError(err))
@@ -87,6 +89,7 @@ export default function Transaction() {
                   text='This transaction is not yet final. Funds will become non-reversible once the transaction is settled.'
                 />
               ) : null}
+              {settleSuccess ? <Info color='green' title='Success' text='Your transactions are now settled' /> : null}
               <Error error={Boolean(error)} text={error} />
               <Table data={data} />
             </FlexCol>
