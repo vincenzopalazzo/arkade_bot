@@ -69,10 +69,10 @@ export default function ReceiveAmount() {
 
   const handleProceed = async () => {
     try {
-      const { offchainAddr, boardingAddr } = await getReceivingAddresses()
-      if (!offchainAddr) throw 'Unable to get offchain address'
-      if (!boardingAddr) throw 'Unable to get boarding address'
-      setRecvInfo({ boardingAddr, offchainAddr, satoshis: amount })
+      const { offchainAddress, boardingAddress } = await getReceivingAddresses()
+      if (!offchainAddress) throw 'Unable to get offchain address'
+      if (!boardingAddress) throw 'Unable to get boarding address'
+      setRecvInfo({ boardingAddress, offchainAddress, satoshis: amount })
       navigate(Pages.ReceiveQRCode)
     } catch (err) {
       consoleError('error getting addresses', err)
