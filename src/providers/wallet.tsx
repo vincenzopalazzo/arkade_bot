@@ -1,7 +1,7 @@
 import { ReactNode, createContext, useContext, useEffect, useState } from 'react'
 import { readWalletFromStorage, saveWalletToStorage } from '../lib/storage'
 import { NavigationContext, Pages } from './navigation'
-import { Tx, Vtxo } from '../lib/types'
+import { Tx, Vtxos } from '../lib/types'
 import { getRestApiExplorerURL } from '../lib/explorers'
 import { settleVtxos, getBalance, getVtxos, lock, unlock, getTxHistory } from '../lib/asp'
 import { AspContext } from './asp'
@@ -20,10 +20,7 @@ export interface Wallet {
   network: string
   nextRecycle: number
   txs: Tx[]
-  vtxos: {
-    spendable: Vtxo[]
-    spent: Vtxo[]
-  }
+  vtxos: Vtxos
   wasmVersion: string
 }
 

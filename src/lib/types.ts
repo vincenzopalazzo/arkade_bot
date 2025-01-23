@@ -4,6 +4,11 @@ export type Mnemonic = string
 export type Password = string
 export type Satoshis = number
 
+export type Addresses = {
+  boardingAddress: string
+  offchainAddress: string
+}
+
 export type Tx = {
   amount: number
   boardingTxid: string
@@ -39,4 +44,9 @@ export type Vtxo = {
   spentBy: string
   txid: string
   vout: number
+}
+
+export type Vtxos = {
+  spendable: Vtxo[]
+  spent: Vtxo[]
 }

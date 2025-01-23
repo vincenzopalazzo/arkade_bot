@@ -1,6 +1,6 @@
 import { consoleError, consoleLog } from './logs'
 import { invalidNpub } from './privateKey'
-import { Satoshis, Tx, Vtxo } from './types'
+import { Addresses, Satoshis, Tx, Vtxo, Vtxos } from './types'
 
 export interface AspInfo {
   boardingDescriptorTemplate: string
@@ -131,11 +131,11 @@ export const getTxHistory = async (): Promise<Tx[]> => {
   return txs
 }
 
-export const getReceivingAddresses = async (): Promise<{ offchainAddr: string; boardingAddr: string }> => {
+export const getReceivingAddresses = async (): Promise<Addresses> => {
   return await window.receive()
 }
 
-export const getVtxos = async (): Promise<{ spendable: Vtxo[]; spent: Vtxo[] }> => {
+export const getVtxos = async (): Promise<Vtxos> => {
   const toVtxo = (v: any): Vtxo => {
     return {
       amount: v.Amount,
