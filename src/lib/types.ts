@@ -5,8 +5,8 @@ export type Password = string
 export type Satoshis = number
 
 export type Addresses = {
-  boardingAddress: string
-  offchainAddress: string
+  boardingAddr: string
+  offchainAddr: string
 }
 
 export type Tx = {

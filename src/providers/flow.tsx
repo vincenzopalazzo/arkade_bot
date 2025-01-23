@@ -12,8 +12,8 @@ export interface NoteInfo {
 }
 
 export interface RecvInfo {
-  boardingAddress: string
-  offchainAddress: string
+  boardingAddr: string
+  offchainAddr: string
   satoshis: number
   txid?: string
 }
@@ -53,8 +53,8 @@ export const emptyNoteInfo: NoteInfo = {
 }
 
 export const emptyRecvInfo: RecvInfo = {
-  boardingAddress: '',
-  offchainAddress: '',
+  boardingAddr: '',
+  offchainAddr: '',
   satoshis: 0,
 }
 

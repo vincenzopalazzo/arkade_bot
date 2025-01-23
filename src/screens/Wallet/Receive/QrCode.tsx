@@ -27,8 +27,8 @@ export default function ReceiveQRCode() {
 
   const poolAspIntervalId = useRef<NodeJS.Timeout>()
 
-  const { boardingAddress, offchainAddress, satoshis } = recvInfo
-  const bip21uri = bip21.encode(boardingAddress, offchainAddress, satoshis)
+  const { boardingAddr, offchainAddr, satoshis } = recvInfo
+  const bip21uri = bip21.encode(boardingAddr, offchainAddr, satoshis)
 
   useEffect(() => {
     if (!wallet) return
@@ -71,7 +71,7 @@ export default function ReceiveQRCode() {
       <Content>
         <Padded>
           <Error error={Boolean(error)} text={error} />
-          <QrCode short={offchainAddress} value={bip21uri ?? ''} />
+          <QrCode short={offchainAddr} value={bip21uri ?? ''} />
         </Padded>
       </Content>
       <ButtonsOnBottom>
