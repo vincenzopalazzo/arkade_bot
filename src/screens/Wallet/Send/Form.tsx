@@ -62,10 +62,10 @@ export default function SendForm() {
     if (isArkAddress(lowerCaseData)) {
       const { aspKey } = decodeArkAddress(lowerCaseData)
       if (aspKey !== aspInfo.pubkey.slice(2)) return setError('Invalid Ark server pubkey')
-      return setState({ arkAddress: lowerCaseData })
+      return setState({ ...sendInfo, arkAddress: lowerCaseData })
     }
     if (isBTCAddress(lowerCaseData)) {
-      return setState({ address: lowerCaseData })
+      return setState({ ...sendInfo, address: lowerCaseData })
     }
     if (isArkNote(lowerCaseData)) {
       try {
