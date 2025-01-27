@@ -99,7 +99,7 @@ export default function SendForm() {
     }
   }
 
-  const gotoRecycle = () => {
+  const gotoRollover = () => {
     setOption(Options.Vtxos)
     navigate(Pages.Settings)
   }
@@ -158,7 +158,7 @@ export default function SendForm() {
             {tryingToSelfSend ? (
               <div style={{ width: '100%' }}>
                 <Text centered color='dark50' small>
-                  Did you mean <a onClick={gotoRecycle}>recycle your VTXOs</a>?
+                  Did you mean <a onClick={gotoRollover}>roll over your VTXOs</a>?
                 </Text>
               </div>
             ) : null}

@@ -38,16 +38,16 @@ const VtxoLine = ({ vtxo }: { vtxo: Vtxo }) => {
 }
 
 export default function Vtxos() {
-  const { recycleVtxos, wallet } = useContext(WalletContext)
+  const { rolloverVtxos, wallet } = useContext(WalletContext)
 
-  const defaultButtonLabel = 'Recycle VTXOs now'
+  const defaultButtonLabel = 'Roll over VTXOs now'
   const [buttonLabel, setButtonLabel] = useState(defaultButtonLabel)
   const [recycling, setRecycling] = useState(false)
   const [showList, setShowList] = useState(false)
 
-  const handleRecycle = async () => {
+  const handleRollover = async () => {
     setRecycling(true)
-    await recycleVtxos()
+    await rolloverVtxos()
     setRecycling(false)
   }
 
@@ -81,8 +81,8 @@ export default function Vtxos() {
                     Next roll over
                   </Text>
                   <Box>
-                    <Text>{prettyDate(wallet.nextRecycle)}</Text>
-                    <Text>{prettyAgo(wallet.nextRecycle)}</Text>
+                    <Text>{prettyDate(wallet.nextRollover)}</Text>
+                    <Text>{prettyAgo(wallet.nextRollover)}</Text>
                   </Box>
                 </FlexCol>
                 <Text color='dark50' small wrap>
@@ -100,7 +100,7 @@ export default function Vtxos() {
       </Content>
       <ButtonsOnBottom>
         {wallet.vtxos.spendable?.length > 0 ? (
-          <Button onClick={handleRecycle} label={buttonLabel} disabled={recycling} />
+          <Button onClick={handleRollover} label={buttonLabel} disabled={recycling} />
         ) : null}
       </ButtonsOnBottom>
     </>

@@ -18,7 +18,7 @@ export interface Wallet {
   initialized: boolean
   lastUpdate: number
   network: string
-  nextRecycle: number
+  nextRollover: number
   txs: Tx[]
   vtxos: Vtxos
   wasmVersion: string
@@ -31,7 +31,7 @@ const defaultWallet: Wallet = {
   initialized: false,
   lastUpdate: 0,
   network: '',
-  nextRecycle: 0,
+  nextRollover: 0,
   txs: [],
   vtxos: {
     spendable: [],
@@ -43,7 +43,7 @@ const defaultWallet: Wallet = {
 interface WalletContextProps {
   initWallet: (password: string, privateKey: string) => Promise<void>
   lockWallet: (password: string) => Promise<void>
-  recycleVtxos: () => Promise<void>
+  rolloverVtxos: () => Promise<void>
   reloadWallet: () => void
   resetWallet: () => void
   settlePending: () => Promise<void>
@@ -57,7 +57,7 @@ interface WalletContextProps {
 export const WalletContext = createContext<WalletContextProps>({
   initWallet: () => Promise.resolve(),
   lockWallet: () => Promise.resolve(),
-  recycleVtxos: () => Promise.resolve(),
+  rolloverVtxos: () => Promise.resolve(),
   reloadWallet: () => {},
   resetWallet: () => {},
   settlePending: () => Promise.resolve(),
@@ -72,7 +72,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   const { aspInfo } = useContext(AspContext)
   const { noteInfo, setNoteInfo } = useContext(FlowContext)
   const { navigate } = useContext(NavigationContext)
-  const { notifyVtxosRecycled, notifyTxSettled } = useContext(NotificationsContext)
+  const { notifyVtxosRollover, notifyTxSettled } = useContext(NotificationsContext)
 
   const [walletUnlocked, setWalletUnlocked] = useState(false)
   const [wasmLoaded, setWasmLoaded] = useState(false)
@@ -122,14 +122,14 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     navigate(noteInfo.satoshis ? Pages.NotesRedeem : Pages.Wallet)
   }, [walletUnlocked])
 
-  // auto settle vtxos if next recycle in less than 24 hours
+  // auto settle vtxos if next roll over in less than 24 hours
   useEffect(() => {
-    if (!wallet.nextRecycle || !walletUnlocked) return
+    if (!wallet.nextRollover || !walletUnlocked) return
     const now = Math.floor(new Date().getTime() / 1000)
     const threshold = 60 * 60 * 24 // one day in seconds
-    const urgent = wallet.nextRecycle - now < threshold
-    if (urgent) recycleVtxos()
-  }, [walletUnlocked, wallet.nextRecycle])
+    const urgent = wallet.nextRollover - now < threshold
+    if (urgent) rolloverVtxos()
+  }, [walletUnlocked, wallet.nextRollover])
 
   const initWallet = async (password: string, privateKey: string) => {
     const aspUrl = aspInfo.url
@@ -150,11 +150,11 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     }
   }
 
-  const recycleVtxos = async () => {
+  const rolloverVtxos = async () => {
     try {
       await settleVtxos()
       await reloadWallet()
-      notifyVtxosRecycled()
+      notifyVtxosRollover()
     } catch {}
   }
 
@@ -163,13 +163,13 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     const balance = await getBalance()
     const txs = await getTxHistory()
     const now = Math.floor(new Date().getTime() / 1000)
-    const nextRecycle = vtxos.spendable
+    const nextRollover = vtxos.spendable
       ? vtxos.spendable.reduce((acc, cur) => {
           const unixtimestamp = Math.floor(new Date(cur.expireAt).getTime() / 1000)
           return unixtimestamp < acc || acc === 0 ? unixtimestamp : acc
         }, 0)
       : 0
-    updateWallet({ ...wallet, balance, initialized: true, lastUpdate: now, nextRecycle, txs, vtxos })
+    updateWallet({ ...wallet, balance, initialized: true, lastUpdate: now, nextRollover, txs, vtxos })
   }
 
   const resetWallet = async () => {
@@ -199,7 +199,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
       value={{
         initWallet,
         lockWallet,
-        recycleVtxos,
+        rolloverVtxos,
         reloadWallet,
         resetWallet,
         settlePending,

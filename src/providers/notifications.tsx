@@ -10,14 +10,14 @@ import { consoleLog } from '../lib/logs'
 interface NotificationsContextProps {
   notifyPaymentReceived: (s: number) => void
   notifyPaymentSent: (s: number) => void
-  notifyVtxosRecycled: () => void
+  notifyVtxosRollover: () => void
   notifyTxSettled: () => void
 }
 
 export const NotificationsContext = createContext<NotificationsContextProps>({
   notifyPaymentReceived: () => {},
   notifyPaymentSent: () => {},
-  notifyVtxosRecycled: () => {},
+  notifyVtxosRollover: () => {},
   notifyTxSettled: () => {},
 })
 
@@ -86,9 +86,9 @@ export const NotificationsProvider = ({ children }: { children: ReactNode }) => 
     sendNostrNotification(body)
   }
 
-  const notifyVtxosRecycled = () => {
-    const body = 'All VTXOs were recycled'
-    const title = 'Vtxos recycled'
+  const notifyVtxosRollover = () => {
+    const body = 'All VTXOs were rolled over'
+    const title = 'Vtxos rolled over'
     sendSystemNotification(title, body)
     sendNostrNotification(body)
   }
@@ -109,7 +109,7 @@ export const NotificationsProvider = ({ children }: { children: ReactNode }) => 
       value={{
         notifyPaymentReceived,
         notifyPaymentSent,
-        notifyVtxosRecycled,
+        notifyVtxosRollover,
         notifyTxSettled,
       }}
     >
