@@ -42,25 +42,25 @@ export default function Vtxos() {
 
   const defaultButtonLabel = 'Roll over VTXOs now'
   const [buttonLabel, setButtonLabel] = useState(defaultButtonLabel)
-  const [recycling, setRecycling] = useState(false)
+  const [rollingover, setRollingover] = useState(false)
   const [showList, setShowList] = useState(false)
 
   const handleRollover = async () => {
-    setRecycling(true)
+    setRollingover(true)
     await rolloverVtxos()
-    setRecycling(false)
+    setRollingover(false)
   }
 
   useEffect(() => {
-    setButtonLabel(recycling ? 'Recycling...' : defaultButtonLabel)
-  }, [recycling])
+    setButtonLabel(rollingover ? 'Rolling over...' : defaultButtonLabel)
+  }, [rollingover])
 
   return (
     <>
       <Header text='VTXOs' back all={() => setShowList(!showList)} />
       <Content>
-        {recycling ? (
-          <Loading text='Recycling your VTXOs requires a round, which can take a few seconds' />
+        {rollingover ? (
+          <Loading text='Rolling over your VTXOs requires a round, which can take a few seconds' />
         ) : showList ? (
           <Padded>
             <FlexCol gap='0.5rem'>
@@ -100,7 +100,7 @@ export default function Vtxos() {
       </Content>
       <ButtonsOnBottom>
         {wallet.vtxos.spendable?.length > 0 ? (
-          <Button onClick={handleRollover} label={buttonLabel} disabled={recycling} />
+          <Button onClick={handleRollover} label={buttonLabel} disabled={rollingover} />
         ) : null}
       </ButtonsOnBottom>
     </>
