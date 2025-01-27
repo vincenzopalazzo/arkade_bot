@@ -67,6 +67,7 @@ export default function Nostr() {
             {config.nostr ? (
               <FlexCol>
                 <InputNpub
+                  focus
                   label='Nostr public key (npub)'
                   onChange={setNpub}
                   openScan={() => setScan(true)}

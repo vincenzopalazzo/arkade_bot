@@ -3,11 +3,14 @@ import InputContainer from './InputContainer'
 import ScanIcon from '../icons/Scan'
 import Clipboard from './Clipboard'
 import FlexCol from './FlexCol'
+import { useRef, useEffect } from 'react'
 
 interface InputWithScannerProps {
   error?: string
+  focus?: boolean
   label?: string
   onChange: (arg0: any) => void
+  onEnter?: () => void
   openScan: () => void
   placeholder?: string
   validator?: (arg0: string) => boolean
@@ -16,13 +19,21 @@ interface InputWithScannerProps {
 
 export default function InputWithScanner({
   error,
+  focus,
   label,
   onChange,
+  onEnter,
   openScan,
   placeholder,
   validator,
   value,
 }: InputWithScannerProps) {
+  const input = useRef<HTMLIonInputElement>(null)
+
+  useEffect(() => {
+    if (focus) input.current?.setFocus()
+  })
+
   const handleInput = (ev: Event) => {
     onChange((ev.target as HTMLInputElement).value)
   }
@@ -30,7 +41,13 @@ export default function InputWithScanner({
   return (
     <FlexCol gap='0.5rem'>
       <InputContainer label={label} error={error}>
-        <IonInput onIonInput={handleInput} placeholder={placeholder} value={value}>
+        <IonInput
+          onIonInput={handleInput}
+          onKeyUp={(ev) => ev.key === 'Enter' && onEnter && onEnter()}
+          placeholder={placeholder}
+          ref={input}
+          value={value}
+        >
           <IonText slot='end' style={{ color: 'var(--dark80)', cursor: 'pointer' }}>
             <div onClick={openScan}>
               <ScanIcon />

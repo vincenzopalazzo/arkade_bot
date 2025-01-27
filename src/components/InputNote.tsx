@@ -8,5 +8,5 @@ interface InputNoteProps {
 }
 
 export default function InputNote({ label, onChange, openScan }: InputNoteProps) {
-  return <InputWithScanner label={label} onChange={onChange} openScan={openScan} validator={isArkNote} />
+  return <InputWithScanner focus label={label} onChange={onChange} openScan={openScan} validator={isArkNote} />
 }

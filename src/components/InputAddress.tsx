@@ -4,14 +4,24 @@ import { isBip21 } from '../lib/bip21'
 import InputWithScanner from './InputWithScanner'
 
 interface InputAddressProps {
+  focus?: boolean
   label?: string
   onChange: (arg0: any) => void
+  onEnter?: () => void
   openScan: () => void
   placeholder?: string
   value?: string
 }
 
-export default function InputAddress({ label, onChange, openScan, placeholder, value }: InputAddressProps) {
+export default function InputAddress({
+  focus,
+  label,
+  onChange,
+  onEnter,
+  openScan,
+  placeholder,
+  value,
+}: InputAddressProps) {
   const isAddress = (data: string): boolean => {
     return (
       isBip21(data.toLowerCase()) ||
@@ -23,8 +33,10 @@ export default function InputAddress({ label, onChange, openScan, placeholder, v
 
   return (
     <InputWithScanner
+      focus={focus}
       label={label}
       onChange={onChange}
+      onEnter={onEnter}
       openScan={openScan}
       placeholder={placeholder}
       validator={isAddress}

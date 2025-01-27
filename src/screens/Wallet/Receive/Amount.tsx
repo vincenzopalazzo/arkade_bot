@@ -27,6 +27,7 @@ export default function ReceiveAmount() {
   const { wallet } = useContext(WalletContext)
 
   const defaultButtonLabel = 'Continue without amount'
+  const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints
 
   const [amount, setAmount] = useState(0)
   const [buttonLabel, setButtonLabel] = useState(defaultButtonLabel)
@@ -78,7 +79,6 @@ export default function ReceiveAmount() {
   }
 
   const handleFocus = () => {
-    const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints
     if (isMobile) setShowKeys(true)
   }
 
@@ -127,7 +127,14 @@ export default function ReceiveAmount() {
         <Padded>
           <FlexCol>
             <Error error={Boolean(error)} text={error} />
-            <InputAmount label='Amount' onChange={handleChange} onFocus={handleFocus} value={amount} />
+            <InputAmount
+              focus={!isMobile}
+              label='Amount'
+              onChange={handleChange}
+              onEnter={handleProceed}
+              onFocus={handleFocus}
+              value={amount}
+            />
           </FlexCol>
         </Padded>
       </Content>

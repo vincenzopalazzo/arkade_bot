@@ -31,16 +31,17 @@ export default function SendForm() {
   const { navigate } = useContext(NavigationContext)
   const { wallet } = useContext(WalletContext)
 
+  const [amount, setAmount] = useState(0)
   const [error, setError] = useState('')
+  const [focus, setFocus] = useState('recipient')
   const [label, setLabel] = useState('')
   const [keys, setKeys] = useState(false)
-  const [scan, setScan] = useState(false)
-
-  const [amount, setAmount] = useState(0)
   const [recipient, setRecipient] = useState('')
-
   const [receivingAddresses, setReceivingAddresses] = useState<Addresses>()
+  const [scan, setScan] = useState(false)
   const [tryingToSelfSend, setTryingToSelfSend] = useState(false)
+
+  const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints
 
   useEffect(() => {
     const { recipient, satoshis } = sendInfo
@@ -109,8 +110,13 @@ export default function SendForm() {
     navigate(Pages.SendDetails)
   }
 
+  const handleEnter = () => {
+    if (!disabled) return handleContinue()
+    if (!amount) return setFocus('amount')
+    if (!recipient) return setFocus('recipient')
+  }
+
   const handleFocus = () => {
-    const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints
     if (isMobile) setKeys(true)
   }
 
@@ -143,14 +149,18 @@ export default function SendForm() {
           <FlexCol gap='2rem'>
             <Error error={Boolean(error)} text={error} />
             <InputAddress
+              focus={focus === 'recipient'}
               label='Recipient address'
               onChange={setRecipient}
+              onEnter={handleEnter}
               openScan={() => setScan(true)}
               value={recipient}
             />
             <InputAmount
+              focus={focus === 'amount' && !isMobile}
               label='Amount'
               onChange={setAmount}
+              onEnter={handleEnter}
               onFocus={handleFocus}
               right={<Available />}
               value={amount}

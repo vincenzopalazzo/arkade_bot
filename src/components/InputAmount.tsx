@@ -8,12 +8,13 @@ interface InputAmountProps {
   focus?: boolean
   label?: string
   onChange: (arg0: any) => void
+  onEnter?: () => void
   onFocus?: () => void
   right?: JSX.Element
   value?: number
 }
 
-export default function InputAmount({ focus, label, onChange, onFocus, right, value }: InputAmountProps) {
+export default function InputAmount({ focus, label, onChange, onEnter, onFocus, right, value }: InputAmountProps) {
   const { toUSD } = useContext(FiatContext)
 
   const [error, setError] = useState('')
@@ -23,7 +24,7 @@ export default function InputAmount({ focus, label, onChange, onFocus, right, va
 
   useEffect(() => {
     if (focus) input.current?.setFocus()
-  }, [])
+  })
 
   useEffect(() => {
     setFiatValue(prettyNumber(toUSD(value ?? 0), 2))
@@ -42,6 +43,7 @@ export default function InputAmount({ focus, label, onChange, onFocus, right, va
         <IonInput
           onIonFocus={onFocus}
           onIonInput={handleInput}
+          onKeyUp={(ev) => ev.key === 'Enter' && onEnter && onEnter()}
           ref={input}
           type='number'
           value={value ? value : undefined}

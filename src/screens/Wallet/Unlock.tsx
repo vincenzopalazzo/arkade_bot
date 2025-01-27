@@ -45,11 +45,7 @@ export default function Unlock() {
       <Content>
         <Padded>
           <FlexCol gap='1rem'>
-            {unlocking ? null : (
-              <form style={{ width: '100%' }}>
-                <InputPassword label='Insert password' onChange={handleChange} />
-              </form>
-            )}
+            {unlocking ? null : <InputPassword focus label='Insert password' onChange={handleChange} />}
             <Error error={Boolean(error)} text={error} />
           </FlexCol>
         </Padded>
