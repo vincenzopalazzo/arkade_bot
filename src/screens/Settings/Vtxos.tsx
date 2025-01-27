@@ -4,7 +4,7 @@ import ButtonsOnBottom from '../../components/ButtonsOnBottom'
 import Padded from '../../components/Padded'
 import Content from '../../components/Content'
 import { WalletContext } from '../../providers/wallet'
-import { prettyAgo, prettyDate, prettyNumber } from '../../lib/format'
+import { prettyAgo, prettyDate, prettyHide, prettyNumber } from '../../lib/format'
 import Loading from '../../components/Loading'
 import Header from './Header'
 import Text from '../../components/Text'
@@ -12,6 +12,7 @@ import FlexCol from '../../components/FlexCol'
 import { Vtxo } from '../../lib/types'
 import FlexRow from '../../components/FlexRow'
 import WarningBox from '../../components/Warning'
+import { ConfigContext } from '../../providers/config'
 
 const Box = ({ children }: { children: ReactNode }) => {
   const style = {
@@ -28,16 +29,18 @@ const Box = ({ children }: { children: ReactNode }) => {
   )
 }
 
-const VtxoLine = ({ vtxo }: { vtxo: Vtxo }) => {
+const VtxoLine = ({ hide, vtxo }: { hide: boolean; vtxo: Vtxo }) => {
+  const amount = hide ? prettyHide(vtxo.amount) : prettyNumber(vtxo.amount)
   return (
     <Box>
-      <Text>{prettyNumber(vtxo.amount)} sats</Text>
+      <Text>{amount} sats</Text>
       <Text>{prettyAgo(vtxo.expireAt)}</Text>
     </Box>
   )
 }
 
 export default function Vtxos() {
+  const { config } = useContext(ConfigContext)
   const { rolloverVtxos, wallet } = useContext(WalletContext)
 
   const defaultButtonLabel = 'Roll over VTXOs now'
@@ -68,7 +71,7 @@ export default function Vtxos() {
                 Amount and expiration
               </Text>
               {wallet.vtxos.spendable?.map((v) => (
-                <VtxoLine key={v.txid} vtxo={v} />
+                <VtxoLine key={v.txid} hide={!config.showBalance} vtxo={v} />
               ))}
             </FlexCol>
           </Padded>

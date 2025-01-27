@@ -59,8 +59,9 @@ export const prettyDate = (num: number): string => {
   }).format(date)
 }
 
-export const prettyHide = (str: string): string => {
-  if (!str) return ''
+export const prettyHide = (value: string | number): string => {
+  if (!value) return ''
+  const str = typeof value === 'string' ? value : value.toString()
   const length = str.length * 2 > 6 ? str.length * 2 : 6
   return Array(length).fill('·').join('')
 }

@@ -5,7 +5,7 @@ import { NavigationContext, Pages } from '../../providers/navigation'
 import Padded from '../../components/Padded'
 import { WalletContext } from '../../providers/wallet'
 import { FlowContext } from '../../providers/flow'
-import { prettyAgo, prettyDate, prettyNumber } from '../../lib/format'
+import { prettyAgo, prettyDate, prettyHide, prettyNumber } from '../../lib/format'
 import { defaultFee } from '../../lib/constants'
 import Table from '../../components/Table'
 import Error from '../../components/Error'
@@ -16,8 +16,10 @@ import Header from '../../components/Header'
 import Content from '../../components/Content'
 import Info from '../../components/Info'
 import FlexCol from '../../components/FlexCol'
+import { ConfigContext } from '../../providers/config'
 
 export default function Transaction() {
+  const { config } = useContext(ConfigContext)
   const { txInfo, setTxInfo } = useContext(FlowContext)
   const { navigate } = useContext(NavigationContext)
   const { reloadWallet, settlePending, wallet } = useContext(WalletContext)
@@ -63,14 +65,16 @@ export default function Transaction() {
 
   if (!tx) return <></>
 
+  const amount = tx.type === 'sent' ? tx.amount - defaultFee : tx.amount
+
   const data = [
     // ['State', tx.pending ? 'Pending' : 'Settled'],
     ['Kind', tx.type === 'sent' ? 'Sent' : 'Received'],
     ['When', prettyAgo(tx.createdAt)],
     ['Date', prettyDate(tx.createdAt)],
-    ['Amount', `${prettyNumber(tx.type === 'sent' ? tx.amount - defaultFee : tx.amount)} sats`],
+    ['Amount', `${config.showBalance ? prettyNumber(amount) : prettyHide(amount)} sats`],
     ['Network fees', `${prettyNumber(tx.type === 'sent' ? defaultFee : 0)} sats`],
-    ['Total', `${prettyNumber(tx.amount)} sats`],
+    ['Total', `${config.showBalance ? prettyNumber(tx.amount) : prettyHide(tx.amount)} sats`],
   ]
 
   return (

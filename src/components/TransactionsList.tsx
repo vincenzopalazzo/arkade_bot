@@ -2,7 +2,7 @@ import { useContext } from 'react'
 import { WalletContext } from '../providers/wallet'
 import Text, { TextLabel, TextSecondary } from './Text'
 import { Tx } from '../lib/types'
-import { prettyAmount, prettyDate, prettyLongText } from '../lib/format'
+import { prettyAmount, prettyDate, prettyHide, prettyLongText } from '../lib/format'
 import PendingIcon from '../icons/Pending'
 import ReceivedIcon from '../icons/Received'
 import SentIcon from '../icons/Sent'
@@ -11,15 +11,17 @@ import { FlowContext } from '../providers/flow'
 import { NavigationContext, Pages } from '../providers/navigation'
 import { defaultFee } from '../lib/constants'
 import SelfSendIcon from '../icons/SelfSend'
+import { ConfigContext } from '../providers/config'
 
 const border = '1px solid var(--dark20)'
 
 const TransactionLine = ({ tx }: { tx: Tx }) => {
+  const { config } = useContext(ConfigContext)
   const { setTxInfo } = useContext(FlowContext)
   const { navigate } = useContext(NavigationContext)
 
   const prefix = tx.type === 'sent' ? '-' : '+'
-  const amount = `${prefix} ${prettyAmount(tx.amount)}`
+  const amount = `${prefix} ${config.showBalance ? prettyAmount(tx.amount) : prettyHide(tx.amount)}`
   const txid = tx.explorable ? `(${prettyLongText(tx.explorable, 3)})` : ''
 
   const Icon = () =>
