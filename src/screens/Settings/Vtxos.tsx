@@ -57,7 +57,7 @@ export default function Vtxos() {
 
   return (
     <>
-      <Header text='VTXOs' back all={() => setShowList(!showList)} />
+      <Header text='Coin control' back all={() => setShowList(!showList)} />
       <Content>
         {rollingover ? (
           <Loading text='Rolling over your VTXOs requires a round, which can take a few seconds' />

@@ -30,7 +30,7 @@ export enum Options {
   Password = 'password',
   Reset = 'reset wallet',
   Server = 'server',
-  Vtxos = 'vtxos',
+  Vtxos = 'coin control',
 }
 
 export interface Option {
