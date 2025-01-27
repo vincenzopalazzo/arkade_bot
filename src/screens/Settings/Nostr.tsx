@@ -59,7 +59,7 @@ export default function Nostr() {
       <Content>
         <Toggle checked={config.nostr} label='Nostr' onClick={handleCheck} text='Allow Nostr' />
         <Padded>
-          <FlexCol>
+          <FlexCol gap='2rem' margin='2rem 0 0 0'>
             <TextSecondary wrap>
               If you let your VTXOs expire, you will receive, on Nostr, via encrypted DM, an arknote with the same
               value, that you will be able to redeem later.

@@ -14,7 +14,7 @@ interface ToggleProps {
 
 export default function Toggle({ checked, label, onClick, text }: ToggleProps) {
   return (
-    <FlexCol gap='0' margin='0 0 1rem 0'>
+    <FlexCol gap='0'>
       <TextLabel>{label}</TextLabel>
       <Shadow squared>
         <Padded>

@@ -5,6 +5,7 @@ import Padded from '../../components/Padded'
 import Header from './Header'
 import { TextSecondary } from '../../components/Text'
 import Toggle from '../../components/Toggle'
+import FlexCol from '../../components/FlexCol'
 
 export default function Theme() {
   const { config, updateConfig } = useContext(ConfigContext)
@@ -20,7 +21,9 @@ export default function Theme() {
       <Content>
         <Toggle checked={config.theme === Themes.Dark} label='Theme' onClick={handleChange} text='Dark theme' />
         <Padded>
-          <TextSecondary>Dark theme is easier on the eyes.</TextSecondary>
+          <FlexCol gap='0.5rem' margin='2rem 0 0 0'>
+            <TextSecondary>Dark theme is easier on the eyes.</TextSecondary>
+          </FlexCol>
         </Padded>
       </Content>
     </>

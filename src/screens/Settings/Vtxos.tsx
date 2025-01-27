@@ -7,7 +7,7 @@ import { WalletContext } from '../../providers/wallet'
 import { prettyAgo, prettyDate, prettyHide, prettyNumber } from '../../lib/format'
 import Loading from '../../components/Loading'
 import Header from './Header'
-import Text from '../../components/Text'
+import Text, { TextSecondary } from '../../components/Text'
 import FlexCol from '../../components/FlexCol'
 import { Vtxo } from '../../lib/types'
 import FlexRow from '../../components/FlexRow'
@@ -88,12 +88,15 @@ export default function Vtxos() {
                     <Text>{prettyAgo(wallet.nextRollover)}</Text>
                   </Box>
                 </FlexCol>
-                <Text color='dark50' small wrap>
-                  Your VTXOs have a lifetime of 7 days and they need to be rolled over prior to expiration.
-                </Text>
-                <Text color='dark50' small wrap>
-                  The app will try to auto roll over all VTXOs which expire in less than 24 hours.
-                </Text>
+                <FlexCol gap='0.5rem' margin='2rem 0 0 0'>
+                  <TextSecondary>Your oldest VTXO will expire {prettyAgo(wallet.nextRollover, true)}.</TextSecondary>
+                  <TextSecondary>
+                    Your VTXOs have a lifetime of 7 days and they need to be rolled over prior to expiration.
+                  </TextSecondary>
+                  <TextSecondary>
+                    The app will try to auto roll over all VTXOs which expire in less than 24 hours.
+                  </TextSecondary>
+                </FlexCol>
               </>
             ) : (
               <WarningBox red text="You don't have any VTXOs" />

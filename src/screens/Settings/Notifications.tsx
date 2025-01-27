@@ -6,6 +6,7 @@ import Header from './Header'
 import Content from '../../components/Content'
 import { TextSecondary } from '../../components/Text'
 import Toggle from '../../components/Toggle'
+import FlexCol from '../../components/FlexCol'
 
 export default function Notifications() {
   const { config, updateConfig } = useContext(ConfigContext)
@@ -33,19 +34,21 @@ export default function Notifications() {
           text='Allow notifications'
         />
         <Padded>
-          {notificationApiSupport ? (
-            <>
-              <TextSecondary>Get notified when an update is available or a payment is received.</TextSecondary>
-              <TextSecondary>You'll need to grant permission if asked.</TextSecondary>
-            </>
-          ) : (
-            <>
-              <TextSecondary>Your browser does not support the Notifications API.</TextSecondary>
-              <TextSecondary>
-                If on iOS you'll need to 'Add to homescreen' and be running iOS 16.4 or higher.
-              </TextSecondary>
-            </>
-          )}
+          <FlexCol gap='0.5rem' margin='2rem 0 0 0'>
+            {notificationApiSupport ? (
+              <>
+                <TextSecondary>Get notified when an update is available or a payment is received.</TextSecondary>
+                <TextSecondary>You'll need to grant permission if asked.</TextSecondary>
+              </>
+            ) : (
+              <>
+                <TextSecondary>Your browser does not support the Notifications API.</TextSecondary>
+                <TextSecondary>
+                  If on iOS you'll need to 'Add to homescreen' and be running iOS 16.4 or higher.
+                </TextSecondary>
+              </>
+            )}
+          </FlexCol>
         </Padded>
       </Content>
     </>
