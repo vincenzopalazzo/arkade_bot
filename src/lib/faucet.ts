@@ -19,9 +19,8 @@ export const callFaucet = async (address: string, amount: number, network: strin
 export const pingFaucet = async (network: string): Promise<boolean> => {
   const faucetServerUrl = faucets[network]
   if (!faucetServerUrl) return false
-  const url = `${faucetServerUrl}/ping`
-  const res = await fetch(url, {
-    headers: { 'Content-Type': 'application/json' },
-  })
-  return res.ok && (await res.json()).message === 'pong'
+  const opt = { headers: { 'Content-Type': 'application/json' } }
+  const url = `${faucetServerUrl}/healthcheck`
+  const res = await fetch(url, opt)
+  return res.ok
 }
