@@ -9,7 +9,7 @@ import { NotificationsContext } from './notifications'
 import { FlowContext } from './flow'
 import { ArkNote, arkNoteInUrl } from '../lib/arknote'
 import { fetchWasm } from '../lib/fetch'
-import { consoleError, consoleLog } from '../lib/logs'
+import { consoleError } from '../lib/logs'
 
 export interface Wallet {
   arkAddress: string
@@ -83,7 +83,6 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     WebAssembly.instantiateStreaming(wasm, go.importObject).then((result) => {
       go.run(result.instance)
       setWasmLoaded(true)
-      consoleLog('wasm loaded')
     })
   }
 
@@ -92,7 +91,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     if (wasmLoaded) return
     fetchWasm('/ark-sdk.wasm')
       .then(instantiateWasm)
-      .catch((err) => consoleError('error loading wasm', err))
+      .catch((err) => consoleError(err, 'error loading wasm'))
   }, [])
 
   // if voucher on url, add it to state and remove from url
@@ -104,7 +103,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
       setNoteInfo({ note, satoshis: value })
       window.location.hash = ''
     } catch (err) {
-      consoleError('error decoding ark note', err)
+      consoleError(err, 'error decoding ark note')
     }
   }, [])
 

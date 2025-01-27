@@ -18,7 +18,7 @@ export default function BarcodeScanner({ setError, setData }: BarcodeScannerProp
       .getUserMedia({ video: true })
       .then(setStream)
       .catch((err) => {
-        consoleError('error getting video stream', err)
+        consoleError(err, 'error getting video stream')
       })
   }, [])
 

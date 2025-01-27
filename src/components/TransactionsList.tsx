@@ -83,7 +83,6 @@ export default function TransactionsList() {
   const { reloadWallet, wallet } = useContext(WalletContext)
 
   const transactions = wallet.txs
-  console.log('transactions', transactions)
 
   if (transactions?.length === 0) return <></>
 

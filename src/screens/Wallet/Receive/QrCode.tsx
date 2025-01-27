@@ -13,7 +13,7 @@ import { WalletContext } from '../../../providers/wallet'
 import { NotificationsContext } from '../../../providers/notifications'
 import Header from '../../../components/Header'
 import Content from '../../../components/Content'
-import { consoleError, consoleLog } from '../../../lib/logs'
+import { consoleError } from '../../../lib/logs'
 import { canBrowserShareData, shareData } from '../../../lib/share'
 
 export default function ReceiveQRCode() {
@@ -42,7 +42,7 @@ export default function ReceiveQRCode() {
         })
       }, 1000)
     } catch (err) {
-      consoleError('error waiting for payment', err)
+      consoleError(err, 'error waiting for payment')
       setError(extractError(err))
     }
     return () => clearInterval(poolAspIntervalId.current)
@@ -58,7 +58,7 @@ export default function ReceiveQRCode() {
   const handleShare = () => {
     setSharing(true)
     shareData(data)
-      .catch(consoleLog)
+      .catch(consoleError)
       .finally(() => setSharing(false))
   }
 

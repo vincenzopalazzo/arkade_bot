@@ -5,7 +5,7 @@ export const copyToClipboard = async (text: string): Promise<void> => {
     try {
       return await navigator.clipboard.writeText(text)
     } catch (err) {
-      consoleError('error writing to clipboard', err)
+      consoleError(err, 'error writing to clipboard')
     }
   }
 }
@@ -15,7 +15,7 @@ export const pasteFromClipboard = async (): Promise<string> => {
     try {
       return await navigator.clipboard.readText()
     } catch (err) {
-      consoleError('error pasting from clipboard', err)
+      consoleError(err, 'error pasting from clipboard')
     }
   }
   return ''
@@ -25,7 +25,7 @@ export const queryPastePermission = async (): Promise<PermissionState> => {
   try {
     return (await navigator.permissions.query({ name: 'clipboard-read' as PermissionName })).state
   } catch (err) {
-    consoleError('error querying clipboard-read permission', err)
+    consoleError(err, 'error querying clipboard-read permission')
     return 'denied'
   }
 }

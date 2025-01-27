@@ -56,7 +56,7 @@ export default function SendDetails() {
   }
 
   const handleError = (err: any) => {
-    consoleError('error sending payment', err)
+    consoleError(err, 'error sending payment')
     setError(extractError(err))
     setSending(false)
   }

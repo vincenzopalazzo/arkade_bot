@@ -52,7 +52,7 @@ export default function ReceiveAmount() {
         setRecvInfo({ boardingAddr, offchainAddr, satoshis: 0 })
       })
       .catch((err) => {
-        consoleError('error getting addresses', err)
+        consoleError(err, 'error getting addresses')
         setError(extractError(err))
       })
   }, [])
@@ -71,7 +71,7 @@ export default function ReceiveAmount() {
       setFauceting(false)
       setFaucetSuccess(true)
     } catch (err) {
-      consoleError('error fauceting', err)
+      consoleError(err, 'error fauceting')
       setError(extractError(err))
       setFauceting(false)
     }
@@ -87,7 +87,7 @@ export default function ReceiveAmount() {
       setRecvInfo({ ...recvInfo, satoshis: amount })
       navigate(Pages.ReceiveQRCode)
     } catch (err) {
-      consoleError('error getting addresses', err)
+      consoleError(err, 'error getting addresses')
       setError(extractError(err))
     }
   }

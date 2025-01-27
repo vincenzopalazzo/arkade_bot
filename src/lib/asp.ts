@@ -72,7 +72,7 @@ export const getAspInfo = async (url: string): Promise<AspInfo> => {
         })
       })
       .catch((err) => {
-        consoleError('error getting asp info', err)
+        consoleError(err, 'error getting asp info')
         resolve({ ...emptyAspInfo, unreachable: true })
       })
   })
@@ -88,7 +88,7 @@ export const getBalance = async (): Promise<Satoshis> => {
         resolve(offchainBalance + onchainBalance.spendable + onchainBalance.locked)
       })
       .catch((err) => {
-        consoleError('error getting balance', err)
+        consoleError(err, 'error getting balance')
         resolve(0)
       })
   })
@@ -121,7 +121,7 @@ export const getTxHistory = async (): Promise<Tx[]> => {
       })
     }
   } catch (err) {
-    consoleError('error getting tx history', err)
+    consoleError(err, 'error getting tx history')
     return []
   }
   return txs
@@ -152,7 +152,6 @@ export const getVtxos = async (): Promise<Vtxos> => {
     const data = JSON.parse(json)
     const spendable = data.spendable?.map(toVtxo) ?? []
     const spent = data.spent?.map(toVtxo) ?? []
-    console.log('vtxos', data)
     return { spendable, spent }
   } catch {
     return { spendable: [], spent: [] }
@@ -164,7 +163,6 @@ export const lock = async (password: string): Promise<void> => {
 }
 
 export const redeemNotes = async (notes: string[]): Promise<void> => {
-  consoleLog('redeeming notes', notes)
   try {
     await window.redeemNotes(notes)
   } catch {
@@ -173,21 +171,18 @@ export const redeemNotes = async (notes: string[]): Promise<void> => {
 }
 
 export const sendOffChain = async (sats: number, address: string): Promise<string> => {
-  consoleLog('sending offchain', sats, address)
   return await window.sendOffChain(false, [{ To: address, Amount: sats }])
 }
 
 export const sendOnChain = async (sats: number, address: string): Promise<string> => {
-  consoleLog('sending onchain', sats, address)
   return await window.sendOnChain([{ To: address, Amount: sats }])
 }
 
 export const settleVtxos = async (): Promise<void> => {
-  consoleLog('settling vtxos')
   try {
     await window.settle()
   } catch (err) {
-    consoleError('error settling vtxos', err)
+    consoleError(err, 'error settling vtxos')
     throw err
   }
 }

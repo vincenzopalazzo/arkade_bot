@@ -21,6 +21,6 @@ export const getPriceFeed = async (): Promise<FiatPrices | undefined> => {
       usd: json.USD?.last,
     }
   } catch (err) {
-    consoleError('error fetching fiat prices', err)
+    consoleError(err, 'error fetching fiat prices')
   }
 }

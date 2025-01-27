@@ -73,7 +73,7 @@ export default function SendForm() {
         setNoteInfo({ note: recipient, satoshis: anote.data.value })
         return navigate(Pages.NotesRedeem)
       } catch (err) {
-        consoleError('error parsing ark note', err)
+        consoleError(err, 'error parsing ark note')
       }
     }
     setError('Invalid recipient address')

@@ -33,7 +33,7 @@ export default function Unlock() {
     if (!password) return
     setUnlocking(true)
     unlockWallet(password).catch((err) => {
-      consoleError('error unlocking wallet', err)
+      consoleError(err, 'error unlocking wallet')
       setError(extractError(err))
       setUnlocking(false)
     })

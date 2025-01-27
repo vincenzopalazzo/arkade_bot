@@ -50,7 +50,7 @@ export default function NotesRedeem() {
       await redeemNotes([noteInfo.note])
       navigate(Pages.NotesSuccess)
     } catch (err) {
-      consoleError('error redeeming note', err)
+      consoleError(err, 'error redeeming note')
       setError(extractError(err))
     }
     setRedeeming(false)
