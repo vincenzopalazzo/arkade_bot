@@ -10,11 +10,10 @@ export interface AspInfo {
   network: string
   pubkey: string
   roundInterval: number
-  roundLifetime?: number // TODO: remove after being renamed to vtxoTreeExpiry
   unilateralExitDelay: number
   unreachable: boolean
   url: string
-  vtxoTreeExpiry?: number // TODO: remove optionality (aka '?') after being renamed from roundLifetime
+  vtxoTreeExpiry: number
 }
 
 export const emptyAspInfo: AspInfo = {
@@ -24,7 +23,6 @@ export const emptyAspInfo: AspInfo = {
   network: '',
   pubkey: '',
   roundInterval: 0,
-  roundLifetime: 0,
   unilateralExitDelay: 0,
   unreachable: false,
   url: '',
@@ -57,7 +55,6 @@ export const getAspInfo = async (url: string): Promise<AspInfo> => {
           network,
           pubkey,
           roundInterval,
-          roundLifetime, // TODO: remove after being renamed to vtxoTreeExpiry
           unilateralExitDelay,
           vtxoTreeExpiry,
         } = info
@@ -68,7 +65,6 @@ export const getAspInfo = async (url: string): Promise<AspInfo> => {
           network,
           pubkey,
           roundInterval,
-          roundLifetime: Number(roundLifetime ?? '0'), // TODO: remove after being renamed to vtxoTreeExpiry
           unilateralExitDelay: Number(unilateralExitDelay),
           unreachable: false,
           url,
