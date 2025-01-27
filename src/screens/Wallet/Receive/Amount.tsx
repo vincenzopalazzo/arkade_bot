@@ -13,7 +13,7 @@ import Content from '../../../components/Content'
 import FlexCol from '../../../components/FlexCol'
 import Keyboard from '../../../components/Keyboard'
 import { WalletContext } from '../../../providers/wallet'
-import { callFaucet, hasFaucet } from '../../../lib/faucet'
+import { callFaucet, pingFaucet } from '../../../lib/faucet'
 import Loading from '../../../components/Loading'
 import { prettyNumber } from '../../../lib/format'
 import Success from '../../../components/Success'
@@ -32,12 +32,17 @@ export default function ReceiveAmount() {
   const [buttonLabel, setButtonLabel] = useState(defaultButtonLabel)
   const [error, setError] = useState('')
   const [fauceting, setFauceting] = useState(false)
-  const [showKeys, setShowKeys] = useState(false)
   const [faucetSuccess, setFaucetSuccess] = useState(false)
+  const [faucetAvailable, setFaucetAvailable] = useState(false)
+  const [showKeys, setShowKeys] = useState(false)
 
   useEffect(() => {
     setError(aspInfo.unreachable ? 'Ark server unreachable' : '')
   }, [aspInfo.unreachable])
+
+  useEffect(() => {
+    pingFaucet(wallet.network).then(setFaucetAvailable)
+  }, [])
 
   useEffect(() => {
     getReceivingAddresses()
@@ -87,7 +92,7 @@ export default function ReceiveAmount() {
     }
   }
 
-  const showFaucetButton = wallet.balance === 0 && hasFaucet(wallet.network)
+  const showFaucetButton = wallet.balance === 0 && faucetAvailable
 
   if (showKeys) {
     return <Keyboard back={() => setShowKeys(false)} hideBalance onChange={handleChange} value={amount} />

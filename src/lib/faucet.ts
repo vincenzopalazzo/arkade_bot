@@ -4,9 +4,6 @@ const faucets: Faucets = {
   mutinynet: 'https://faucet.mutinynet.arklabs.to',
   regtest: 'http://localhost:9999',
 }
-
-export const hasFaucet = (network: string): boolean => !!faucets[network]
-
 export const callFaucet = async (address: string, amount: number, network: string): Promise<boolean> => {
   const faucetServerUrl = faucets[network]
   if (!faucetServerUrl) return false
@@ -17,4 +14,14 @@ export const callFaucet = async (address: string, amount: number, network: strin
     method: 'POST',
   })
   return res.ok
+}
+
+export const pingFaucet = async (network: string): Promise<boolean> => {
+  const faucetServerUrl = faucets[network]
+  if (!faucetServerUrl) return false
+  const url = `${faucetServerUrl}/ping`
+  const res = await fetch(url, {
+    headers: { 'Content-Type': 'application/json' },
+  })
+  return res.ok && (await res.json()).message === 'pong'
 }
