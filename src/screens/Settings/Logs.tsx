@@ -47,14 +47,14 @@ export default function Logs() {
     setLoad(false)
   }, [load])
 
-  const clear = () => {
+  const handleClear = () => {
     clearLogs() // clear logs from local storage
     setLoad(true) // to reload page and show empty logs
   }
 
   return (
     <>
-      <Header text='Logs' back clear={clear} />
+      <Header auxFunc={handleClear} auxText='Clear' back text='Logs' />
       <Content>
         <LogsTable logs={logs} />
       </Content>

@@ -60,7 +60,12 @@ export default function Vtxos() {
 
   return (
     <>
-      <Header text='Coin control' back all={() => setShowList(!showList)} />
+      <Header
+        auxFunc={() => setShowList(!showList)}
+        auxText={showList ? 'Date' : 'VTXOs'}
+        back
+        text={showList ? 'VTXOs list' : 'Next roll over'}
+      />
       <Content>
         {rollingover ? (
           <Loading text='Rolling over your VTXOs requires a round, which can take a few seconds' />
@@ -68,7 +73,7 @@ export default function Vtxos() {
           <Padded>
             <FlexCol gap='0.5rem'>
               <Text capitalize color='dark50' smaller>
-                Amount and expiration
+                Your VTXOs with amount and expiration
               </Text>
               {wallet.vtxos.spendable?.map((v) => (
                 <VtxoLine key={v.txid} hide={!config.showBalance} vtxo={v} />

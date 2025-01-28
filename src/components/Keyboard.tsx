@@ -71,7 +71,7 @@ export default function Keyboard({ back, hideBalance, onChange, value }: Keyboar
 
   return (
     <>
-      <Header text='Amount' back={back} max={hideBalance ? undefined : handleMaxPress} />
+      <Header auxFunc={hideBalance ? undefined : handleMaxPress} auxText='Max' back={back} text='Amount' />
       <Content>
         <Error error={Boolean(error)} text={error} />
         <div style={{ paddingTop: '3rem' }} />
