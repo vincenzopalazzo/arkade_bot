@@ -15,6 +15,8 @@ import Header from '../../../components/Header'
 import Content from '../../../components/Content'
 import { consoleError } from '../../../lib/logs'
 import { canBrowserShareData, shareData } from '../../../lib/share'
+import ExpandAddresses from '../../../components/ExpandAddresses'
+import FlexCol from '../../../components/FlexCol'
 
 export default function ReceiveQRCode() {
   const { recvInfo, setRecvInfo } = useContext(FlowContext)
@@ -70,8 +72,11 @@ export default function ReceiveQRCode() {
       <Header text='Receive' back={() => navigate(Pages.ReceiveAmount)} />
       <Content>
         <Padded>
-          <Error error={Boolean(error)} text={error} />
-          <QrCode short={offchainAddr} value={bip21uri ?? ''} />
+          <FlexCol>
+            <Error error={Boolean(error)} text={error} />
+            <QrCode value={bip21uri ?? ''} />
+            <ExpandAddresses bip21uri={bip21uri} boardingAddr={boardingAddr} offchainAddr={offchainAddr} />
+          </FlexCol>
         </Padded>
       </Content>
       <ButtonsOnBottom>
