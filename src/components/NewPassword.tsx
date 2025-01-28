@@ -13,7 +13,6 @@ interface NewPasswordProps {
 
 export default function NewPassword({ handleProceed, onNewPassword, setLabel }: NewPasswordProps) {
   const [confirm, setConfirm] = useState('')
-  const [focus, setFocus] = useState('password')
   const [password, setPassword] = useState('')
   const [strength, setStrength] = useState(0)
 
@@ -24,7 +23,7 @@ export default function NewPassword({ handleProceed, onNewPassword, setLabel }: 
     setLabel('Save password')
   }, [password, confirm])
 
-  const handleChangeInsert = (e: any) => {
+  const handleChangePassword = (e: any) => {
     const pass = e.target.value
     setStrength(calcStrength(pass))
     setPassword(pass)
@@ -34,7 +33,6 @@ export default function NewPassword({ handleProceed, onNewPassword, setLabel }: 
 
   const handleEnter = () => {
     if (password && password === confirm) handleProceed()
-    else setFocus(focus === 'password' ? 'confirm' : 'password')
   }
 
   const passwordChecks = [
@@ -54,20 +52,9 @@ export default function NewPassword({ handleProceed, onNewPassword, setLabel }: 
 
   return (
     <FlexCol>
-      <InputPassword
-        focus={focus === 'password'}
-        label='Password'
-        onChange={handleChangeInsert}
-        onEnter={handleEnter}
-        strength={strength}
-      />
+      <InputPassword label='Password' onChange={handleChangePassword} onEnter={handleEnter} strength={strength} />
       <StrengthBars strength={strength} />
-      <InputPassword
-        focus={focus === 'confirm'}
-        label='Confirm password'
-        onChange={handleChangeConfirm}
-        onEnter={handleEnter}
-      />
+      <InputPassword label='Confirm password' onChange={handleChangeConfirm} onEnter={handleEnter} />
       <Text smaller>Set a strong password with:</Text>
       <CheckList data={passwordChecks} />
     </FlexCol>
