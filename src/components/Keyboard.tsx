@@ -69,6 +69,13 @@ export default function Keyboard({ back, hideBalance, onChange, value }: Keyboar
     padding: '1rem',
   }
 
+  const keys = [
+    ['1', '2', '3'],
+    ['4', '5', '6'],
+    ['7', '8', '9'],
+    ['.', '0', 'x'],
+  ]
+
   return (
     <>
       <Header auxFunc={hideBalance ? undefined : handleMaxPress} auxText='Max' back={back} text='Amount' />
@@ -82,48 +89,15 @@ export default function Keyboard({ back, hideBalance, onChange, value }: Keyboar
       </Content>
       {hideBalance ? null : <TextSecondary centered>{wallet.balance} sats available</TextSecondary>}
       <IonGrid style={gridStyle}>
-        <IonRow style={rowStyle}>
-          <IonCol size='4' onClick={() => handleKeyPress('1')}>
-            1
-          </IonCol>
-          <IonCol size='4' onClick={() => handleKeyPress('2')}>
-            2
-          </IonCol>
-          <IonCol size='4' onClick={() => handleKeyPress('3')}>
-            3
-          </IonCol>
-        </IonRow>
-        <IonRow style={rowStyle}>
-          <IonCol size='4' onClick={() => handleKeyPress('4')}>
-            4
-          </IonCol>
-          <IonCol size='4' onClick={() => handleKeyPress('5')}>
-            5
-          </IonCol>
-          <IonCol size='4' onClick={() => handleKeyPress('6')}>
-            6
-          </IonCol>
-        </IonRow>
-        <IonRow style={rowStyle}>
-          <IonCol size='4' onClick={() => handleKeyPress('7')}>
-            7
-          </IonCol>
-          <IonCol size='4' onClick={() => handleKeyPress('8')}>
-            8
-          </IonCol>
-          <IonCol size='4' onClick={() => handleKeyPress('9')}>
-            9
-          </IonCol>
-        </IonRow>
-        <IonRow style={rowStyle}>
-          <IonCol size='4'>.</IonCol>
-          <IonCol size='4' onClick={() => handleKeyPress('0')}>
-            0
-          </IonCol>
-          <IonCol size='4' onClick={() => handleKeyPress('x')}>
-            x
-          </IonCol>
-        </IonRow>
+        {keys.map((row) => (
+          <IonRow style={rowStyle} key={row[0]}>
+            {row.map((key) => (
+              <IonCol size='4' key={key} onClick={() => handleKeyPress(key)}>
+                {key}
+              </IonCol>
+            ))}
+          </IonRow>
+        ))}
       </IonGrid>
       <Padded>
         <Button label='Save' disabled={disabled} onClick={handleSave} />
