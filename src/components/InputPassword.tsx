@@ -14,10 +14,14 @@ interface InputPasswordProps {
 export default function InputPassword({ focus, label, onChange, onEnter, strength }: InputPasswordProps) {
   const right = strength ? <StrengthLabel strength={strength} /> : undefined
 
+  const firstRun = useRef(true)
   const input = useRef<HTMLIonInputElement>(null)
 
   useEffect(() => {
-    if (focus) input.current?.setFocus()
+    if (focus && firstRun.current) {
+      firstRun.current = false
+      input.current?.setFocus()
+    }
   })
 
   return (

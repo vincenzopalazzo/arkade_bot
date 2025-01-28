@@ -28,10 +28,14 @@ export default function InputWithScanner({
   validator,
   value,
 }: InputWithScannerProps) {
+  const firstRun = useRef(true)
   const input = useRef<HTMLIonInputElement>(null)
 
   useEffect(() => {
-    if (focus) input.current?.setFocus()
+    if (focus && firstRun.current) {
+      firstRun.current = false
+      input.current?.setFocus()
+    }
   })
 
   const handleInput = (ev: Event) => {

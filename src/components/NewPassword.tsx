@@ -13,6 +13,7 @@ interface NewPasswordProps {
 
 export default function NewPassword({ handleProceed, onNewPassword, setLabel }: NewPasswordProps) {
   const [confirm, setConfirm] = useState('')
+  const [focus, setFocus] = useState('password')
   const [password, setPassword] = useState('')
   const [strength, setStrength] = useState(0)
 
@@ -33,6 +34,8 @@ export default function NewPassword({ handleProceed, onNewPassword, setLabel }: 
 
   const handleEnter = () => {
     if (password && password === confirm) handleProceed()
+    if (!password) setFocus('password')
+    else if (!confirm) setFocus('confirm')
   }
 
   const passwordChecks = [
@@ -52,9 +55,20 @@ export default function NewPassword({ handleProceed, onNewPassword, setLabel }: 
 
   return (
     <FlexCol>
-      <InputPassword label='Password' onChange={handleChangePassword} onEnter={handleEnter} strength={strength} />
+      <InputPassword
+        focus={focus === 'password'}
+        label='Password'
+        onChange={handleChangePassword}
+        onEnter={handleEnter}
+        strength={strength}
+      />
       <StrengthBars strength={strength} />
-      <InputPassword label='Confirm password' onChange={handleChangeConfirm} onEnter={handleEnter} />
+      <InputPassword
+        focus={focus === 'confirm'}
+        label='Confirm password'
+        onChange={handleChangeConfirm}
+        onEnter={handleEnter}
+      />
       <Text smaller>Set a strong password with:</Text>
       <CheckList data={passwordChecks} />
     </FlexCol>

@@ -20,10 +20,14 @@ export default function InputAmount({ focus, label, onChange, onEnter, onFocus, 
   const [error, setError] = useState('')
   const [fiatValue, setFiatValue] = useState('')
 
+  const firstRun = useRef(true)
   const input = useRef<HTMLIonInputElement>(null)
 
   useEffect(() => {
-    if (focus) input.current?.setFocus()
+    if (focus && firstRun.current) {
+      firstRun.current = false
+      input.current?.setFocus()
+    }
   })
 
   useEffect(() => {
