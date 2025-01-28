@@ -20,18 +20,21 @@ export default function ExpandAddresses({ bip21uri, boardingAddr, offchainAddr }
   const [copied, setCopied] = useState('')
   const [expand, setExpand] = useState(false)
 
-  const canCopy = navigator.clipboard && 'writeText' in navigator.clipboard
-
   const handleCopy = async (value: string) => {
     await copyToClipboard(value)
     setCopied(value)
+  }
+
+  const handleExpand = () => {
+    if (!expand) handleCopy(bip21uri)
+    setExpand(!expand)
   }
 
   const ExpandLine = ({ title, value }: { title: string; value: string }) => (
     <FlexRow between>
       <FlexCol gap='0'>
         <TextSecondary>{title}</TextSecondary>
-        <Text>{prettyLongText(value)}</Text>
+        <Text>{prettyLongText(value, 10)}</Text>
       </FlexCol>
       <Shadow flex onClick={() => handleCopy(value)}>
         {copied === value ? <CheckMarkIcon /> : <CopyIcon />}
@@ -42,9 +45,9 @@ export default function ExpandAddresses({ bip21uri, boardingAddr, offchainAddr }
   return (
     <>
       <Shadow>
-        <FlexRow between onClick={() => setExpand(!expand)}>
-          <Text>Expand address</Text>
-          {expand ? <ChevronDownIcon /> : <ChevronUpIcon />}
+        <FlexRow between onClick={handleExpand}>
+          <Text>Copy address</Text>
+          {expand ? <ChevronUpIcon /> : <ChevronDownIcon />}
         </FlexRow>
       </Shadow>
       {expand ? (
