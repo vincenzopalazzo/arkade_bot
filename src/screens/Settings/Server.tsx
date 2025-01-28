@@ -38,12 +38,17 @@ export default function Server() {
     })
   }, [aspUrl])
 
-  const handleNewServer = () => {
+  const handleConnect = () => {
     if (!info) return
     clearStorage()
     updateConfig({ ...config, aspUrl })
     updateWallet({ ...wallet, network: info.network, initialized: false })
     location.reload() // reload app or else weird things happen
+  }
+
+  const handleEnter = () => {
+    if (!info || Boolean(error)) return
+    handleConnect()
   }
 
   if (scan) return <Scanner close={() => setScan(false)} label='Server URL' setData={setAspUrl} setError={setError} />
@@ -54,7 +59,14 @@ export default function Server() {
       <Content>
         <Padded>
           <FlexCol>
-            <InputUrl label='Server URL' onChange={setAspUrl} openScan={() => setScan(true)} value={aspUrl} />
+            <InputUrl
+              focus
+              label='Server URL'
+              onChange={setAspUrl}
+              onEnter={handleEnter}
+              openScan={() => setScan(true)}
+              value={aspUrl}
+            />
             <Error error={Boolean(error)} text={error} />
             {info && !error ? <WarningBox green text='Server found' /> : null}
             <WarningBox text='Your wallet will be reseted. Make sure you backup your wallet first.' />
@@ -62,7 +74,7 @@ export default function Server() {
         </Padded>
       </Content>
       <ButtonsOnBottom>
-        <Button onClick={handleNewServer} label='Connect to server' disabled={!info || Boolean(error)} />
+        <Button onClick={handleConnect} label='Connect to server' disabled={!info || Boolean(error)} />
       </ButtonsOnBottom>
     </>
   )
