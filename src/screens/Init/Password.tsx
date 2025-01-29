@@ -27,7 +27,9 @@ export default function InitPassword() {
       <Header text='Define password' back={handleCancel} />
       <Content>
         <Padded>
-          <NewPassword handleProceed={handleProceed} onNewPassword={setPassword} setLabel={setLabel} />
+          <form>
+            <NewPassword handleProceed={handleProceed} onNewPassword={setPassword} setLabel={setLabel} />
+          </form>
         </Padded>
       </Content>
       <ButtonsOnBottom>
