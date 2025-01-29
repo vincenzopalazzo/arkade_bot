@@ -171,7 +171,9 @@ export const redeemNotes = async (notes: string[]): Promise<void> => {
 }
 
 export const sendOffChain = async (sats: number, address: string): Promise<string> => {
-  return await window.sendOffChain(false, [{ To: address, Amount: sats }])
+  const withZeroFees = true
+  const withExpiryCoinselect = false
+  return await window.sendOffChain(withExpiryCoinselect, [{ To: address, Amount: sats }], withZeroFees)
 }
 
 export const sendOnChain = async (sats: number, address: string): Promise<string> => {
