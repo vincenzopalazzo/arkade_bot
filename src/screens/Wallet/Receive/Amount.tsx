@@ -42,7 +42,9 @@ export default function ReceiveAmount() {
   }, [aspInfo.unreachable])
 
   useEffect(() => {
-    pingFaucet(wallet.network).then(setFaucetAvailable)
+    pingFaucet(wallet.network)
+      .then(setFaucetAvailable)
+      .catch(() => {})
   }, [])
 
   useEffect(() => {
