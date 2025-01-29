@@ -45,6 +45,7 @@ export default function Text({
     textAlign: centered ? 'center' : undefined,
     textOverflow: wrap ? undefined : 'ellipsis',
     whiteSpace: wrap ? undefined : 'nowrap',
+    wordBreak: 'break-word',
   }
 
   const handleClick = () => {
