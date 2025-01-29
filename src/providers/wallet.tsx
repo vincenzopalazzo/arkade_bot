@@ -43,7 +43,7 @@ const defaultWallet: Wallet = {
 interface WalletContextProps {
   initWallet: (password: string, privateKey: string) => Promise<void>
   lockWallet: (password: string) => Promise<void>
-  rolloverVtxos: () => Promise<void>
+  rolloverVtxos: (raise?: boolean) => Promise<void>
   reloadWallet: () => void
   resetWallet: () => void
   settlePending: () => Promise<void>
@@ -150,12 +150,14 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     }
   }
 
-  const rolloverVtxos = async () => {
+  const rolloverVtxos = async (raise = false) => {
     try {
       await settleVtxos()
       await reloadWallet()
       notifyVtxosRollover()
-    } catch {}
+    } catch (err) {
+      if (raise) throw err
+    }
   }
 
   const reloadWallet = async () => {

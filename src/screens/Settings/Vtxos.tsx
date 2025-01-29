@@ -13,6 +13,8 @@ import { Vtxo } from '../../lib/types'
 import FlexRow from '../../components/FlexRow'
 import WarningBox from '../../components/Warning'
 import { ConfigContext } from '../../providers/config'
+import { extractError } from '../../lib/error'
+import Error from '../../components/Error'
 
 const Box = ({ children }: { children: ReactNode }) => {
   const style = {
@@ -43,19 +45,26 @@ export default function Vtxos() {
   const { config } = useContext(ConfigContext)
   const { rolloverVtxos, wallet } = useContext(WalletContext)
 
-  const defaultButtonLabel = 'Roll over VTXOs now'
-  const [buttonLabel, setButtonLabel] = useState(defaultButtonLabel)
+  const defaultLabel = 'Roll over VTXOs now'
+
+  const [error, setError] = useState('')
+  const [label, setLabel] = useState(defaultLabel)
   const [rollingover, setRollingover] = useState(false)
   const [showList, setShowList] = useState(false)
 
   const handleRollover = async () => {
-    setRollingover(true)
-    await rolloverVtxos()
-    setRollingover(false)
+    try {
+      setRollingover(true)
+      await rolloverVtxos(true)
+      setRollingover(false)
+    } catch (err) {
+      setError(extractError(err))
+      setRollingover(false)
+    }
   }
 
   useEffect(() => {
-    setButtonLabel(rollingover ? 'Rolling over...' : defaultButtonLabel)
+    setLabel(rollingover ? 'Rolling over...' : defaultLabel)
   }, [rollingover])
 
   return (
@@ -72,6 +81,7 @@ export default function Vtxos() {
         ) : showList ? (
           <Padded>
             <FlexCol gap='0.5rem'>
+              <Error error={Boolean(error)} text={error} />
               <Text capitalize color='dark50' smaller>
                 Your VTXOs with amount and expiration
               </Text>
@@ -85,6 +95,7 @@ export default function Vtxos() {
             {wallet.vtxos.spendable?.length > 0 ? (
               <>
                 <FlexCol gap='0.5rem' margin='0 0 1rem 0'>
+                  <Error error={Boolean(error)} text={error} />
                   <Text capitalize color='dark50' smaller>
                     Next roll over
                   </Text>
@@ -111,7 +122,7 @@ export default function Vtxos() {
       </Content>
       <ButtonsOnBottom>
         {wallet.vtxos.spendable?.length > 0 ? (
-          <Button onClick={handleRollover} label={buttonLabel} disabled={rollingover} />
+          <Button onClick={handleRollover} label={label} disabled={rollingover} />
         ) : null}
       </ButtonsOnBottom>
     </>
