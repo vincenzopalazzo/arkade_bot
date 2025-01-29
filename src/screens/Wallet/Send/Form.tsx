@@ -90,6 +90,7 @@ export default function SendForm() {
   }, [aspInfo.unreachable])
 
   const setState = (info: SendInfo) => {
+    setScan(false)
     setSendInfo(info)
     if (!receivingAddresses) return
     const { address, arkAddress } = info
