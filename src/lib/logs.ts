@@ -36,7 +36,7 @@ export const consoleLog = (...args: any[]) => {
 }
 
 export const consoleError = (err: any, msg = '') => {
-  const str = `${msg}: ${extractError(err)}`
+  const str = (msg ? `${msg}: ` : '') + extractError(err)
   addLog(LogLevel.Error, [str])
   console.error(str)
 }
