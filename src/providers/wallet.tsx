@@ -188,7 +188,6 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const updateWallet = async (data: Wallet) => {
-    console.log('updateWallet', data)
     const wasmVersion = await window.getVersion()
     setWallet({ ...data, wasmVersion })
     saveWalletToStorage(data)
