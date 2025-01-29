@@ -45,7 +45,7 @@ export const getAspInfo = async (url: string): Promise<AspInfo> => {
     get('/v1/info', url)
       .then((info: AspInfo) => {
         if (info?.code === 5) {
-          console.error('invalid response from server')
+          consoleError('invalid response from server')
           resolve({ ...emptyAspInfo, unreachable: true })
         }
         const {
