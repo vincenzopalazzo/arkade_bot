@@ -137,6 +137,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     const walletType = 'singlekey'
     const explorerUrl = getRestApiExplorerURL(wallet.network) ?? ''
     await window.init(walletType, clientType, aspUrl, privateKey, password, chain, explorerUrl)
+    await unlockWallet(password)
     updateWallet({ ...wallet, initialized: true, network: aspInfo.network })
   }
 
@@ -184,10 +185,10 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   const unlockWallet = async (password: string) => {
     await unlock(password)
     setWalletUnlocked(true)
-    reloadWallet()
   }
 
   const updateWallet = async (data: Wallet) => {
+    console.log('updateWallet', data)
     const wasmVersion = await window.getVersion()
     setWallet({ ...data, wasmVersion })
     saveWalletToStorage(data)
