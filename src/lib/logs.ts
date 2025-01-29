@@ -40,3 +40,9 @@ export const consoleError = (err: any, msg = '') => {
   addLog(LogLevel.Error, [str])
   console.error(str)
 }
+
+export const getLogsLength = () => getLogs().length
+
+export const getLogLineMsg = (index: number) => {
+  return getLogs()[index].msg
+}

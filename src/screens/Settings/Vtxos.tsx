@@ -5,7 +5,6 @@ import Padded from '../../components/Padded'
 import Content from '../../components/Content'
 import { WalletContext } from '../../providers/wallet'
 import { prettyAgo, prettyDate, prettyHide, prettyNumber } from '../../lib/format'
-import Loading from '../../components/Loading'
 import Header from './Header'
 import Text, { TextSecondary } from '../../components/Text'
 import FlexCol from '../../components/FlexCol'
@@ -15,6 +14,8 @@ import WarningBox from '../../components/Warning'
 import { ConfigContext } from '../../providers/config'
 import { extractError } from '../../lib/error'
 import Error from '../../components/Error'
+import Settling from '../../components/Settling'
+import { sleep } from '../../lib/sleep'
 
 const Box = ({ children }: { children: ReactNode }) => {
   const style = {
@@ -56,6 +57,7 @@ export default function Vtxos() {
     try {
       setRollingover(true)
       await rolloverVtxos(true)
+      await sleep(2000) // give time to read last message
       setRollingover(false)
     } catch (err) {
       setError(extractError(err))
@@ -77,7 +79,7 @@ export default function Vtxos() {
       />
       <Content>
         {rollingover ? (
-          <Loading text='Rolling over your VTXOs requires a round, which can take a few seconds' />
+          <Settling />
         ) : showList ? (
           <Padded>
             <FlexCol gap='0.5rem'>

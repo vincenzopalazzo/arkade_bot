@@ -10,13 +10,14 @@ import { defaultFee } from '../../lib/constants'
 import Table from '../../components/Table'
 import Error from '../../components/Error'
 import { extractError } from '../../lib/error'
-import Loading from '../../components/Loading'
 import { openInNewTab } from '../../lib/explorers'
 import Header from '../../components/Header'
 import Content from '../../components/Content'
 import Info from '../../components/Info'
 import FlexCol from '../../components/FlexCol'
 import { ConfigContext } from '../../providers/config'
+import Settling from '../../components/Settling'
+import { sleep } from '../../lib/sleep'
 
 export default function Transaction() {
   const { config } = useContext(ConfigContext)
@@ -55,6 +56,7 @@ export default function Transaction() {
     setSettling(true)
     try {
       await settlePending()
+      await sleep(2000) // give time to read last message
       setSettleSuccess(true)
       if (tx) setTxInfo({ ...tx, pending: false, settled: true })
     } catch (err) {
@@ -82,10 +84,11 @@ export default function Transaction() {
       <Header text='Transaction' back={handleBack} />
       <Content>
         {settling ? (
-          <Loading text='Settling transactions requires a round, which can take a few seconds' />
+          <Settling settle />
         ) : (
           <Padded>
             <FlexCol>
+              <Error error={Boolean(error)} text={error} />
               {!tx.settled ? (
                 <Info
                   color='yellowoutlier'
@@ -94,7 +97,6 @@ export default function Transaction() {
                 />
               ) : null}
               {settleSuccess ? <Info color='green' title='Success' text='Your transactions are now settled' /> : null}
-              <Error error={Boolean(error)} text={error} />
               <Table data={data} />
             </FlexCol>
           </Padded>
