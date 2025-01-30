@@ -79,7 +79,7 @@ export default function Vtxos() {
       />
       <Content>
         {rollingover ? (
-          <Settling />
+          <Settling rollover />
         ) : showList ? (
           <Padded>
             <FlexCol gap='0.5rem'>

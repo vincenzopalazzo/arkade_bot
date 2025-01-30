@@ -3,12 +3,12 @@ import Loading from './Loading'
 import { getLogLineMsg, getLogsLength } from '../lib/logs'
 import { sleep } from '../lib/sleep'
 
-export default function Settling({ settle }: { settle?: boolean }) {
-  const initialMessage =
-    (settle ? 'Settling transactions' : 'Rolling over your VTXOs') + ' requires a round, which can take a few seconds'
+export default function Settling({ rollover, settle }: { rollover?: boolean; settle?: boolean }) {
+  const initial = settle ? 'Settling transactions' : rollover ? 'Rolling over your VTXOs' : 'Payments to mainnet'
+  const message = initial + ' requires a round, which can take a few seconds'
 
   const [logLength, setLogLength] = useState(getLogsLength())
-  const [logMessage, setLogMessage] = useState(initialMessage)
+  const [logMessage, setLogMessage] = useState(message)
 
   const firstRun = useRef(true)
 
