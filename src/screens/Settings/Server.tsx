@@ -70,7 +70,7 @@ export default function Server() {
             />
             <Error error={Boolean(error)} text={error} />
             {info && !error ? <WarningBox green text='Server found' /> : null}
-            <WarningBox text='Your wallet will be reseted. Make sure you backup your wallet first.' />
+            <WarningBox text='Your wallet will be reset. Make sure you backup your wallet first.' />
           </FlexCol>
         </Padded>
       </Content>
