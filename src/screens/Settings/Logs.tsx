@@ -6,6 +6,8 @@ import { prettyAgo, prettyLongText } from '../../lib/format'
 import { clearLogs, getLogs, LogLine } from '../../lib/logs'
 import FlexCol from '../../components/FlexCol'
 import FlexRow from '../../components/FlexRow'
+import Button from '../../components/Button'
+import ButtonsOnBottom from '../../components/ButtonsOnBottom'
 
 function LogsTable({ logs }: { logs: LogLine[] }) {
   const color = (level: string): string => {
@@ -52,12 +54,36 @@ export default function Logs() {
     setLoad(true) // to reload page and show empty logs
   }
 
+  const handleExport = () => {
+    if (logs?.length === 0) return
+    const csvHeader =
+      Object.keys(logs[0])
+        .map((k) => `"${k}"`)
+        .join(',') + '\n'
+    const csvBody = logs
+      .map((row) =>
+        Object.values(row)
+          .map((k) => `"${k}"`)
+          .join(','),
+      )
+      .join('\n')
+    const hiddenElement = document.createElement('a')
+    hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csvHeader + csvBody)
+    hiddenElement.target = '_blank'
+    hiddenElement.download = 'arkade_logs.csv'
+    document.body.appendChild(hiddenElement) // required for firefox
+    hiddenElement.click()
+  }
+
   return (
     <>
       <Header auxFunc={handleClear} auxText='Clear' back text='Logs' />
       <Content>
         <LogsTable logs={logs} />
       </Content>
+      <ButtonsOnBottom>
+        <Button onClick={handleExport} label='Export to CSV file' disabled={logs.length === 0} />
+      </ButtonsOnBottom>
     </>
   )
 }
