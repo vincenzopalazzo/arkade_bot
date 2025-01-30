@@ -3,7 +3,7 @@ import FlexRow from './FlexRow'
 import { InfoIconDark } from '../icons/Info'
 import Padded from './Padded'
 import FlexCol from './FlexCol'
-import Text from './Text'
+import Text, { TextSecondary } from './Text'
 
 interface InfoProps {
   color: string
@@ -24,9 +24,9 @@ export default function Info({ color, title, text }: InfoProps) {
             <div style={{ minWidth: '20px' }}>
               <InfoIconDark />
             </div>
-            <Text small wrap>
+            <TextSecondary small wrap>
               {text}
-            </Text>
+            </TextSecondary>
           </FlexRow>
         </FlexCol>
       </Padded>

@@ -26,7 +26,7 @@ export const prettyAmount = (sats: number, suffix = 'sats'): string => {
   return `${prettyNumber(sats)} ${suffix}`
 }
 
-const prettyDelta = (seconds: number, long: boolean): string => {
+export const prettyDelta = (seconds: number, long = true): string => {
   const delta = Math.abs(seconds)
   if (delta > 86_400) {
     const days = Math.floor(delta / 86_400)

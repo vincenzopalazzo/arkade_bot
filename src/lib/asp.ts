@@ -14,6 +14,12 @@ export interface AspInfo {
   unreachable: boolean
   url: string
   vtxoTreeExpiry: number
+  marketHour: {
+    nextStartTime: number
+    nextEndTime: number
+    period: number
+    roundInterval: number
+  }
 }
 
 export const emptyAspInfo: AspInfo = {
@@ -27,6 +33,12 @@ export const emptyAspInfo: AspInfo = {
   unreachable: false,
   url: '',
   vtxoTreeExpiry: 0,
+  marketHour: {
+    nextStartTime: 0,
+    nextEndTime: 0,
+    period: 0,
+    roundInterval: 0,
+  },
 }
 
 const headers = { 'Content-Type': 'application/json' }
@@ -57,18 +69,25 @@ export const getAspInfo = async (url: string): Promise<AspInfo> => {
           roundInterval,
           unilateralExitDelay,
           vtxoTreeExpiry,
+          marketHour,
         } = info
         resolve({
           boardingDescriptorTemplate,
-          dust,
+          dust: Number(dust),
           forfeitAddress,
           network,
           pubkey,
-          roundInterval,
+          roundInterval: Number(roundInterval),
           unilateralExitDelay: Number(unilateralExitDelay),
           unreachable: false,
           url,
           vtxoTreeExpiry: Number(vtxoTreeExpiry ?? '0'),
+          marketHour: {
+            nextStartTime: Number(marketHour.nextStartTime),
+            nextEndTime: Number(marketHour.nextEndTime),
+            period: Number(marketHour.period),
+            roundInterval: Number(marketHour.roundInterval),
+          },
         })
       })
       .catch((err) => {

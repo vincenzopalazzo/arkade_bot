@@ -5,7 +5,7 @@ import { NavigationContext, Pages } from '../../providers/navigation'
 import Padded from '../../components/Padded'
 import { WalletContext } from '../../providers/wallet'
 import { FlowContext } from '../../providers/flow'
-import { prettyAgo, prettyDate, prettyHide, prettyLongText, prettyNumber } from '../../lib/format'
+import { prettyAgo, prettyDate, prettyDelta, prettyHide, prettyLongText, prettyNumber } from '../../lib/format'
 import { defaultFee } from '../../lib/constants'
 import Table from '../../components/Table'
 import Error from '../../components/Error'
@@ -18,8 +18,10 @@ import FlexCol from '../../components/FlexCol'
 import { ConfigContext } from '../../providers/config'
 import WaitingForRound from '../../components/WaitingForRound'
 import { sleep } from '../../lib/sleep'
+import { AspContext } from '../../providers/asp'
 
 export default function Transaction() {
+  const { aspInfo } = useContext(AspContext)
   const { config } = useContext(ConfigContext)
   const { txInfo, setTxInfo } = useContext(FlowContext)
   const { navigate } = useContext(NavigationContext)
@@ -70,7 +72,8 @@ export default function Transaction() {
   const amount = tx.type === 'sent' ? tx.amount - defaultFee : tx.amount
 
   const data = [
-    ['Kind', tx.type === 'sent' ? 'Sent' : 'Received'],
+    // ['State', tx.pending ? 'Pending' : 'Settled'],
+    ['Direction', tx.type === 'sent' ? 'Sent' : 'Received'],
     ['When', prettyAgo(tx.createdAt)],
     ['Date', prettyDate(tx.createdAt)],
     ['Amount', `${config.showBalance ? prettyNumber(amount) : prettyHide(amount)} sats`],
@@ -78,6 +81,11 @@ export default function Transaction() {
     ['Network fees', `${prettyNumber(tx.type === 'sent' ? defaultFee : 0)} sats`],
     ['Total', `${config.showBalance ? prettyNumber(tx.amount) : prettyHide(tx.amount)} sats`],
   ].filter((l) => l[1])
+
+  const marketHour = {
+    start: prettyDate(aspInfo?.marketHour.nextStartTime),
+    lasts: prettyDelta(aspInfo?.marketHour.nextStartTime - aspInfo?.marketHour.nextEndTime),
+  }
 
   return (
     <>
@@ -93,7 +101,7 @@ export default function Transaction() {
                 <Info
                   color='yellowoutlier'
                   title='Pending'
-                  text='This transaction is not yet final. Funds will become non-reversible once the transaction is settled.'
+                  text={`This transaction is not yet final. Funds will become non-reversible once the transaction is settled. You can settle it at the next market hour for lower fees. Next market hour starts at ${marketHour.start} and lasts for ${marketHour.lasts}.`}
                 />
               ) : null}
               {settleSuccess ? <Info color='green' title='Success' text='Your transactions are now settled' /> : null}
