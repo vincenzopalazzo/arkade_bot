@@ -5,7 +5,7 @@ import { NavigationContext, Pages } from '../../providers/navigation'
 import Padded from '../../components/Padded'
 import { WalletContext } from '../../providers/wallet'
 import { FlowContext } from '../../providers/flow'
-import { prettyAgo, prettyDate, prettyHide, prettyNumber } from '../../lib/format'
+import { prettyAgo, prettyDate, prettyHide, prettyLongText, prettyNumber } from '../../lib/format'
 import { defaultFee } from '../../lib/constants'
 import Table from '../../components/Table'
 import Error from '../../components/Error'
@@ -70,14 +70,14 @@ export default function Transaction() {
   const amount = tx.type === 'sent' ? tx.amount - defaultFee : tx.amount
 
   const data = [
-    // ['State', tx.pending ? 'Pending' : 'Settled'],
     ['Kind', tx.type === 'sent' ? 'Sent' : 'Received'],
     ['When', prettyAgo(tx.createdAt)],
     ['Date', prettyDate(tx.createdAt)],
     ['Amount', `${config.showBalance ? prettyNumber(amount) : prettyHide(amount)} sats`],
+    ['Destination', tx.spentBy ? prettyLongText(tx.spentBy) : ''],
     ['Network fees', `${prettyNumber(tx.type === 'sent' ? defaultFee : 0)} sats`],
     ['Total', `${config.showBalance ? prettyNumber(tx.amount) : prettyHide(tx.amount)} sats`],
-  ]
+  ].filter((l) => l[1])
 
   return (
     <>
