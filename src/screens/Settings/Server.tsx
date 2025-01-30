@@ -65,6 +65,7 @@ export default function Server() {
               onChange={setAspUrl}
               onEnter={handleEnter}
               openScan={() => setScan(true)}
+              placeholder={config.aspUrl}
               value={aspUrl}
             />
             <Error error={Boolean(error)} text={error} />
