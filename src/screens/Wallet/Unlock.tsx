@@ -12,7 +12,7 @@ import { consoleError } from '../../lib/logs'
 import FlexCol from '../../components/FlexCol'
 
 export default function Unlock() {
-  const { unlockWallet } = useContext(WalletContext)
+  const { reloadWallet, unlockWallet } = useContext(WalletContext)
 
   const [error, setError] = useState('')
   const [label, setLabel] = useState('Unlock')
@@ -26,17 +26,21 @@ export default function Unlock() {
   const handleChange = (ev: Event) => {
     const password = (ev.target as HTMLInputElement).value
     setPassword(password)
-    unlockWallet(password).catch(() => {})
+    unlockWallet(password)
+      .then(reloadWallet)
+      .catch(() => {})
   }
 
   const handleUnlock = async () => {
     if (!password) return
     setUnlocking(true)
-    unlockWallet(password).catch((err) => {
-      consoleError(err, 'error unlocking wallet')
-      setError(extractError(err))
-      setUnlocking(false)
-    })
+    unlockWallet(password)
+      .then(reloadWallet)
+      .catch((err) => {
+        consoleError(err, 'error unlocking wallet')
+        setError(extractError(err))
+        setUnlocking(false)
+      })
   }
 
   return (
