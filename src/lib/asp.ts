@@ -115,6 +115,7 @@ export const getTxHistory = async (): Promise<Tx[]> => {
         explorable,
         pending: !settled,
         settled: type === 'SENT' ? true : settled, // show all sent tx as settled
+        spentBy: tx.spentBy,
         redeemTxid,
         roundTxid,
         type: type.toLowerCase(),
