@@ -5,7 +5,7 @@ import { NavigationContext, Pages } from '../../providers/navigation'
 import Padded from '../../components/Padded'
 import { WalletContext } from '../../providers/wallet'
 import { FlowContext } from '../../providers/flow'
-import { prettyAgo, prettyDate, prettyDelta, prettyHide, prettyLongText, prettyNumber } from '../../lib/format'
+import { prettyAgo, prettyDate, prettyHide, prettyLongText, prettyNumber } from '../../lib/format'
 import { defaultFee } from '../../lib/constants'
 import Table from '../../components/Table'
 import Error from '../../components/Error'
@@ -19,9 +19,10 @@ import { ConfigContext } from '../../providers/config'
 import WaitingForRound from '../../components/WaitingForRound'
 import { sleep } from '../../lib/sleep'
 import { AspContext } from '../../providers/asp'
+import { TextSecondary } from '../../components/Text'
 
 export default function Transaction() {
-  const { aspInfo } = useContext(AspContext)
+  const { marketHour } = useContext(AspContext)
   const { config } = useContext(ConfigContext)
   const { txInfo, setTxInfo } = useContext(FlowContext)
   const { navigate } = useContext(NavigationContext)
@@ -82,11 +83,6 @@ export default function Transaction() {
     ['Total', `${config.showBalance ? prettyNumber(tx.amount) : prettyHide(tx.amount)} sats`],
   ].filter((l) => l[1])
 
-  const marketHour = {
-    start: prettyDate(aspInfo?.marketHour.nextStartTime),
-    lasts: prettyDelta(aspInfo?.marketHour.nextStartTime - aspInfo?.marketHour.nextEndTime),
-  }
-
   return (
     <>
       <Header text='Transaction' back={handleBack} />
@@ -98,13 +94,21 @@ export default function Transaction() {
             <FlexCol>
               <Error error={Boolean(error)} text={error} />
               {!tx.settled ? (
-                <Info
-                  color='yellowoutlier'
-                  title='Pending'
-                  text={`This transaction is not yet final. Funds will become non-reversible once the transaction is settled. You can settle it at the next market hour for lower fees. Next market hour starts at ${marketHour.start} and lasts for ${marketHour.lasts}.`}
-                />
+                <Info color='yellowoutlier' title='Pending'>
+                  <TextSecondary>
+                    This transaction is not yet final. Funds will become non-reversible once the transaction is settled.
+                    You can settle it at the next market hour for lower fees.
+                  </TextSecondary>
+                  <TextSecondary>
+                    Next market hour starts at {marketHour.start} and lasts for {marketHour.lasts}.
+                  </TextSecondary>
+                </Info>
               ) : null}
-              {settleSuccess ? <Info color='green' title='Success' text='Your transactions are now settled' /> : null}
+              {settleSuccess ? (
+                <Info color='green' title='Success'>
+                  <TextSecondary>Your transactions are now settled</TextSecondary>
+                </Info>
+              ) : null}
               <Table data={data} />
             </FlexCol>
           </Padded>

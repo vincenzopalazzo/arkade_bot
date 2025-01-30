@@ -3,15 +3,16 @@ import FlexRow from './FlexRow'
 import { InfoIconDark } from '../icons/Info'
 import Padded from './Padded'
 import FlexCol from './FlexCol'
-import Text, { TextSecondary } from './Text'
+import Text from './Text'
+import { ReactNode } from 'react'
 
 interface InfoProps {
+  children: ReactNode
   color: string
   title: string
-  text: string
 }
 
-export default function Info({ color, title, text }: InfoProps) {
+export default function Info({ children, color, title }: InfoProps) {
   return (
     <Shadow lighter>
       <Padded>
@@ -24,9 +25,7 @@ export default function Info({ color, title, text }: InfoProps) {
             <div style={{ minWidth: '20px' }}>
               <InfoIconDark />
             </div>
-            <TextSecondary small wrap>
-              {text}
-            </TextSecondary>
+            <FlexCol gap='0.5rem'>{children}</FlexCol>
           </FlexRow>
         </FlexCol>
       </Padded>

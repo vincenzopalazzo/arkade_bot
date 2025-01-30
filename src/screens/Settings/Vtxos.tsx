@@ -16,6 +16,7 @@ import { extractError } from '../../lib/error'
 import Error from '../../components/Error'
 import WaitingForRound from '../../components/WaitingForRound'
 import { sleep } from '../../lib/sleep'
+import { AspContext } from '../../providers/asp'
 
 const Box = ({ children }: { children: ReactNode }) => {
   const style = {
@@ -43,6 +44,7 @@ const VtxoLine = ({ hide, vtxo }: { hide: boolean; vtxo: Vtxo }) => {
 }
 
 export default function Vtxos() {
+  const { marketHour } = useContext(AspContext)
   const { config } = useContext(ConfigContext)
   const { rolloverVtxos, wallet } = useContext(WalletContext)
 
@@ -113,6 +115,10 @@ export default function Vtxos() {
                   </TextSecondary>
                   <TextSecondary>
                     The app will try to auto roll over all VTXOs which expire in less than 24 hours.
+                  </TextSecondary>
+                  <TextSecondary>You can settle it at the next market hour for lower fees.</TextSecondary>
+                  <TextSecondary>
+                    Next market hour starts at {marketHour.start} and lasts for {marketHour.lasts}.
                   </TextSecondary>
                 </FlexCol>
               </>
