@@ -3,7 +3,7 @@ import Loading from './Loading'
 import { getLogLineMsg, getLogsLength } from '../lib/logs'
 import { sleep } from '../lib/sleep'
 
-export default function Settling({ rollover, settle }: { rollover?: boolean; settle?: boolean }) {
+export default function WaitingForRound({ rollover, settle }: { rollover?: boolean; settle?: boolean }) {
   const initial = settle ? 'Settling transactions' : rollover ? 'Rolling over your VTXOs' : 'Payments to mainnet'
   const message = initial + ' requires a round, which can take a few seconds'
 

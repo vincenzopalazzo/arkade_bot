@@ -14,7 +14,7 @@ import WarningBox from '../../components/Warning'
 import { ConfigContext } from '../../providers/config'
 import { extractError } from '../../lib/error'
 import Error from '../../components/Error'
-import Settling from '../../components/Settling'
+import WaitingForRound from '../../components/WaitingForRound'
 import { sleep } from '../../lib/sleep'
 
 const Box = ({ children }: { children: ReactNode }) => {
@@ -79,7 +79,7 @@ export default function Vtxos() {
       />
       <Content>
         {rollingover ? (
-          <Settling rollover />
+          <WaitingForRound rollover />
         ) : showList ? (
           <Padded>
             <FlexCol gap='0.5rem'>

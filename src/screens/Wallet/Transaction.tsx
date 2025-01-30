@@ -16,7 +16,7 @@ import Content from '../../components/Content'
 import Info from '../../components/Info'
 import FlexCol from '../../components/FlexCol'
 import { ConfigContext } from '../../providers/config'
-import Settling from '../../components/Settling'
+import WaitingForRound from '../../components/WaitingForRound'
 import { sleep } from '../../lib/sleep'
 
 export default function Transaction() {
@@ -84,7 +84,7 @@ export default function Transaction() {
       <Header text='Transaction' back={handleBack} />
       <Content>
         {settling ? (
-          <Settling settle />
+          <WaitingForRound settle />
         ) : (
           <Padded>
             <FlexCol>

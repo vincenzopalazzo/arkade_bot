@@ -16,7 +16,7 @@ import { collaborativeRedeem, sendOffChain } from '../../../lib/asp'
 import { extractError } from '../../../lib/error'
 import Loading from '../../../components/Loading'
 import { consoleError } from '../../../lib/logs'
-import Settling from '../../../components/Settling'
+import WaitingForRound from '../../../components/WaitingForRound'
 
 export default function SendDetails() {
   const { navigate } = useContext(NavigationContext)
@@ -80,7 +80,7 @@ export default function SendDetails() {
           arkAddress ? (
             <Loading text='Paying inside the Ark' />
           ) : (
-            <Settling />
+            <WaitingForRound />
           )
         ) : (
           <Padded>
