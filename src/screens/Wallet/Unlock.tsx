@@ -48,12 +48,12 @@ export default function Unlock() {
       <Header text='Unlock' />
       <Content>
         <Padded>
-          <form>
-            <FlexCol gap='1rem'>
-              {unlocking ? null : <InputPassword focus label='Insert password' onChange={handleChange} />}
-              <Error error={Boolean(error)} text={error} />
-            </FlexCol>
-          </form>
+          <FlexCol gap='1rem'>
+            {unlocking ? null : (
+              <InputPassword focus label='Insert password' onChange={handleChange} onEnter={handleUnlock} />
+            )}
+            <Error error={Boolean(error)} text={error} />
+          </FlexCol>
         </Padded>
       </Content>
       <ButtonsOnBottom>
