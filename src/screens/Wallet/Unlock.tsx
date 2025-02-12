@@ -10,36 +10,45 @@ import InputPassword from '../../components/InputPassword'
 import Header from '../../components/Header'
 import { consoleError } from '../../lib/logs'
 import FlexCol from '../../components/FlexCol'
+import { authenticateUser } from '../../lib/biometrics'
+import FingerprintIcon from '../../icons/Fingerprint'
+import CenterScreen from '../../components/CenterScreen'
+import Text from '../../components/Text'
 
 export default function Unlock() {
-  const { reloadWallet, unlockWallet } = useContext(WalletContext)
+  const { reloadWallet, unlockWallet, wallet, walletUnlocked } = useContext(WalletContext)
 
   const [error, setError] = useState('')
-  const [label, setLabel] = useState('Unlock')
   const [password, setPassword] = useState('')
-  const [unlocking, setUnlocking] = useState(false)
 
-  useEffect(() => {
-    setLabel(unlocking ? 'Unlocking' : 'Unlock')
-  }, [unlocking])
-
-  const handleChange = (ev: Event) => {
-    const password = (ev.target as HTMLInputElement).value
-    setPassword(password)
-    unlockWallet(password)
-      .then(reloadWallet)
+  const getPasswordFromBiometrics = () => {
+    authenticateUser()
+      .then(setPassword)
       .catch(() => {})
   }
 
-  const handleUnlock = async () => {
+  useEffect(() => {
     if (!password) return
-    setUnlocking(true)
+    unlockWallet(password)
+      .then(reloadWallet)
+      .catch(() => {})
+  }, [password])
+
+  useEffect(() => {
+    if (!wallet.lockedByBiometrics || walletUnlocked) return
+    getPasswordFromBiometrics()
+  }, [wallet.lockedByBiometrics])
+
+  const handleChange = (ev: any) => setPassword(ev.target.value)
+
+  const handleUnlock = async () => {
+    if (wallet.lockedByBiometrics) return getPasswordFromBiometrics()
+    if (!password) return
     unlockWallet(password)
       .then(reloadWallet)
       .catch((err) => {
         consoleError(err, 'error unlocking wallet')
         setError(extractError(err))
-        setUnlocking(false)
       })
   }
 
@@ -48,16 +57,23 @@ export default function Unlock() {
       <Header text='Unlock' />
       <Content>
         <Padded>
-          <FlexCol gap='1rem'>
-            {unlocking ? null : (
+          {wallet.lockedByBiometrics ? (
+            <CenterScreen onClick={getPasswordFromBiometrics}>
+              <FingerprintIcon />
+              <Text centered small wrap>
+                Unlock with biometrics
+              </Text>
+            </CenterScreen>
+          ) : (
+            <FlexCol gap='1rem'>
               <InputPassword focus label='Insert password' onChange={handleChange} onEnter={handleUnlock} />
-            )}
-            <Error error={Boolean(error)} text={error} />
-          </FlexCol>
+              <Error error={Boolean(error)} text={error} />
+            </FlexCol>
+          )}
         </Padded>
       </Content>
       <ButtonsOnBottom>
-        <Button onClick={handleUnlock} label={label} disabled={unlocking} />
+        <Button onClick={handleUnlock} label='Unlock' />
       </ButtonsOnBottom>
     </>
   )
