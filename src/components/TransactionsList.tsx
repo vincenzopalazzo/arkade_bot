@@ -90,7 +90,7 @@ export default function TransactionsList() {
 
   return (
     <div style={{ width: 'calc(100% + 2rem)', margin: '0 -1rem' }}>
-      <div onClick={reloadWallet}>
+      <div onClick={reloadWallet} style={{ cursor: 'pointer' }}>
         <TextLabel>Transaction history</TextLabel>
       </div>
       <div style={{ borderBottom: border }}>
