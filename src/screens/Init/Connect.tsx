@@ -9,15 +9,18 @@ import Loading from '../../components/Loading'
 import Header from '../../components/Header'
 
 export default function InitConnect() {
-  const { navigate } = useContext(NavigationContext)
   const { initInfo } = useContext(FlowContext)
-  const { initWallet } = useContext(WalletContext)
+  const { navigate } = useContext(NavigationContext)
+  const { initWallet, reloadWallet } = useContext(WalletContext)
 
   const { password, privateKey } = initInfo
 
   useEffect(() => {
     if (!password || !privateKey) return
-    initWallet(password, privateKey).then(() => navigate(Pages.Wallet))
+    initWallet(password, privateKey).then(() => {
+      reloadWallet()
+      navigate(Pages.Wallet)
+    })
   }, [])
 
   const handleCancel = () => navigate(Pages.Init)
