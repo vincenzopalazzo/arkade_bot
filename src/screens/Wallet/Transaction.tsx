@@ -26,7 +26,7 @@ export default function Transaction() {
   const { config } = useContext(ConfigContext)
   const { txInfo, setTxInfo } = useContext(FlowContext)
   const { navigate } = useContext(NavigationContext)
-  const { reloadWallet, settlePending, wallet } = useContext(WalletContext)
+  const { settlePending, wallet } = useContext(WalletContext)
 
   const tx = txInfo
   const defaultButtonLabel = 'Settle pending'
@@ -45,10 +45,7 @@ export default function Transaction() {
     setButtonLabel(settling ? 'Settling...' : defaultButtonLabel)
   }, [settling])
 
-  const handleBack = () => {
-    reloadWallet()
-    navigate(Pages.Wallet)
-  }
+  const handleBack = () => navigate(Pages.Wallet)
 
   const handleExplorer = () => {
     if (tx?.explorable) openInNewTab(tx.explorable, wallet)

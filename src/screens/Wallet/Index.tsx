@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import Balance from '../../components/Balance'
 import Error from '../../components/Error'
 import TransactionsList from '../../components/TransactionsList'
@@ -10,9 +10,15 @@ import Content from '../../components/Content'
 
 function Wallet() {
   const { aspInfo } = useContext(AspContext)
-  const { wallet } = useContext(WalletContext)
+  const { reloadWallet, wallet } = useContext(WalletContext)
 
   const [error, setError] = useState(false)
+  const firstRun = useRef(true)
+
+  useEffect(() => {
+    if (firstRun.current) reloadWallet()
+    firstRun.current = false
+  }, [])
 
   useEffect(() => {
     setError(aspInfo.unreachable)

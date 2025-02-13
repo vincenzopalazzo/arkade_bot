@@ -16,7 +16,7 @@ import CenterScreen from '../../components/CenterScreen'
 import Text from '../../components/Text'
 
 export default function Unlock() {
-  const { reloadWallet, unlockWallet, wallet, walletUnlocked } = useContext(WalletContext)
+  const { unlockWallet, wallet, walletUnlocked } = useContext(WalletContext)
 
   const [error, setError] = useState('')
   const [password, setPassword] = useState('')
@@ -29,9 +29,7 @@ export default function Unlock() {
 
   useEffect(() => {
     if (!password) return
-    unlockWallet(password)
-      .then(reloadWallet)
-      .catch(() => {})
+    unlockWallet(password).catch(() => {})
   }, [password])
 
   useEffect(() => {
@@ -44,12 +42,10 @@ export default function Unlock() {
   const handleUnlock = async () => {
     if (wallet.lockedByBiometrics) return getPasswordFromBiometrics()
     if (!password) return
-    unlockWallet(password)
-      .then(reloadWallet)
-      .catch((err) => {
-        consoleError(err, 'error unlocking wallet')
-        setError(extractError(err))
-      })
+    unlockWallet(password).catch((err) => {
+      consoleError(err, 'error unlocking wallet')
+      setError(extractError(err))
+    })
   }
 
   return (

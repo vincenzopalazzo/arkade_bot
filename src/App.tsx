@@ -40,10 +40,9 @@ export default function App() {
   const { setRecvInfo, setSendInfo } = useContext(FlowContext)
   const { navigate, screen, tab } = useContext(NavigationContext)
   const { setOption } = useContext(OptionsContext)
-  const { reloadWallet, wasmLoaded } = useContext(WalletContext)
+  const { wasmLoaded } = useContext(WalletContext)
 
   const handleHome = () => {
-    reloadWallet()
     navigate(Pages.Wallet)
   }
 
