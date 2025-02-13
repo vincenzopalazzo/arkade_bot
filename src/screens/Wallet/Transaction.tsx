@@ -115,11 +115,8 @@ export default function Transaction() {
         )}
       </Content>
       <ButtonsOnBottom>
-        {showSettleButton ? (
-          <Button onClick={handleSettle} label={buttonLabel} disabled={settling} />
-        ) : tx.explorable ? (
-          <Button onClick={handleExplorer} label='View on explorer' />
-        ) : null}
+        {showSettleButton ? <Button onClick={handleSettle} label={buttonLabel} disabled={settling} /> : null}
+        {tx.explorable ? <Button onClick={handleExplorer} label='View on explorer' secondary /> : null}
       </ButtonsOnBottom>
     </>
   )
