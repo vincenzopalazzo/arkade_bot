@@ -29,9 +29,11 @@ export default function Balance({ amount }: BalanceProps) {
       <Text color='dark50' smaller>
         My balance
       </Text>
-      <FlexRow onClick={toggleShow}>
+      <FlexRow>
         <Text bigger>{satsBalance}</Text>
-        <EyeIcon />
+        <div onClick={toggleShow} style={{ cursor: 'pointer' }}>
+          <EyeIcon />
+        </div>
       </FlexRow>
       <Text color='dark80'>{fiatBalance}</Text>
     </FlexCol>
