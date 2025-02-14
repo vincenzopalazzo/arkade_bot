@@ -2,7 +2,7 @@ import { ReactElement, ReactNode, createContext, useState } from 'react'
 import BackupIcon from '../icons/Backup'
 import AppearanceIcon from '../icons/Appearance'
 import InfoIcon from '../icons/Info'
-import LockIcon from '../icons/Lock'
+// import LockIcon from '../icons/Lock'
 import NostrIcon from '../icons/Nostr'
 import NotificationIcon from '../icons/Notification'
 import ResetIcon from '../icons/Reset'
@@ -34,11 +34,11 @@ const options: Option[] = [
     option: SettingsOptions.Backup,
     section: SettingsSections.Security,
   },
-  {
-    icon: <LockIcon />,
-    option: SettingsOptions.Lock,
-    section: SettingsSections.Security,
-  },
+  // {
+  //   icon: <LockIcon />,
+  //   option: SettingsOptions.Lock,
+  //   section: SettingsSections.Security,
+  // },
   {
     icon: <LogsIcon />,
     option: SettingsOptions.Logs,
