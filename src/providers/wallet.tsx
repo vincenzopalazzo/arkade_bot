@@ -10,6 +10,7 @@ import { ArkNote, arkNoteInUrl } from '../lib/arknote'
 import { fetchWasm } from '../lib/fetch'
 import { consoleError } from '../lib/logs'
 import { Wallet } from '../lib/types'
+import { sleep } from '../lib/sleep'
 
 const defaultWallet: Wallet = {
   arkAddress: '',
@@ -140,6 +141,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   const rolloverVtxos = async (raise = false) => {
     try {
       await settleVtxos()
+      await sleep(1000) // server needs time to update vtxos list
       await reloadWallet()
       notifyVtxosRollover()
     } catch (err) {
