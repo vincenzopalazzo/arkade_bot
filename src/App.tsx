@@ -40,23 +40,27 @@ export default function App() {
   const { setRecvInfo, setSendInfo } = useContext(FlowContext)
   const { navigate, screen, tab } = useContext(NavigationContext)
   const { setOption } = useContext(OptionsContext)
-  const { wasmLoaded } = useContext(WalletContext)
+  const { reloadWallet, wasmLoaded } = useContext(WalletContext)
 
   const handleHome = () => {
+    reloadWallet()
     navigate(Pages.Wallet)
   }
 
   const handleSend = () => {
+    reloadWallet()
     setSendInfo(emptySendInfo)
     navigate(Pages.SendForm)
   }
 
   const handleReceive = () => {
+    reloadWallet()
     setRecvInfo(emptyRecvInfo)
     navigate(Pages.ReceiveAmount)
   }
 
   const handleSettings = () => {
+    reloadWallet()
     setOption(SettingsOptions.Menu)
     navigate(Pages.Settings)
   }

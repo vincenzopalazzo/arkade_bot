@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import Balance from '../../components/Balance'
 import Error from '../../components/Error'
 import TransactionsList from '../../components/TransactionsList'
@@ -8,17 +8,11 @@ import LogoIcon from '../../icons/Logo'
 import Padded from '../../components/Padded'
 import Content from '../../components/Content'
 
-function Wallet() {
+export default function Wallet() {
   const { aspInfo } = useContext(AspContext)
-  const { reloadWallet, wallet } = useContext(WalletContext)
+  const { wallet } = useContext(WalletContext)
 
   const [error, setError] = useState(false)
-  const firstRun = useRef(true)
-
-  useEffect(() => {
-    if (firstRun.current) reloadWallet()
-    firstRun.current = false
-  }, [])
 
   useEffect(() => {
     setError(aspInfo.unreachable)
@@ -35,5 +29,3 @@ function Wallet() {
     </Content>
   )
 }
-
-export default React.memo(Wallet)
