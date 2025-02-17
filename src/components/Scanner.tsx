@@ -1,4 +1,4 @@
-import BarcodeScanner from './BarcodeScanner'
+import QrCodeScanner from './QrCodeScanner'
 import Button from './Button'
 import ButtonsOnBottom from './ButtonsOnBottom'
 import Content from './Content'
@@ -18,7 +18,7 @@ export default function Scanner({ close, label, setData, setError }: ScannerProp
       <Header text={label} back={close} />
       <Content>
         <Padded>
-          <BarcodeScanner setData={setData} setError={setError} />
+          <QrCodeScanner close={close} setData={setData} setError={setError} />
         </Padded>
       </Content>
       <ButtonsOnBottom>
