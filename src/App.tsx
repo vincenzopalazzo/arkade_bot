@@ -14,7 +14,7 @@ import '@ionic/react/css/display.css'
 
 import '@ionic/react/css/palettes/dark.class.css'
 
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import { ConfigContext } from './providers/config'
 import { NavigationContext, pageComponent, Pages, Tabs } from './providers/navigation'
 import { WalletContext } from './providers/wallet'
@@ -22,7 +22,7 @@ import { WalletContext } from './providers/wallet'
 import './wasm_exec.js'
 import './wasmTypes.d.ts'
 
-import { IonApp, IonPage, IonTab, IonTabBar, IonTabButton, IonTabs, setupIonicReact } from '@ionic/react'
+import { IonApp, IonPage, IonTab, IonTabBar, IonTabButton, IonTabs, setupIonicReact, useIonToast } from '@ionic/react'
 import HomeIcon from './icons/Home'
 import ReceiveIcon from './icons/Receive'
 import SettingsIcon from './icons/Settings'
@@ -31,6 +31,7 @@ import { OptionsContext } from './providers/options'
 import { emptyRecvInfo, emptySendInfo, FlowContext } from './providers/flow'
 import { AspContext } from './providers/asp'
 import { SettingsOptions } from './lib/types'
+import * as serviceWorkerRegistration from './serviceWorkerRegistration'
 
 setupIonicReact()
 
@@ -41,6 +42,28 @@ export default function App() {
   const { navigate, screen, tab } = useContext(NavigationContext)
   const { setOption } = useContext(OptionsContext)
   const { reloadWallet, wasmLoaded } = useContext(WalletContext)
+
+  const [present] = useIonToast()
+
+  useEffect(() => {
+    serviceWorkerRegistration.register({
+      onUpdate: () => {
+        present({
+          duration: 0,
+          message: 'New version available',
+          position: 'top',
+        })
+      },
+    })
+  }, [])
+
+  useEffect(() => {
+    setInterval(() => {
+      navigator.serviceWorker.getRegistration().then((registration) => {
+        if (registration) registration.update()
+      })
+    }, 1000 * 60 * 60)
+  }, [])
 
   const handleHome = () => {
     reloadWallet()

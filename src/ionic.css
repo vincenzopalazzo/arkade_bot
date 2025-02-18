@@ -100,3 +100,7 @@ ion-toast {
   --width: 210px;
   text-align: center;
 }
+
+.toast-container {
+  text-align: center;
+}
