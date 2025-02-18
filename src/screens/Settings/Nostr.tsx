@@ -14,16 +14,16 @@ import { TextSecondary } from '../../components/Text'
 import FlexCol from '../../components/FlexCol'
 import InputNpub from '../../components/InputNpub'
 import Scanner from '../../components/Scanner'
+import { useIonToast } from '@ionic/react'
+import { presentToast } from '../../lib/toast'
 
 export default function Nostr() {
   const { config, updateConfig } = useContext(ConfigContext)
 
-  const label = 'Copy to clipboard'
-
-  const [buttonLabel, setButtonLabel] = useState(label)
   const [error, setError] = useState('')
   const [npub, setNpub] = useState('')
   const [scan, setScan] = useState(false)
+  const [present] = useIonToast()
 
   useEffect(() => {
     if (config.npub) setNpub(config.npub)
@@ -39,8 +39,7 @@ export default function Nostr() {
 
   const handleCopy = async () => {
     await copyToClipboard(npub)
-    setButtonLabel('Copied')
-    setTimeout(() => setButtonLabel(label), 2100)
+    presentToast(present)
   }
 
   const handleSave = () => {
@@ -81,7 +80,7 @@ export default function Nostr() {
       </Content>
       {config.nostr ? (
         <ButtonsOnBottom>
-          {showCopyButton ? <Button onClick={handleCopy} label={buttonLabel} /> : null}
+          {showCopyButton ? <Button onClick={handleCopy} label='Copy to clipboard' /> : null}
           {showSaveButton ? <Button onClick={handleSave} label='Save new npub' /> : null}
         </ButtonsOnBottom>
       ) : null}

@@ -10,12 +10,12 @@ import { seedToNsec } from '../../lib/privateKey'
 import Header from './Header'
 import { TextSecondary } from '../../components/Text'
 import FlexCol from '../../components/FlexCol'
+import { presentToast } from '../../lib/toast'
+import { useIonToast } from '@ionic/react'
 
 export default function Backup() {
-  const label = 'Copy to clipboard'
-
-  const [buttonLabel, setButtonLabel] = useState(label)
   const [nsec, setNsec] = useState('')
+  const [present] = useIonToast()
 
   useEffect(() => {
     getPrivateKey().then((sk) => {
@@ -25,8 +25,7 @@ export default function Backup() {
 
   const handleCopy = async () => {
     await copyToClipboard(nsec)
-    setButtonLabel('Copied')
-    setTimeout(() => setButtonLabel(label), 2000)
+    presentToast(present)
   }
 
   return (
@@ -43,7 +42,7 @@ export default function Backup() {
         </Padded>
       </Content>
       <ButtonsOnBottom>
-        <Button onClick={handleCopy} label={buttonLabel} />
+        <Button onClick={handleCopy} label='Copy to clipboard' />
       </ButtonsOnBottom>
     </>
   )

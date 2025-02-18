@@ -91,3 +91,12 @@ ion-content::part(scroll) {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
+
+ion-toast {
+  --background: var(--greenbg);
+  --border-radius: 0.5rem;
+  --color: var(--white);
+  --padding: 1rem;
+  --width: 210px;
+  text-align: center;
+}
