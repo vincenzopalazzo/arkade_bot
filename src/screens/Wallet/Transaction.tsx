@@ -75,7 +75,6 @@ export default function Transaction() {
     ['When', prettyAgo(tx.createdAt)],
     ['Date', prettyDate(tx.createdAt)],
     ['Amount', `${config.showBalance ? prettyNumber(amount) : prettyHide(amount)} sats`],
-    ['Destination', tx.spentBy ? prettyLongText(tx.spentBy) : ''],
     ['Network fees', `${prettyNumber(tx.type === 'sent' ? defaultFee : 0)} sats`],
     ['Total', `${config.showBalance ? prettyNumber(tx.amount) : prettyHide(tx.amount)} sats`],
   ].filter((l) => l[1])

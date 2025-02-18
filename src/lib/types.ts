@@ -68,7 +68,6 @@ export type Tx = {
   redeemTxid: string
   roundTxid: string
   settled: boolean
-  spentBy: string
   type: string
 }
 
