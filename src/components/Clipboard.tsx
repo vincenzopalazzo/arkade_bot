@@ -13,8 +13,7 @@ export default function Clipboard({ validator, onPaste }: ClipboardProps) {
 
   useEffect(() => {
     queryPastePermission().then((state) => {
-      if (state === 'prompt') setShowPaste(true) // to trigger permissions popup
-      if (state === 'granted') {
+      if (['prompt', 'granted'].includes(state)) {
         // if content is valid, show it to user in UI
         pasteFromClipboard().then((data) => {
           if (!data) return
@@ -27,12 +26,12 @@ export default function Clipboard({ validator, onPaste }: ClipboardProps) {
     })
   }, [])
 
-  const onClick = () => {
+  const handleClick = () => {
     if (clipboard) return onPaste(clipboard)
     pasteFromClipboard().then((data) => {
       if (data) onPaste(data)
     })
   }
 
-  return showPaste ? <Paste data={clipboard} onClick={onClick} /> : <></>
+  return showPaste ? <Paste data={clipboard} onClick={handleClick} /> : <></>
 }
