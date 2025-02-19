@@ -49,6 +49,12 @@ export default function App() {
     serviceWorkerRegistration.register({
       onUpdate: () => {
         present({
+          buttons: [
+            {
+              text: 'reload',
+              handler: () => window.location.reload(),
+            },
+          ],
           duration: 0,
           message: 'New version available',
           position: 'top',

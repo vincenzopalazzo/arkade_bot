@@ -97,8 +97,15 @@ ion-toast {
   --border-radius: 0.5rem;
   --color: var(--white);
   --padding: 1rem;
-  --width: 210px;
+  --max-width: 260px;
   text-align: center;
+}
+
+ion-toast::part(button) {
+  border-left: 1px solid var(--white);
+  color: var(--white);
+  font-size: 0.7rem;
+  text-transform: uppercase;
 }
 
 .toast-container {
