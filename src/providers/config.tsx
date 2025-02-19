@@ -61,6 +61,7 @@ export const ConfigProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (configLoaded) return
+    if (window.location.hash.match(/localhost/)) defaultConfig.aspUrl = 'http://localhost:7070'
     const config = readConfigFromStorage() ?? { ...defaultConfig, theme: preferredTheme() }
     updateConfig(config)
     setConfigLoaded(true)
