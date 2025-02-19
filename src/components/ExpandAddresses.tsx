@@ -48,7 +48,7 @@ export default function ExpandAddresses({ bip21uri, boardingAddr, offchainAddr }
   )
 
   return (
-    <>
+    <div style={{ margin: '0 auto', maxWidth: '100%', width: '420px' }}>
       <Shadow>
         <FlexRow between onClick={handleExpand}>
           <Text>Copy address</Text>
@@ -56,7 +56,7 @@ export default function ExpandAddresses({ bip21uri, boardingAddr, offchainAddr }
         </FlexRow>
       </Shadow>
       {expand ? (
-        <div style={{ padding: '0 0.5rem', width: '100%' }}>
+        <div style={{ padding: '1rem 0 0 0.5rem', width: '100%' }}>
           <FlexCol gap='0.21rem'>
             <ExpandLine title='BIP21' value={bip21uri} />
             <ExpandLine title='BTC address' value={boardingAddr} />
@@ -64,6 +64,6 @@ export default function ExpandAddresses({ bip21uri, boardingAddr, offchainAddr }
           </FlexCol>
         </div>
       ) : null}
-    </>
+    </div>
   )
 }
