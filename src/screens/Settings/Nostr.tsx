@@ -15,7 +15,7 @@ import FlexCol from '../../components/FlexCol'
 import InputNpub from '../../components/InputNpub'
 import Scanner from '../../components/Scanner'
 import { useIonToast } from '@ionic/react'
-import { presentToast } from '../../lib/toast'
+import { copiedToClipboard } from '../../lib/toast'
 
 export default function Nostr() {
   const { config, updateConfig } = useContext(ConfigContext)
@@ -39,7 +39,7 @@ export default function Nostr() {
 
   const handleCopy = async () => {
     await copyToClipboard(npub)
-    presentToast(present)
+    present(copiedToClipboard)
   }
 
   const handleSave = () => {

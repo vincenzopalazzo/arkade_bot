@@ -32,6 +32,7 @@ import { emptyRecvInfo, emptySendInfo, FlowContext } from './providers/flow'
 import { AspContext } from './providers/asp'
 import { SettingsOptions } from './lib/types'
 import * as serviceWorkerRegistration from './serviceWorkerRegistration'
+import { newVersionAvailable } from './lib/toast'
 
 setupIonicReact()
 
@@ -48,17 +49,7 @@ export default function App() {
   useEffect(() => {
     serviceWorkerRegistration.register({
       onUpdate: () => {
-        present({
-          buttons: [
-            {
-              text: 'reload',
-              handler: () => window.location.reload(),
-            },
-          ],
-          duration: 0,
-          message: 'New version available',
-          position: 'top',
-        })
+        present(newVersionAvailable)
       },
     })
   }, [])

@@ -10,7 +10,7 @@ import Shadow from './Shadow'
 import { copyToClipboard } from '../lib/clipboard'
 import CheckMarkIcon from '../icons/CheckMark'
 import { useIonToast } from '@ionic/react'
-import { presentToast } from '../lib/toast'
+import { copiedToClipboard } from '../lib/toast'
 
 interface ExpandAddressesProps {
   bip21uri: string
@@ -26,7 +26,7 @@ export default function ExpandAddresses({ bip21uri, boardingAddr, offchainAddr }
 
   const handleCopy = async (value: string) => {
     await copyToClipboard(value)
-    presentToast(present)
+    present(copiedToClipboard)
     setCopied(value)
   }
 

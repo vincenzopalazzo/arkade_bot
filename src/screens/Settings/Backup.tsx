@@ -10,7 +10,7 @@ import { seedToNsec } from '../../lib/privateKey'
 import Header from './Header'
 import { TextSecondary } from '../../components/Text'
 import FlexCol from '../../components/FlexCol'
-import { presentToast } from '../../lib/toast'
+import { copiedToClipboard } from '../../lib/toast'
 import { useIonToast } from '@ionic/react'
 
 export default function Backup() {
@@ -25,7 +25,7 @@ export default function Backup() {
 
   const handleCopy = async () => {
     await copyToClipboard(nsec)
-    presentToast(present)
+    present(copiedToClipboard)
   }
 
   return (

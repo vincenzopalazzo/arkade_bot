@@ -1,7 +1,7 @@
 import { IonText, useIonToast } from '@ionic/react'
 import { ReactNode } from 'react'
 import { copyToClipboard } from '../lib/clipboard'
-import { presentToast } from '../lib/toast'
+import { copiedToClipboard } from '../lib/toast'
 
 interface TextProps {
   big?: boolean
@@ -54,7 +54,7 @@ export default function Text({
   const handleClick = () => {
     if (!copy) return
     copyToClipboard(copy)
-    presentToast(present)
+    present(copiedToClipboard)
   }
 
   return (
