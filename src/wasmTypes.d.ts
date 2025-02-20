@@ -2,7 +2,7 @@ declare global {
   export interface Window {
     Go: any
     balance: (bool) => Promise<any>
-    collaborativeRedeem: (addr: string, amount: number, withExpiryCoinselect: boolean) => Promise<string>
+    collaborativeExit: (addr: string, amount: number, withExpiryCoinselect: boolean) => Promise<string>
     dump: () => Promise<string>
     getTransactionHistory: () => Promise<any>
     getVersion: () => Promise<string>

@@ -48,8 +48,8 @@ const get = async (endpoint: string, url: string) => {
   return await response.json()
 }
 
-export const collaborativeRedeem = async (amount: number, address: string): Promise<string> => {
-  return await window.collaborativeRedeem(address, amount, false)
+export const collaborativeExit = async (amount: number, address: string): Promise<string> => {
+  return await window.collaborativeExit(address, amount, false)
 }
 
 export const getAspInfo = async (url: string): Promise<AspInfo> => {
