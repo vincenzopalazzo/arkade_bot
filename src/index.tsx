@@ -10,6 +10,7 @@ import { NavigationProvider } from './providers/navigation'
 import { NotificationsProvider } from './providers/notifications'
 import { WalletProvider } from './providers/wallet'
 import { OptionsProvider } from './providers/options'
+import { IframeProvider } from './providers/iframe'
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
@@ -22,7 +23,9 @@ root.render(
             <FlowProvider>
               <WalletProvider>
                 <OptionsProvider>
-                  <App />
+                  <IframeProvider>
+                    <App />
+                  </IframeProvider>
                 </OptionsProvider>
               </WalletProvider>
             </FlowProvider>
