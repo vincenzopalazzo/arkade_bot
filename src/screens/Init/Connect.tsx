@@ -11,13 +11,16 @@ import Header from '../../components/Header'
 export default function InitConnect() {
   const { initInfo } = useContext(FlowContext)
   const { navigate } = useContext(NavigationContext)
-  const { initWallet } = useContext(WalletContext)
+  const { initWallet, reloadWallet } = useContext(WalletContext)
 
   const { password, privateKey } = initInfo
 
   useEffect(() => {
     if (!password || !privateKey) return
-    initWallet(password, privateKey).then(() => navigate(Pages.Wallet))
+    initWallet(password, privateKey).then(() => {
+      reloadWallet()
+      navigate(Pages.Wallet)
+    })
   }, [])
 
   const handleCancel = () => navigate(Pages.Init)
