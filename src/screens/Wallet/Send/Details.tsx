@@ -12,7 +12,7 @@ import { defaultFee } from '../../../lib/constants'
 import { prettyNumber } from '../../../lib/format'
 import Content from '../../../components/Content'
 import FlexCol from '../../../components/FlexCol'
-import { collaborativeRedeem, sendOffChain } from '../../../lib/asp'
+import { collaborativeExit, sendOffChain } from '../../../lib/asp'
 import { extractError } from '../../../lib/error'
 import Loading from '../../../components/Loading'
 import { consoleError } from '../../../lib/logs'
@@ -68,7 +68,7 @@ export default function SendDetails() {
     if (arkAddress) {
       sendOffChain(satoshis, arkAddress).then(handleTxid).catch(handleError)
     } else if (address) {
-      collaborativeRedeem(satoshis, address).then(handleTxid).catch(handleError)
+      collaborativeExit(satoshis, address).then(handleTxid).catch(handleError)
     }
   }
 
