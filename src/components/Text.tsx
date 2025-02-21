@@ -41,7 +41,7 @@ export default function Text({
     cursor: copy ? 'pointer' : undefined,
     fontSize,
     fontWeight: bold ? '600' : undefined,
-    lineHeight: '1.5',
+    lineHeight: tiny ? '1' : '1.5',
     overflow: wrap ? undefined : 'hidden',
     textAlign: centered ? 'center' : undefined,
     textOverflow: wrap ? undefined : 'ellipsis',

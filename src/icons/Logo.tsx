@@ -1,5 +1,5 @@
-export default function LogoIcon({ big }: { big?: boolean }) {
-  const size = big ? '144px' : '40px'
+export default function LogoIcon({ big, small }: { big?: boolean; small?: boolean }) {
+  const size = big ? '144px' : small ? '34px' : '40px'
   return <img height={size} width={size} src='/arkade-icon-rounded.png' />
 }
 

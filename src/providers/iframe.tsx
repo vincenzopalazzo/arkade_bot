@@ -1,21 +1,90 @@
-import { ReactNode, createContext, useContext, useEffect } from 'react'
+import { ReactNode, createContext, useContext, useEffect, useState } from 'react'
 import { WalletContext } from './wallet'
+import { FlowContext } from './flow'
+import { NavigationContext, Pages } from './navigation'
 
-export const IframeContext = createContext({})
+interface IframeContextProps {
+  iframeUrl: string
+  sendMessage: (message: string) => void
+}
+
+export const IframeContext = createContext<IframeContextProps>({
+  iframeUrl: '',
+  sendMessage: () => {},
+})
 
 export const IframeProvider = ({ children }: { children: ReactNode }) => {
-  const { walletUnlocked } = useContext(WalletContext)
+  const { setSendInfo } = useContext(FlowContext)
+  const { navigate } = useContext(NavigationContext)
+  const { walletUnlocked, wallet, walletLoaded } = useContext(WalletContext)
 
-  const sendMessage = (message: string) => window.parent.postMessage(message, '*')
+  const [iframeUrl, setIframeUrl] = useState('')
+
+  const sendMessage = (message: string) => {
+    const iframe = document.querySelector('iframe')
+    if (!iframe || !iframe.contentWindow) return
+    iframe.contentWindow.postMessage(message, '*')
+  }
+
+  const sendStatus = (w = wallet) => {
+    sendMessage(
+      JSON.stringify({
+        action: 'status',
+        status: !w.initialized ? 'uninitialized' : walletUnlocked ? 'unlocked' : 'locked',
+      }),
+    )
+  }
+
+  const sendError = (message: string) => {
+    sendMessage(
+      JSON.stringify({
+        action: 'error',
+        message,
+      }),
+    )
+  }
+
+  const isValidUrl = (url: string) => {
+    try {
+      new URL(url)
+      return true
+    } catch {
+      return false
+    }
+  }
+
+  useEffect(() => {
+    const pathname = window.location.pathname
+    const possibleUrl = pathname.startsWith('/') ? pathname.slice(1) : pathname
+    setIframeUrl(isValidUrl(possibleUrl) ? possibleUrl : '')
+  }, [])
 
   useEffect(() => {
     window.addEventListener('message', (event) => {
-      console.log('Received message from parent:', event.data)
-      if (event.data === 'status') {
-        sendMessage(walletUnlocked ? 'ready' : 'locked')
-      }
+      console.log('Received message from iframe:', event.data, wallet)
+      try {
+        const data = JSON.parse(event.data)
+        const { action, arkAddress, satoshis, text } = data
+        switch (action) {
+          case 'status':
+            sendStatus()
+            break
+          case 'send':
+            if (!arkAddress) return sendError('missing arkAddress')
+            if (!satoshis) return sendError('missing satoshis')
+            setSendInfo({ arkAddress, satoshis, text })
+            navigate(Pages.SendDetails)
+            break
+          default:
+            break
+        }
+      } catch {}
     })
   }, [])
 
-  return <IframeContext.Provider value={{}}>{children}</IframeContext.Provider>
+  useEffect(() => {
+    if (walletLoaded) sendStatus(walletLoaded)
+  }, [walletLoaded, walletUnlocked])
+
+  return <IframeContext.Provider value={{ iframeUrl, sendMessage }}>{children}</IframeContext.Provider>
 }

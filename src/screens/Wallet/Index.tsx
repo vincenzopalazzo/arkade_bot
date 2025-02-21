@@ -7,9 +7,14 @@ import { AspContext } from '../../providers/asp'
 import LogoIcon from '../../icons/Logo'
 import Padded from '../../components/Padded'
 import Content from '../../components/Content'
+import { IframeContext } from '../../providers/iframe'
+import Minimal from '../../components/Minimal'
+import Text from '../../components/Text'
+import FlexCol from '../../components/FlexCol'
 
 export default function Wallet() {
   const { aspInfo } = useContext(AspContext)
+  const { iframeUrl } = useContext(IframeContext)
   const { wallet } = useContext(WalletContext)
 
   const [error, setError] = useState(false)
@@ -17,6 +22,18 @@ export default function Wallet() {
   useEffect(() => {
     setError(aspInfo.unreachable)
   }, [aspInfo.unreachable])
+
+  if (iframeUrl)
+    return (
+      <Minimal>
+        <FlexCol gap='0'>
+          <Text capitalize color='dark50' tiny>
+            Balance
+          </Text>
+          <Text small>{wallet.balance} sats</Text>
+        </FlexCol>
+      </Minimal>
+    )
 
   return (
     <Content>

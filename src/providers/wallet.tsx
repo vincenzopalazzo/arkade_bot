@@ -39,6 +39,7 @@ interface WalletContextProps {
   unlockWallet: (password: string) => Promise<void>
   walletUnlocked: boolean
   wallet: Wallet
+  walletLoaded: Wallet | undefined
   wasmLoaded: boolean
 }
 
@@ -53,6 +54,7 @@ export const WalletContext = createContext<WalletContextProps>({
   updateWallet: () => {},
   walletUnlocked: false,
   wallet: defaultWallet,
+  walletLoaded: undefined,
   wasmLoaded: false,
 })
 
@@ -63,6 +65,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   const { notifyVtxosRollover, notifyTxSettled } = useContext(NotificationsContext)
 
   const [walletUnlocked, setWalletUnlocked] = useState(false)
+  const [walletLoaded, setWalletLoaded] = useState<Wallet>()
   const [wasmLoaded, setWasmLoaded] = useState(false)
   const [wallet, setWallet] = useState(defaultWallet)
 
@@ -101,11 +104,13 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     const wallet = readWalletFromStorage()
     updateWallet(wallet?.initialized ? wallet : defaultWallet)
     navigate(wallet?.initialized ? Pages.Unlock : Pages.Init)
+    setWalletLoaded(wallet)
   }, [wasmLoaded])
 
   // if voucher present, go to redeem page
   useEffect(() => {
     if (!walletUnlocked) return
+    reloadWallet()
     navigate(noteInfo.satoshis ? Pages.NotesRedeem : Pages.Wallet)
   }, [walletUnlocked])
 
@@ -126,7 +131,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     const explorerUrl = getRestApiExplorerURL(wallet.network) ?? ''
     await window.init(walletType, clientType, aspUrl, privateKey, password, chain, explorerUrl)
     await unlockWallet(password)
-    updateWallet({ ...wallet, initialized: true, network: aspInfo.network })
+    updateWallet({ ...wallet, explorer: explorerUrl, initialized: true, network: aspInfo.network })
   }
 
   const lockWallet = async (password: string) => {
@@ -197,6 +202,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
         updateWallet,
         walletUnlocked,
         wallet,
+        walletLoaded,
         wasmLoaded,
       }}
     >

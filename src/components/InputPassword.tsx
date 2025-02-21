@@ -5,7 +5,7 @@ import { useRef, useEffect } from 'react'
 
 interface InputPasswordProps {
   focus?: boolean
-  label: string
+  label?: string
   onChange: (arg0: any) => void
   onEnter?: () => void
   strength?: number

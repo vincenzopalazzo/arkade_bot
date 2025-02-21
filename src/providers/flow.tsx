@@ -24,6 +24,7 @@ export type SendInfo = {
   recipient?: string
   satoshis?: number
   total?: number
+  text?: string
   txid?: string
 }
 
