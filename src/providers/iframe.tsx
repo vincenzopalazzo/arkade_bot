@@ -54,8 +54,8 @@ export const IframeProvider = ({ children }: { children: ReactNode }) => {
   }
 
   useEffect(() => {
-    const pathname = window.location.pathname
-    const possibleUrl = pathname.startsWith('/') ? pathname.slice(1) : pathname
+    const hash = window.location.hash
+    const possibleUrl = hash.startsWith('#') ? hash.slice(1) : hash
     setIframeUrl(isValidUrl(possibleUrl) ? possibleUrl : '')
   }, [])
 
