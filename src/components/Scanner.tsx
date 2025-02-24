@@ -3,9 +3,8 @@ import ButtonsOnBottom from './ButtonsOnBottom'
 import Content from './Content'
 import Header from './Header'
 import Padded from './Padded'
-import { QRCanvas, frontalCamera } from '@paulmillr/qr/dom.js'
+import { QRCanvas, frameLoop, frontalCamera } from '@paulmillr/qr/dom.js'
 import { useRef, useEffect } from 'react'
-import { sleep } from '../lib/sleep'
 
 interface ScannerProps {
   close: () => void
@@ -18,24 +17,25 @@ export default function Scanner({ close, label, setData }: ScannerProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
 
   let camera: any
+  let canvas: QRCanvas
+  let cancel: () => void
 
   useEffect(() => {
     const start = async () => {
       if (!videoRef.current) return
       try {
-        const canvas = new QRCanvas()
+        if (canvas) canvas.clear()
+        canvas = new QRCanvas()
         camera = await frontalCamera(videoRef.current)
         const devices = await camera.listDevices()
         await camera.setDevice(devices[devices.length - 1].deviceId)
-        while (true) {
+        cancel = frameLoop(() => {
           const res = camera.readFrame(canvas)
           if (res) {
             setData(res)
             handleClose()
-            break
           }
-          await sleep(100)
-        }
+        })
       } catch {}
     }
 
@@ -45,7 +45,7 @@ export default function Scanner({ close, label, setData }: ScannerProps) {
   }, [videoRef])
 
   const handleClose = () => {
-    console.log('handleClose', camera)
+    cancel()
     camera?.stop()
     close()
   }
