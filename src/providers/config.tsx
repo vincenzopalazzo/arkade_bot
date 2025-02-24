@@ -61,7 +61,7 @@ export const ConfigProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (configLoaded) return
-    if (window.location.hash.match(/localhost/)) {
+    if (window.location.hash === '#localhost') {
       defaultConfig.aspUrl = 'http://localhost:7070'
       window.location.hash = ''
     }
