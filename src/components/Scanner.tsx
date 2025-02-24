@@ -1,10 +1,20 @@
 import Button from './Button'
 import ButtonsOnBottom from './ButtonsOnBottom'
 import Content from './Content'
+import Error from './Error'
 import Header from './Header'
 import Padded from './Padded'
 import { QRCanvas, frameLoop, frontalCamera } from '@paulmillr/qr/dom.js'
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
+
+const isCamAvailable = async (): Promise<boolean> => {
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return false
+  try {
+    await navigator.mediaDevices.getUserMedia({ video: true })
+    return true
+  } catch {}
+  return false
+}
 
 interface ScannerProps {
   close: () => void
@@ -14,6 +24,8 @@ interface ScannerProps {
 }
 
 export default function Scanner({ close, label, setData }: ScannerProps) {
+  const [error, setError] = useState(false)
+
   const videoRef = useRef<HTMLVideoElement>(null)
 
   let camera: any
@@ -21,7 +33,7 @@ export default function Scanner({ close, label, setData }: ScannerProps) {
   let cancel: () => void
 
   useEffect(() => {
-    const start = async () => {
+    const startCameraCapture = async () => {
       if (!videoRef.current) return
       try {
         if (canvas) canvas.clear()
@@ -39,13 +51,16 @@ export default function Scanner({ close, label, setData }: ScannerProps) {
       } catch {}
     }
 
-    start()
+    isCamAvailable().then((available) => {
+      if (!available) setError(true)
+      else startCameraCapture()
+    })
 
     return () => handleClose()
   }, [videoRef])
 
   const handleClose = () => {
-    cancel()
+    if (cancel) cancel()
     camera?.stop()
     close()
   }
@@ -55,7 +70,8 @@ export default function Scanner({ close, label, setData }: ScannerProps) {
       <Header text={label} back={handleClose} />
       <Content>
         <Padded>
-          <video style={{ aspectRatio: '1/1', margin: '0 auto' }} ref={videoRef} />
+          <Error error={error} text='Camera not available' />
+          <video style={{ borderRadius: '0.5rem', margin: '0 auto' }} ref={videoRef} />
         </Padded>
       </Content>
       <ButtonsOnBottom>
