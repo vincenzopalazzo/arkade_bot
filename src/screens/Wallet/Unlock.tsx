@@ -14,8 +14,12 @@ import { authenticateUser } from '../../lib/biometrics'
 import FingerprintIcon from '../../icons/Fingerprint'
 import CenterScreen from '../../components/CenterScreen'
 import Text from '../../components/Text'
+import { IframeContext } from '../../providers/iframe'
+import FlexRow from '../../components/FlexRow'
+import Minimal from '../../components/Minimal'
 
 export default function Unlock() {
+  const { iframeUrl } = useContext(IframeContext)
   const { unlockWallet, wallet, walletUnlocked } = useContext(WalletContext)
 
   const [error, setError] = useState('')
@@ -42,11 +46,21 @@ export default function Unlock() {
   const handleUnlock = async () => {
     if (wallet.lockedByBiometrics) return getPasswordFromBiometrics()
     if (!password) return
-    unlockWallet(password).catch((err) => {
+    unlockWallet(password).catch((err: any) => {
       consoleError(err, 'error unlocking wallet')
       setError(extractError(err))
     })
   }
+
+  if (iframeUrl)
+    return (
+      <Minimal>
+        <FlexRow>
+          <input type='password' onChange={handleChange} />
+          <Button onClick={handleUnlock} label='Unlock' small />
+        </FlexRow>
+      </Minimal>
+    )
 
   return (
     <>

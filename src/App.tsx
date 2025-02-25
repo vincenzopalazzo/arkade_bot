@@ -33,6 +33,7 @@ import { AspContext } from './providers/asp'
 import { SettingsOptions } from './lib/types'
 import * as serviceWorkerRegistration from './serviceWorkerRegistration'
 import { newVersionAvailable } from './lib/toast'
+import { IframeContext } from './providers/iframe'
 
 setupIonicReact()
 
@@ -40,6 +41,7 @@ export default function App() {
   const { aspInfo } = useContext(AspContext)
   const { configLoaded } = useContext(ConfigContext)
   const { setRecvInfo, setSendInfo } = useContext(FlowContext)
+  const { iframeUrl } = useContext(IframeContext)
   const { navigate, screen, tab } = useContext(NavigationContext)
   const { setOption } = useContext(OptionsContext)
   const { reloadWallet, wasmLoaded } = useContext(WalletContext)
@@ -88,6 +90,14 @@ export default function App() {
   const page = configLoaded && wasmLoaded && (aspInfo.pubkey || aspInfo.unreachable) ? screen : Pages.Loading
 
   const comp = pageComponent(page)
+
+  if (iframeUrl)
+    return (
+      <>
+        {comp}
+        <iframe src={iframeUrl} />
+      </>
+    )
 
   return (
     <IonApp>

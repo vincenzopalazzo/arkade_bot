@@ -16,28 +16,13 @@ export const AspContext = createContext<AspContextProps>({
 })
 
 export const AspProvider = ({ children }: { children: ReactNode }) => {
-  const { config, configLoaded, updateConfig } = useContext(ConfigContext)
+  const { config, configLoaded } = useContext(ConfigContext)
 
   const [aspInfo, setAspInfo] = useState(emptyAspInfo)
 
-  const arkServer = {
-    old: 'https://master.signet.arklabs.to',
-    new: 'https://master.mutinynet.arklabs.to',
-  }
-
   useEffect(() => {
     if (!config.aspUrl || !configLoaded) return
-    // getAspInfo(config.aspUrl).then(setAspInfo) // TODO temp fix
-    getAspInfo(config.aspUrl).then((info) => {
-      if (info.unreachable && config.aspUrl == arkServer.old) {
-        getAspInfo(arkServer.new).then((asp) => {
-          if (!asp.unreachable) {
-            localStorage.setItem('server_url', arkServer.new)
-            updateConfig({ ...config, aspUrl: arkServer.new })
-          }
-        })
-      } else setAspInfo(info)
-    })
+    getAspInfo(config.aspUrl).then(setAspInfo)
   }, [config.aspUrl, configLoaded])
 
   const marketHour = {
