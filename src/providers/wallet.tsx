@@ -2,7 +2,7 @@ import { ReactNode, createContext, useContext, useEffect, useState } from 'react
 import { readWalletFromStorage, saveWalletToStorage } from '../lib/storage'
 import { NavigationContext, Pages } from './navigation'
 import { getRestApiExplorerURL } from '../lib/explorers'
-import { settleVtxos, getBalance, getVtxos, lock, unlock, getTxHistory } from '../lib/asp'
+import { settleVtxos, getBalance, getVtxos, lock, unlock, getTxHistory, getReceivingAddresses } from '../lib/asp'
 import { AspContext } from './asp'
 import { NotificationsContext } from './notifications'
 import { FlowContext } from './flow'
@@ -11,6 +11,8 @@ import { fetchWasm } from '../lib/fetch'
 import { consoleError } from '../lib/logs'
 import { Wallet } from '../lib/types'
 import { sleep } from '../lib/sleep'
+import { ConfigContext } from './config'
+import { calcNextRollover, vtxosExpiringSoon } from '../lib/wallet'
 
 const defaultWallet: Wallet = {
   arkAddress: '',
@@ -60,6 +62,7 @@ export const WalletContext = createContext<WalletContextProps>({
 
 export const WalletProvider = ({ children }: { children: ReactNode }) => {
   const { aspInfo } = useContext(AspContext)
+  const { config, configLoaded } = useContext(ConfigContext)
   const { noteInfo, setNoteInfo } = useContext(FlowContext)
   const { navigate } = useContext(NavigationContext)
   const { notifyVtxosRollover, notifyTxSettled } = useContext(NotificationsContext)
@@ -117,11 +120,19 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   // auto settle vtxos if next roll over in less than 24 hours
   useEffect(() => {
     if (!wallet.nextRollover || !walletUnlocked) return
-    const now = Math.floor(new Date().getTime() / 1000)
-    const threshold = 60 * 60 * 24 // one day in seconds
-    const urgent = wallet.nextRollover - now < threshold
-    if (urgent) rolloverVtxos()
+    if (vtxosExpiringSoon(wallet.nextRollover)) rolloverVtxos()
   }, [walletUnlocked, wallet.nextRollover])
+
+  // instruct service worker to start checking for vtxos expirations
+  // if user set notifications off it should stop checking
+  useEffect(() => {
+    if (!walletLoaded || !wallet.initialized || !configLoaded) return
+    const type = config.notifications ? 'START_CHECK' : 'STOP_CHECK'
+    const data = { arkAddress: walletLoaded.arkAddress, serverUrl: aspInfo.url }
+    navigator.serviceWorker.getRegistration().then((registration) => {
+      registration?.active?.postMessage({ type, data })
+    })
+  }, [configLoaded, config.notifications, walletLoaded, wallet.initialized])
 
   const initWallet = async (password: string, privateKey: string) => {
     const aspUrl = aspInfo.url
@@ -155,17 +166,22 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const reloadWallet = async () => {
+    const { offchainAddr } = await getReceivingAddresses()
     const vtxos = await getVtxos()
     const balance = await getBalance()
     const txs = await getTxHistory()
     const now = Math.floor(new Date().getTime() / 1000)
-    const nextRollover = vtxos.spendable
-      ? vtxos.spendable.reduce((acc, cur) => {
-          const unixtimestamp = Math.floor(new Date(cur.expireAt).getTime() / 1000)
-          return unixtimestamp < acc || acc === 0 ? unixtimestamp : acc
-        }, 0)
-      : 0
-    updateWallet({ ...wallet, balance, initialized: true, lastUpdate: now, nextRollover, txs, vtxos })
+    const nextRollover = calcNextRollover(vtxos)
+    updateWallet({
+      ...wallet,
+      arkAddress: offchainAddr,
+      balance,
+      initialized: true,
+      lastUpdate: now,
+      nextRollover,
+      txs,
+      vtxos,
+    })
   }
 
   const resetWallet = async () => {
