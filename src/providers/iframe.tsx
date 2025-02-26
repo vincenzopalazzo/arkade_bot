@@ -61,7 +61,6 @@ export const IframeProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     window.addEventListener('message', (event) => {
-      console.log('Received message from iframe:', event.data, wallet)
       try {
         const data = JSON.parse(event.data)
         const { action, arkAddress, satoshis, text } = data
