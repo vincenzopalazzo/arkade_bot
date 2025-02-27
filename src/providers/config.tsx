@@ -4,7 +4,7 @@ import { defaultArkServer } from '../lib/constants'
 import { Config, Themes, Unit } from '../lib/types'
 
 const defaultConfig: Config = {
-  aspUrl: defaultArkServer,
+  aspUrl: defaultArkServer(),
   nostr: false,
   notifications: false,
   npub: '',
