@@ -33,7 +33,10 @@ export default function CalendarButton({ callback, marketHour, name }: CalendarB
         if (mutation.type === 'childList') {
           const { event, eventCategory } = window.dataLayer[window.dataLayer.length - 1]
           if (event === 'success' && eventCategory === 'Add-to-Calendar-Button') {
-            if (callback) setTimeout(() => callback(), 2100)
+            setTimeout(() => {
+              window.dataLayer.pop()
+              callback()
+            }, 2100)
           }
         }
       }
