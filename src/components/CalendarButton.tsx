@@ -4,11 +4,11 @@ import { ConfigContext } from '../providers/config'
 import { Themes } from '../lib/types'
 import { TextSecondary } from './Text'
 import FlexCol from './FlexCol'
-import { MarketHour } from '../lib/asp'
 import Content from './Content'
 import ButtonsOnBottom from './ButtonsOnBottom'
 import Button from './Button'
 import Header from '../screens/Settings/Header'
+import { prettyDate } from '../lib/format'
 
 declare global {
   interface Window {
@@ -17,12 +17,13 @@ declare global {
 }
 
 interface CalendarButtonProps {
-  marketHour: MarketHour
-  name: string
   callback: () => void
+  duration: number
+  name: string
+  startTime: number
 }
 
-export default function CalendarButton({ callback, marketHour, name }: CalendarButtonProps) {
+export default function CalendarButton({ callback, duration, name, startTime }: CalendarButtonProps) {
   const { config } = useContext(ConfigContext)
 
   // observe dataLayer changes to detect when the event is triggered
@@ -59,14 +60,14 @@ export default function CalendarButton({ callback, marketHour, name }: CalendarB
       <Header backFunc={callback} text='Add reminder' />
       <Content>
         <FlexCol centered>
-          <TextSecondary>{marketHour.prettyStart}</TextSecondary>
+          <TextSecondary>{prettyDate(startTime)}</TextSecondary>
           <AddToCalendarButton
             name={name}
             options="'Apple','Google','iCal','Outlook.com','Microsoft 365','Microsoft Teams','Yahoo'"
-            startTime={new Date(marketHour.startTime * 1000).toISOString().slice(11, 16)}
-            startDate={new Date(marketHour.startTime * 1000).toISOString().slice(0, 10)}
-            endTime={new Date(marketHour.endTime * 1000).toISOString().slice(11, 16)}
-            endDate={new Date(marketHour.endTime * 1000).toISOString().slice(0, 10)}
+            endTime={new Date((startTime + duration) * 1000).toISOString().slice(11, 16)}
+            endDate={new Date((startTime + duration) * 1000).toISOString().slice(0, 10)}
+            startTime={new Date(startTime * 1000).toISOString().slice(11, 16)}
+            startDate={new Date(startTime * 1000).toISOString().slice(0, 10)}
             lightMode={config.theme === Themes.Light ? 'light' : 'dark'}
             timeZone='currentBrowser'
             forceOverlay

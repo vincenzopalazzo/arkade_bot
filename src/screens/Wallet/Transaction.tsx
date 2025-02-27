@@ -5,7 +5,7 @@ import { NavigationContext, Pages } from '../../providers/navigation'
 import Padded from '../../components/Padded'
 import { WalletContext } from '../../providers/wallet'
 import { FlowContext } from '../../providers/flow'
-import { prettyAgo, prettyDate, prettyHide, prettyNumber } from '../../lib/format'
+import { prettyAgo, prettyDate, prettyDelta, prettyHide, prettyNumber } from '../../lib/format'
 import { defaultFee } from '../../lib/constants'
 import Table from '../../components/Table'
 import Error from '../../components/Error'
@@ -23,7 +23,7 @@ import { TextSecondary } from '../../components/Text'
 import CalendarButton from '../../components/CalendarButton'
 
 export default function Transaction() {
-  const { nextMarketHour } = useContext(AspContext)
+  const { aspInfo, calcNextMarketHour } = useContext(AspContext)
   const { config } = useContext(ConfigContext)
   const { txInfo, setTxInfo } = useContext(FlowContext)
   const { navigate } = useContext(NavigationContext)
@@ -32,12 +32,15 @@ export default function Transaction() {
   const tx = txInfo
   const defaultButtonLabel = 'Settle pending'
 
+  const [canSettleOnMarketHour, setCanSettleOnMarketHour] = useState(false)
   const [buttonLabel, setButtonLabel] = useState(defaultButtonLabel)
   const [showSettleButton, setShowSettleButton] = useState(false)
   const [showCalendarButton, setShowCalendarButton] = useState(false)
   const [settleSuccess, setSettleSuccess] = useState(false)
   const [settling, setSettling] = useState(false)
   const [error, setError] = useState('')
+  const [startTime, setStartTime] = useState(0)
+  const [duration, setDuration] = useState(0)
 
   useEffect(() => {
     if (tx) setShowSettleButton(!tx.settled)
@@ -46,6 +49,21 @@ export default function Transaction() {
   useEffect(() => {
     setButtonLabel(settling ? 'Settling...' : defaultButtonLabel)
   }, [settling])
+
+  useEffect(() => {
+    if (!tx) return
+    const expiration = tx?.createdAt + aspInfo.vtxoTreeExpiry
+    const nextMarketHour = calcNextMarketHour(expiration)
+    if (nextMarketHour) {
+      setCanSettleOnMarketHour(true)
+      setStartTime(nextMarketHour.startTime)
+      setDuration(nextMarketHour.duration)
+    } else {
+      setCanSettleOnMarketHour(false)
+      setStartTime(wallet.nextRollover)
+      setDuration(0)
+    }
+  }, [wallet.nextRollover])
 
   const handleBack = () => navigate(Pages.Wallet)
 
@@ -72,7 +90,6 @@ export default function Transaction() {
   const amount = tx.type === 'sent' ? tx.amount - defaultFee : tx.amount
 
   const data = [
-    // ['State', tx.pending ? 'Pending' : 'Settled'],
     ['Direction', tx.type === 'sent' ? 'Sent' : 'Received'],
     ['When', prettyAgo(tx.createdAt)],
     ['Date', prettyDate(tx.createdAt)],
@@ -81,18 +98,19 @@ export default function Transaction() {
     ['Total', `${config.showBalance ? prettyNumber(tx.amount) : prettyHide(tx.amount)} sats`],
   ].filter((l) => l[1])
 
-  const { startTime, prettyIn, prettyDuration } = nextMarketHour
-
   const clickableDate = (unix: number) => (
     <strong onClick={() => setShowCalendarButton(true)}>{prettyDate(unix)}</strong>
   )
 
+  const closeCalendarButton = () => setShowCalendarButton(false)
+
   if (showCalendarButton)
     return (
       <CalendarButton
-        marketHour={nextMarketHour}
+        callback={closeCalendarButton}
+        duration={duration}
         name='Settle transaction'
-        callback={() => setShowCalendarButton(false)}
+        startTime={startTime}
       />
     )
 
@@ -110,11 +128,13 @@ export default function Transaction() {
                 <Info color='yellowoutlier' title='Pending'>
                   <TextSecondary>
                     This transaction is not yet final. Funds will become non-reversible once the transaction is settled.
-                    You can settle it at the next market hour for lower fees.
                   </TextSecondary>
-                  <TextSecondary>
-                    Next market hour starts at {clickableDate(startTime)} ({prettyIn}) and lasts for {prettyDuration}.
-                  </TextSecondary>
+                  {canSettleOnMarketHour ? (
+                    <TextSecondary>
+                      You can settle it at the next market hour for lower fees. Next market hour starts at{' '}
+                      {clickableDate(startTime)} ({prettyAgo(startTime, true)}) and lasts for {prettyDelta(duration)}.
+                    </TextSecondary>
+                  ) : null}
                 </Info>
               ) : null}
               {settleSuccess ? (

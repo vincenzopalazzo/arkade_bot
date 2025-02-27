@@ -45,7 +45,7 @@ const VtxoLine = ({ hide, vtxo }: { hide: boolean; vtxo: Vtxo }) => {
 }
 
 export default function Vtxos() {
-  const { aspInfo, bestMarketHour } = useContext(AspContext)
+  const { aspInfo, calcBestMarketHour } = useContext(AspContext)
   const { config } = useContext(ConfigContext)
   const { rolloverVtxos, wallet } = useContext(WalletContext)
 
@@ -56,10 +56,23 @@ export default function Vtxos() {
   const [rollingover, setRollingover] = useState(false)
   const [showCalendarButton, setShowCalendarButton] = useState(false)
   const [showList, setShowList] = useState(false)
+  const [startTime, setStartTime] = useState(0)
+  const [duration, setDuration] = useState(0)
 
   useEffect(() => {
     setLabel(rollingover ? 'Rolling over...' : defaultLabel)
   }, [rollingover])
+
+  useEffect(() => {
+    const bestMarketHour = calcBestMarketHour(wallet.nextRollover)
+    if (bestMarketHour) {
+      setStartTime(bestMarketHour.startTime)
+      setDuration(bestMarketHour.duration)
+    } else {
+      setStartTime(wallet.nextRollover)
+      setDuration(0)
+    }
+  }, [wallet.nextRollover])
 
   const handleAddReminder = () => {
     setShowCalendarButton(true)
@@ -77,8 +90,6 @@ export default function Vtxos() {
     }
   }
 
-  const { prettyDuration, prettyIn, startTime } = bestMarketHour(wallet.nextRollover)
-
   const clickableDate = (unix: number) => (
     <strong onClick={() => setShowCalendarButton(true)}>{prettyDate(unix)}</strong>
   )
@@ -86,9 +97,10 @@ export default function Vtxos() {
   if (showCalendarButton)
     return (
       <CalendarButton
-        marketHour={bestMarketHour(wallet.nextRollover)}
-        name='VTXOs rollover'
         callback={() => setShowCalendarButton(false)}
+        duration={duration}
+        name='VTXOs rollover'
+        startTime={startTime}
       />
     )
 
@@ -138,10 +150,12 @@ export default function Vtxos() {
                   <TextSecondary>
                     The app will try to auto roll over all VTXOs which expire in less than 24 hours.
                   </TextSecondary>
-                  <TextSecondary>You can settle it at the best market hour for lower fees.</TextSecondary>
-                  <TextSecondary>
-                    Best market hour starts at {clickableDate(startTime)} ({prettyIn}) and lasts for {prettyDuration}.
-                  </TextSecondary>
+                  {startTime ? (
+                    <TextSecondary>
+                      You can settle it at the best market hour for lower fees. Best market hour starts at{' '}
+                      {clickableDate(startTime)} ({prettyAgo(startTime, true)}) and lasts for {prettyDelta(duration)}.
+                    </TextSecondary>
+                  ) : null}
                 </FlexCol>
               </>
             ) : (
