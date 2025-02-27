@@ -42,7 +42,7 @@ export default function ReceiveAmount() {
   }, [aspInfo.unreachable])
 
   useEffect(() => {
-    pingFaucet(wallet.network)
+    pingFaucet(aspInfo.url)
       .then(setFaucetAvailable)
       .catch(() => {})
   }, [])
@@ -69,7 +69,7 @@ export default function ReceiveAmount() {
     try {
       if (!amount) throw 'Invalid amount'
       setFauceting(true)
-      const ok = await callFaucet(recvInfo.offchainAddr, amount, wallet.network)
+      const ok = await callFaucet(recvInfo.offchainAddr, amount, aspInfo.url)
       if (!ok) throw 'Faucet failed'
       setFauceting(false)
       setFaucetSuccess(true)

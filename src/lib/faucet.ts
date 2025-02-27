@@ -1,11 +1,7 @@
-type Faucets = Record<string, string>
+import { getFaucetUrl } from './constants'
 
-const faucets: Faucets = {
-  mutinynet: 'https://faucet.mutinynet.arklabs.to',
-  regtest: 'http://localhost:9999',
-}
-export const callFaucet = async (address: string, amount: number, network: string): Promise<boolean> => {
-  const faucetServerUrl = faucets[network]
+export const callFaucet = async (address: string, amount: number, arkServerUrl: string): Promise<boolean> => {
+  const faucetServerUrl = getFaucetUrl(arkServerUrl)
   if (!faucetServerUrl) return false
   const url = `${faucetServerUrl}/faucet`
   const res = await fetch(url, {
@@ -16,9 +12,9 @@ export const callFaucet = async (address: string, amount: number, network: strin
   return res.ok
 }
 
-export const pingFaucet = async (network: string): Promise<boolean> => {
+export const pingFaucet = async (arkServerUrl: string): Promise<boolean> => {
   try {
-    const faucetServerUrl = faucets[network]
+    const faucetServerUrl = getFaucetUrl(arkServerUrl)
     if (!faucetServerUrl) return false
     const opt = { headers: { 'Content-Type': 'application/json' } }
     const url = `${faucetServerUrl}/healthcheck`
