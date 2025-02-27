@@ -1,10 +1,10 @@
 import { ReactNode, createContext, useEffect, useState } from 'react'
 import { clearStorage, readConfigFromStorage, saveConfigToStorage } from '../lib/storage'
-import { defaultAsp } from '../lib/constants'
+import { defaultArkServer } from '../lib/constants'
 import { Config, Themes, Unit } from '../lib/types'
 
 const defaultConfig: Config = {
-  aspUrl: defaultAsp,
+  aspUrl: defaultArkServer,
   nostr: false,
   notifications: false,
   npub: '',
