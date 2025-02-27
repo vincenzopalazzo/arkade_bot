@@ -45,7 +45,7 @@ const VtxoLine = ({ hide, vtxo }: { hide: boolean; vtxo: Vtxo }) => {
 }
 
 export default function Vtxos() {
-  const { aspInfo, bestMarketHour, nextMarketHour } = useContext(AspContext)
+  const { aspInfo, bestMarketHour } = useContext(AspContext)
   const { config } = useContext(ConfigContext)
   const { rolloverVtxos, wallet } = useContext(WalletContext)
 
@@ -56,12 +56,6 @@ export default function Vtxos() {
   const [rollingover, setRollingover] = useState(false)
   const [showCalendarButton, setShowCalendarButton] = useState(false)
   const [showList, setShowList] = useState(false)
-
-  const bestRoll = bestMarketHour(wallet.nextRollover)
-  const nextRoll = prettyAgo(wallet.nextRollover, true)
-  const lifetime = prettyDelta(aspInfo.vtxoTreeExpiry)
-  const bestHour = prettyDate(bestRoll)
-  const duration = parseInt(nextMarketHour.lasts)
 
   useEffect(() => {
     setLabel(rollingover ? 'Rolling over...' : defaultLabel)
@@ -83,6 +77,21 @@ export default function Vtxos() {
     }
   }
 
+  const { prettyDuration, prettyIn, startTime } = bestMarketHour(wallet.nextRollover)
+
+  const clickableDate = (unix: number) => (
+    <strong onClick={() => setShowCalendarButton(true)}>{prettyDate(unix)}</strong>
+  )
+
+  if (showCalendarButton)
+    return (
+      <CalendarButton
+        marketHour={bestMarketHour(wallet.nextRollover)}
+        name='VTXOs rollover'
+        callback={() => setShowCalendarButton(false)}
+      />
+    )
+
   return (
     <>
       <Header
@@ -94,13 +103,6 @@ export default function Vtxos() {
       <Content>
         {rollingover ? (
           <WaitingForRound rollover />
-        ) : showCalendarButton ? (
-          <CalendarButton
-            last={duration}
-            name='VTXOs rollover'
-            unix={bestRoll}
-            onSuccess={() => setShowCalendarButton(false)}
-          />
         ) : showList ? (
           <Padded>
             <FlexCol gap='0.5rem'>
@@ -128,16 +130,17 @@ export default function Vtxos() {
                   </Box>
                 </FlexCol>
                 <FlexCol gap='0.5rem' margin='2rem 0 0 0'>
-                  <TextSecondary>Your oldest VTXO will expire {nextRoll}.</TextSecondary>
+                  <TextSecondary>Your oldest VTXO will expire {prettyAgo(wallet.nextRollover)}.</TextSecondary>
                   <TextSecondary>
-                    Your VTXOs have a lifetime of {lifetime} and they need to be rolled over prior to expiration.
+                    Your VTXOs have a lifetime of {prettyDelta(aspInfo.vtxoTreeExpiry)} and they need to be rolled over
+                    prior to expiration.
                   </TextSecondary>
                   <TextSecondary>
                     The app will try to auto roll over all VTXOs which expire in less than 24 hours.
                   </TextSecondary>
                   <TextSecondary>You can settle it at the best market hour for lower fees.</TextSecondary>
                   <TextSecondary>
-                    Best market hour starts at {bestHour} and lasts for {prettyDelta(duration, true)}.
+                    Best market hour starts at {clickableDate(startTime)} ({prettyIn}) and lasts for {prettyDuration}.
                   </TextSecondary>
                 </FlexCol>
               </>
@@ -148,16 +151,10 @@ export default function Vtxos() {
         )}
       </Content>
       <ButtonsOnBottom>
-        {showCalendarButton ? (
-          <Button onClick={() => setShowCalendarButton(false)} label='Back' secondary />
-        ) : (
-          <>
-            {wallet.vtxos.spendable?.length > 0 ? (
-              <Button onClick={handleRollover} label={label} disabled={rollingover} />
-            ) : null}
-            {wallet.nextRollover ? <Button onClick={handleAddReminder} label='Add reminder' secondary /> : null}
-          </>
-        )}
+        {wallet.vtxos.spendable?.length > 0 ? (
+          <Button onClick={handleRollover} label={label} disabled={rollingover} />
+        ) : null}
+        {wallet.nextRollover ? <Button onClick={handleAddReminder} label='Add reminder' secondary /> : null}
       </ButtonsOnBottom>
     </>
   )

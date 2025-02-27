@@ -41,6 +41,26 @@ export const emptyAspInfo: AspInfo = {
   },
 }
 
+export interface MarketHour {
+  prettyDuration: string
+  prettyStart: string
+  prettyEnd: string
+  prettyIn: string
+  startTime: number
+  endTime: number
+  period: number
+}
+
+export const emptyMarketHour: MarketHour = {
+  prettyDuration: '',
+  prettyStart: '',
+  prettyEnd: '',
+  prettyIn: '',
+  startTime: 0,
+  endTime: 0,
+  period: 0,
+}
+
 const headers = { 'Content-Type': 'application/json' }
 
 const get = async (endpoint: string, url: string) => {

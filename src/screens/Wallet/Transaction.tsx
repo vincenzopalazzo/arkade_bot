@@ -20,6 +20,7 @@ import WaitingForRound from '../../components/WaitingForRound'
 import { sleep } from '../../lib/sleep'
 import { AspContext } from '../../providers/asp'
 import { TextSecondary } from '../../components/Text'
+import CalendarButton from '../../components/CalendarButton'
 
 export default function Transaction() {
   const { nextMarketHour } = useContext(AspContext)
@@ -33,6 +34,7 @@ export default function Transaction() {
 
   const [buttonLabel, setButtonLabel] = useState(defaultButtonLabel)
   const [showSettleButton, setShowSettleButton] = useState(false)
+  const [showCalendarButton, setShowCalendarButton] = useState(false)
   const [settleSuccess, setSettleSuccess] = useState(false)
   const [settling, setSettling] = useState(false)
   const [error, setError] = useState('')
@@ -79,6 +81,21 @@ export default function Transaction() {
     ['Total', `${config.showBalance ? prettyNumber(tx.amount) : prettyHide(tx.amount)} sats`],
   ].filter((l) => l[1])
 
+  const { startTime, prettyIn, prettyDuration } = nextMarketHour
+
+  const clickableDate = (unix: number) => (
+    <strong onClick={() => setShowCalendarButton(true)}>{prettyDate(unix)}</strong>
+  )
+
+  if (showCalendarButton)
+    return (
+      <CalendarButton
+        marketHour={nextMarketHour}
+        name='Settle transaction'
+        callback={() => setShowCalendarButton(false)}
+      />
+    )
+
   return (
     <>
       <Header text='Transaction' back={handleBack} />
@@ -96,7 +113,7 @@ export default function Transaction() {
                     You can settle it at the next market hour for lower fees.
                   </TextSecondary>
                   <TextSecondary>
-                    Next market hour starts at {nextMarketHour.start} and lasts for {nextMarketHour.lasts}.
+                    Next market hour starts at {clickableDate(startTime)} ({prettyIn}) and lasts for {prettyDuration}.
                   </TextSecondary>
                 </Info>
               ) : null}
