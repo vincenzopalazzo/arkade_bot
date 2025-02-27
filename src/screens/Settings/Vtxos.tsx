@@ -91,7 +91,9 @@ export default function Vtxos() {
   }
 
   const clickableDate = (unix: number) => (
-    <strong onClick={() => setShowCalendarButton(true)}>{prettyDate(unix)}</strong>
+    <strong onClick={() => setShowCalendarButton(true)} style={{ cursor: 'pointer' }}>
+      {prettyDate(unix)}
+    </strong>
   )
 
   if (showCalendarButton)

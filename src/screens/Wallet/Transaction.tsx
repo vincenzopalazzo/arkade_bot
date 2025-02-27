@@ -99,7 +99,9 @@ export default function Transaction() {
   ].filter((l) => l[1])
 
   const clickableDate = (unix: number) => (
-    <strong onClick={() => setShowCalendarButton(true)}>{prettyDate(unix)}</strong>
+    <strong onClick={() => setShowCalendarButton(true)} style={{ cursor: 'pointer' }}>
+      {prettyDate(unix)}
+    </strong>
   )
 
   const closeCalendarButton = () => setShowCalendarButton(false)
