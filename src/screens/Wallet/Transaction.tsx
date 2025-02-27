@@ -22,7 +22,7 @@ import { AspContext } from '../../providers/asp'
 import { TextSecondary } from '../../components/Text'
 
 export default function Transaction() {
-  const { marketHour } = useContext(AspContext)
+  const { nextMarketHour } = useContext(AspContext)
   const { config } = useContext(ConfigContext)
   const { txInfo, setTxInfo } = useContext(FlowContext)
   const { navigate } = useContext(NavigationContext)
@@ -96,7 +96,7 @@ export default function Transaction() {
                     You can settle it at the next market hour for lower fees.
                   </TextSecondary>
                   <TextSecondary>
-                    Next market hour starts at {marketHour.start} and lasts for {marketHour.lasts}.
+                    Next market hour starts at {nextMarketHour.start} and lasts for {nextMarketHour.lasts}.
                   </TextSecondary>
                 </Info>
               ) : null}

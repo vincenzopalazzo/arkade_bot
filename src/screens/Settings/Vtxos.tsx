@@ -4,7 +4,7 @@ import ButtonsOnBottom from '../../components/ButtonsOnBottom'
 import Padded from '../../components/Padded'
 import Content from '../../components/Content'
 import { WalletContext } from '../../providers/wallet'
-import { prettyAgo, prettyDate, prettyHide, prettyNumber } from '../../lib/format'
+import { prettyAgo, prettyDate, prettyDelta, prettyHide, prettyNumber } from '../../lib/format'
 import Header from './Header'
 import Text, { TextSecondary } from '../../components/Text'
 import FlexCol from '../../components/FlexCol'
@@ -17,6 +17,7 @@ import Error from '../../components/Error'
 import WaitingForRound from '../../components/WaitingForRound'
 import { sleep } from '../../lib/sleep'
 import { AspContext } from '../../providers/asp'
+import CalendarButton from '../../components/CalendarButton'
 
 const Box = ({ children }: { children: ReactNode }) => {
   const style = {
@@ -44,7 +45,7 @@ const VtxoLine = ({ hide, vtxo }: { hide: boolean; vtxo: Vtxo }) => {
 }
 
 export default function Vtxos() {
-  const { marketHour } = useContext(AspContext)
+  const { aspInfo, bestMarketHour, nextMarketHour } = useContext(AspContext)
   const { config } = useContext(ConfigContext)
   const { rolloverVtxos, wallet } = useContext(WalletContext)
 
@@ -53,7 +54,22 @@ export default function Vtxos() {
   const [error, setError] = useState('')
   const [label, setLabel] = useState(defaultLabel)
   const [rollingover, setRollingover] = useState(false)
+  const [showCalendarButton, setShowCalendarButton] = useState(false)
   const [showList, setShowList] = useState(false)
+
+  const bestRoll = bestMarketHour(wallet.nextRollover)
+  const nextRoll = prettyAgo(wallet.nextRollover, true)
+  const lifetime = prettyDelta(aspInfo.vtxoTreeExpiry)
+  const bestHour = prettyDate(bestRoll)
+  const duration = parseInt(nextMarketHour.lasts)
+
+  useEffect(() => {
+    setLabel(rollingover ? 'Rolling over...' : defaultLabel)
+  }, [rollingover])
+
+  const handleAddReminder = () => {
+    setShowCalendarButton(true)
+  }
 
   const handleRollover = async () => {
     try {
@@ -67,10 +83,6 @@ export default function Vtxos() {
     }
   }
 
-  useEffect(() => {
-    setLabel(rollingover ? 'Rolling over...' : defaultLabel)
-  }, [rollingover])
-
   return (
     <>
       <Header
@@ -82,6 +94,13 @@ export default function Vtxos() {
       <Content>
         {rollingover ? (
           <WaitingForRound rollover />
+        ) : showCalendarButton ? (
+          <CalendarButton
+            last={duration}
+            name='VTXOs rollover'
+            unix={bestRoll}
+            onSuccess={() => setShowCalendarButton(false)}
+          />
         ) : showList ? (
           <Padded>
             <FlexCol gap='0.5rem'>
@@ -109,16 +128,16 @@ export default function Vtxos() {
                   </Box>
                 </FlexCol>
                 <FlexCol gap='0.5rem' margin='2rem 0 0 0'>
-                  <TextSecondary>Your oldest VTXO will expire {prettyAgo(wallet.nextRollover, true)}.</TextSecondary>
+                  <TextSecondary>Your oldest VTXO will expire {nextRoll}.</TextSecondary>
                   <TextSecondary>
-                    Your VTXOs have a lifetime of 7 days and they need to be rolled over prior to expiration.
+                    Your VTXOs have a lifetime of {lifetime} and they need to be rolled over prior to expiration.
                   </TextSecondary>
                   <TextSecondary>
                     The app will try to auto roll over all VTXOs which expire in less than 24 hours.
                   </TextSecondary>
-                  <TextSecondary>You can settle it at the next market hour for lower fees.</TextSecondary>
+                  <TextSecondary>You can settle it at the best market hour for lower fees.</TextSecondary>
                   <TextSecondary>
-                    Next market hour starts at {marketHour.start} and lasts for {marketHour.lasts}.
+                    Best market hour starts at {bestHour} and lasts for {prettyDelta(duration, true)}.
                   </TextSecondary>
                 </FlexCol>
               </>
@@ -129,9 +148,16 @@ export default function Vtxos() {
         )}
       </Content>
       <ButtonsOnBottom>
-        {wallet.vtxos.spendable?.length > 0 ? (
-          <Button onClick={handleRollover} label={label} disabled={rollingover} />
-        ) : null}
+        {showCalendarButton ? (
+          <Button onClick={() => setShowCalendarButton(false)} label='Back' secondary />
+        ) : (
+          <>
+            {wallet.vtxos.spendable?.length > 0 ? (
+              <Button onClick={handleRollover} label={label} disabled={rollingover} />
+            ) : null}
+            {wallet.nextRollover ? <Button onClick={handleAddReminder} label='Add reminder' secondary /> : null}
+          </>
+        )}
       </ButtonsOnBottom>
     </>
   )

@@ -5,13 +5,20 @@ import { prettyDate, prettyDelta } from '../lib/format'
 
 interface AspContextProps {
   aspInfo: AspInfo
-  marketHour: { start: string; lasts: string }
+  bestMarketHour: (nextRollOver: number) => number
+  nextMarketHour: { start: string; lasts: string }
   setAspInfo: (info: AspInfo) => void
+}
+
+interface MarketHour {
+  start: string
+  lasts: string
 }
 
 export const AspContext = createContext<AspContextProps>({
   aspInfo: emptyAspInfo,
-  marketHour: { start: '', lasts: '' },
+  bestMarketHour: () => 0,
+  nextMarketHour: { start: '', lasts: '' } as MarketHour,
   setAspInfo: () => {},
 })
 
@@ -25,10 +32,23 @@ export const AspProvider = ({ children }: { children: ReactNode }) => {
     getAspInfo(config.aspUrl).then(setAspInfo)
   }, [config.aspUrl, configLoaded])
 
-  const marketHour = {
+  const nextMarketHour = {
     start: prettyDate(aspInfo.marketHour.nextStartTime),
     lasts: prettyDelta(aspInfo.marketHour.nextEndTime - aspInfo.marketHour.nextStartTime),
   }
 
-  return <AspContext.Provider value={{ aspInfo, marketHour, setAspInfo }}>{children}</AspContext.Provider>
+  const bestMarketHour = (nextRollOver: number) => {
+    let startTime = aspInfo.marketHour.nextStartTime
+    const period = aspInfo.marketHour.period
+    while (startTime + period < nextRollOver) {
+      startTime += period
+    }
+    return startTime
+  }
+
+  return (
+    <AspContext.Provider value={{ aspInfo, bestMarketHour, nextMarketHour, setAspInfo }}>
+      {children}
+    </AspContext.Provider>
+  )
 }

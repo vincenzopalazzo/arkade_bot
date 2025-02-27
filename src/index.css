@@ -78,3 +78,7 @@ iframe {
   height: calc(100% - 50px);
   border: none;
 }
+
+button.atcb-button {
+  box-shadow: none;
+}
