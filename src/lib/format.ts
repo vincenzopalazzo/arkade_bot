@@ -66,7 +66,7 @@ export const prettyHide = (value: string | number): string => {
   return Array(length).fill('·').join('')
 }
 
-export const prettyLongText = (str?: string, showChars = 14): string => {
+export const prettyLongText = (str?: string, showChars = 12): string => {
   if (!str) return ''
   if (str.length <= showChars * 2 + 4) return str
   const left = str.substring(0, showChars)
