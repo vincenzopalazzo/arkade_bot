@@ -10,15 +10,13 @@ export default function Table({ data }: { data: string[][] }) {
     return 'dark50'
   }
 
-  const numChars = (v: string) => Math.floor((36 - v.length) / 2)
-
   return (
     <FlexCol gap='0.5rem'>
       {data.map(([title, value]) => (
         <FlexRow between key={`${title}${value}`}>
           <Text>{title}</Text>
           <Text color={color(value)} copy={value}>
-            {prettyLongText(value, numChars(title))}
+            {prettyLongText(value)}
           </Text>
         </FlexRow>
       ))}
