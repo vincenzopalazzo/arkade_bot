@@ -17,7 +17,7 @@ import Error from '../../components/Error'
 import WaitingForRound from '../../components/WaitingForRound'
 import { sleep } from '../../lib/sleep'
 import { AspContext } from '../../providers/asp'
-import CalendarButton from '../../components/CalendarButton'
+import Reminder from '../../components/Reminder'
 
 const Box = ({ children }: { children: ReactNode }) => {
   const style = {
@@ -54,7 +54,7 @@ export default function Vtxos() {
   const [error, setError] = useState('')
   const [label, setLabel] = useState(defaultLabel)
   const [rollingover, setRollingover] = useState(false)
-  const [showCalendarButton, setShowCalendarButton] = useState(false)
+  const [reminderIsOpen, setReminderIsOpen] = useState(false)
   const [showList, setShowList] = useState(false)
   const [startTime, setStartTime] = useState(0)
   const [duration, setDuration] = useState(0)
@@ -74,10 +74,6 @@ export default function Vtxos() {
     }
   }, [wallet.nextRollover])
 
-  const handleAddReminder = () => {
-    setShowCalendarButton(true)
-  }
-
   const handleRollover = async () => {
     try {
       setRollingover(true)
@@ -89,22 +85,6 @@ export default function Vtxos() {
       setRollingover(false)
     }
   }
-
-  const clickableDate = (unix: number) => (
-    <strong onClick={() => setShowCalendarButton(true)} style={{ cursor: 'pointer' }}>
-      {prettyDate(unix)}
-    </strong>
-  )
-
-  if (showCalendarButton)
-    return (
-      <CalendarButton
-        callback={() => setShowCalendarButton(false)}
-        duration={duration}
-        name='VTXOs rollover'
-        startTime={startTime}
-      />
-    )
 
   return (
     <>
@@ -155,7 +135,7 @@ export default function Vtxos() {
                   {startTime ? (
                     <TextSecondary>
                       You can settle it at the best market hour for lower fees. Best market hour starts at{' '}
-                      {clickableDate(startTime)} ({prettyAgo(startTime, true)}) and lasts for {prettyDelta(duration)}.
+                      {prettyDate(startTime)} ({prettyAgo(startTime, true)}) and lasts for {prettyDelta(duration)}.
                     </TextSecondary>
                   ) : null}
                 </FlexCol>
@@ -170,8 +150,15 @@ export default function Vtxos() {
         {wallet.vtxos.spendable?.length > 0 ? (
           <Button onClick={handleRollover} label={label} disabled={rollingover} />
         ) : null}
-        {wallet.nextRollover ? <Button onClick={handleAddReminder} label='Add reminder' secondary /> : null}
+        {wallet.nextRollover ? <Button onClick={() => setReminderIsOpen(true)} label='Add reminder' secondary /> : null}
       </ButtonsOnBottom>
+      <Reminder
+        callback={() => setReminderIsOpen(false)}
+        duration={duration}
+        isOpen={reminderIsOpen}
+        name='VTXOs rollover'
+        startTime={startTime}
+      />
     </>
   )
 }

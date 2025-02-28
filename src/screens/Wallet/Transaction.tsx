@@ -10,7 +10,6 @@ import { defaultFee } from '../../lib/constants'
 import Table from '../../components/Table'
 import Error from '../../components/Error'
 import { extractError } from '../../lib/error'
-import { openInNewTab } from '../../lib/explorers'
 import Header from '../../components/Header'
 import Content from '../../components/Content'
 import Info from '../../components/Info'
@@ -20,7 +19,7 @@ import WaitingForRound from '../../components/WaitingForRound'
 import { sleep } from '../../lib/sleep'
 import { AspContext } from '../../providers/asp'
 import { TextSecondary } from '../../components/Text'
-import CalendarButton from '../../components/CalendarButton'
+import Reminder from '../../components/Reminder'
 
 export default function Transaction() {
   const { aspInfo, calcNextMarketHour } = useContext(AspContext)
@@ -32,19 +31,14 @@ export default function Transaction() {
   const tx = txInfo
   const defaultButtonLabel = 'Settle pending'
 
-  const [canSettleOnMarketHour, setCanSettleOnMarketHour] = useState(false)
   const [buttonLabel, setButtonLabel] = useState(defaultButtonLabel)
-  const [showSettleButton, setShowSettleButton] = useState(false)
-  const [showCalendarButton, setShowCalendarButton] = useState(false)
+  const [canSettleOnMarketHour, setCanSettleOnMarketHour] = useState(false)
+  const [duration, setDuration] = useState(0)
+  const [error, setError] = useState('')
+  const [reminderIsOpen, setReminderIsOpen] = useState(false)
   const [settleSuccess, setSettleSuccess] = useState(false)
   const [settling, setSettling] = useState(false)
-  const [error, setError] = useState('')
   const [startTime, setStartTime] = useState(0)
-  const [duration, setDuration] = useState(0)
-
-  useEffect(() => {
-    if (tx) setShowSettleButton(!tx.settled)
-  }, [tx?.settled])
 
   useEffect(() => {
     setButtonLabel(settling ? 'Settling...' : defaultButtonLabel)
@@ -66,10 +60,6 @@ export default function Transaction() {
   }, [wallet.nextRollover])
 
   const handleBack = () => navigate(Pages.Wallet)
-
-  const handleExplorer = () => {
-    if (tx?.explorable) openInNewTab(tx.explorable, wallet)
-  }
 
   const handleSettle = async () => {
     setError('')
@@ -98,24 +88,6 @@ export default function Transaction() {
     ['Total', `${config.showBalance ? prettyNumber(tx.amount) : prettyHide(tx.amount)} sats`],
   ].filter((l) => l[1])
 
-  const clickableDate = (unix: number) => (
-    <strong onClick={() => setShowCalendarButton(true)} style={{ cursor: 'pointer' }}>
-      {prettyDate(unix)}
-    </strong>
-  )
-
-  const closeCalendarButton = () => setShowCalendarButton(false)
-
-  if (showCalendarButton)
-    return (
-      <CalendarButton
-        callback={closeCalendarButton}
-        duration={duration}
-        name='Settle transaction'
-        startTime={startTime}
-      />
-    )
-
   return (
     <>
       <Header text='Transaction' back={handleBack} />
@@ -126,7 +98,7 @@ export default function Transaction() {
           <Padded>
             <FlexCol>
               <Error error={Boolean(error)} text={error} />
-              {!tx.settled ? (
+              {tx.settled ? null : (
                 <Info color='yellowoutlier' title='Pending'>
                   <TextSecondary>
                     This transaction is not yet final. Funds will become non-reversible once the transaction is settled.
@@ -134,11 +106,11 @@ export default function Transaction() {
                   {canSettleOnMarketHour ? (
                     <TextSecondary>
                       You can settle it at the next market hour for lower fees. Next market hour starts at{' '}
-                      {clickableDate(startTime)} ({prettyAgo(startTime, true)}) and lasts for {prettyDelta(duration)}.
+                      {prettyDate(startTime)} ({prettyAgo(startTime, true)}) and lasts for {prettyDelta(duration)}.
                     </TextSecondary>
                   ) : null}
                 </Info>
-              ) : null}
+              )}
               {settleSuccess ? (
                 <Info color='green' title='Success'>
                   <TextSecondary>Your transactions are now settled</TextSecondary>
@@ -149,10 +121,19 @@ export default function Transaction() {
           </Padded>
         )}
       </Content>
-      <ButtonsOnBottom>
-        {showSettleButton ? <Button onClick={handleSettle} label={buttonLabel} disabled={settling} /> : null}
-        {tx.explorable ? <Button onClick={handleExplorer} label='View on explorer' secondary /> : null}
-      </ButtonsOnBottom>
+      {tx.settled ? null : (
+        <ButtonsOnBottom>
+          <Button onClick={handleSettle} label={buttonLabel} disabled={settling} />
+          <Button onClick={() => setReminderIsOpen(true)} label='Add reminder' secondary />
+        </ButtonsOnBottom>
+      )}
+      <Reminder
+        isOpen={reminderIsOpen}
+        callback={() => setReminderIsOpen(false)}
+        duration={duration}
+        name='Settle transaction'
+        startTime={startTime}
+      />
     </>
   )
 }

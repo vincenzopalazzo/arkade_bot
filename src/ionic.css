@@ -14,6 +14,8 @@
   --white: #fbfbfb;
   --yellow: #e2c542;
   --yellowoutlier: #debb20;
+  --ion-background-color: #fff;
+  --ion-tabbar-background-color: #fafafa;
 }
 
 .ion-palette-dark {
@@ -25,6 +27,8 @@
   --redbg: #380008;
   --yellow: #ffdd46;
   --yellowoutlier: #ffdd46;
+  --ion-background-color: #101010;
+  --ion-tabbar-background-color: #181818;
 }
 
 ion-button {
@@ -58,7 +62,7 @@ ion-tab-bar {
   border-top: 1px solid var(--dark20);
   & ion-tab-button {
     --color-selected: var(--ion-color-dark);
-    background-color: var(--ion-background-color);
+    background-color: var(--ion-tabbar-background-color);
     &:hover,
     &:hover svg,
     &.tab-selected,
@@ -115,4 +119,32 @@ ion-toast::part(button) {
 
 .toast-container {
   text-align: center;
+}
+
+ion-action-sheet.my-ion-action-sheet {
+  --backdrop-opacity: 0.6;
+  --color: var(--ion-color-dark-rgb);
+  --max-width: 100%;
+  --width: 100%;
+}
+
+.my-ion-action-sheet div.action-sheet-group {
+  background-color: var(--ion-background-color);
+  border-top: var(--dark50) 1px solid;
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+  & .action-sheet-title {
+    font-size: 1rem;
+    font-weight: 700;
+    text-align: center;
+    & .action-sheet-sub-title {
+      font-size: 0.8rem;
+      font-weight: 400;
+    }
+  }
+  & button {
+    border-radius: 0.5rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
 }
