@@ -60,7 +60,10 @@ export const collaborativeExit = async (amount: number, address: string): Promis
 
 export const getAspInfo = async (url: string): Promise<AspInfo> => {
   return new Promise((resolve) => {
-    get('/v1/info', url)
+    let fullUrl = url
+    if (url.startsWith('localhost') || url.startsWith('127.0.0.1')) fullUrl = 'http://' + url
+    else if (!url.startsWith('http')) fullUrl = 'https://' + url
+    get('/v1/info', fullUrl)
       .then((info: AspInfo) => {
         if (info?.code === 5) {
           consoleError('invalid response from server')
@@ -86,7 +89,7 @@ export const getAspInfo = async (url: string): Promise<AspInfo> => {
           roundInterval: Number(roundInterval),
           unilateralExitDelay: Number(unilateralExitDelay),
           unreachable: false,
-          url,
+          url: fullUrl,
           vtxoTreeExpiry: Number(vtxoTreeExpiry ?? '0'),
           marketHour: {
             nextStartTime: Number(marketHour.nextStartTime),

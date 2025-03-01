@@ -25,13 +25,9 @@ export default function Server() {
 
   useEffect(() => {
     if (!aspUrl) return
-    // fix prefixes in localhost urls
-    if (aspUrl.startsWith('localhost')) return setAspUrl('http://' + aspUrl)
-    if (aspUrl.startsWith('127.0.0.1')) return setAspUrl('http://' + aspUrl)
-    // don't don anything if same server
+    // don't do anything if same server
     if (aspUrl === config.aspUrl) return setError('Same server')
     // test connection
-    setError('')
     getAspInfo(aspUrl).then((info) => {
       setError(info.unreachable ? 'Unable to connect' : '')
       setInfo(info)
@@ -41,7 +37,7 @@ export default function Server() {
   const handleConnect = () => {
     if (!info) return
     clearStorage()
-    updateConfig({ ...config, aspUrl })
+    updateConfig({ ...config, aspUrl: info.url })
     updateWallet({ ...wallet, network: info.network, initialized: false })
     location.reload() // reload app or else weird things happen
   }
