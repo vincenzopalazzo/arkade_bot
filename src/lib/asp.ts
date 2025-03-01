@@ -152,6 +152,11 @@ export const getTxHistory = async (): Promise<Tx[]> => {
     consoleError(err, 'error getting tx history')
     return []
   }
+  // sort by date, if have same date, put 'received' txs first
+  txs.sort((a, b) => {
+    if (a.createdAt === b.createdAt) return a.type === 'sent' ? -1 : 1
+    return a.createdAt > b.createdAt ? -1 : 1
+  })
   return txs
 }
 
