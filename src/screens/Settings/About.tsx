@@ -6,6 +6,7 @@ import Padded from '../../components/Padded'
 import Content from '../../components/Content'
 import { WalletContext } from '../../providers/wallet'
 import { gitCommit } from '../../_gitCommit'
+import { prettyDelta } from '../../lib/format'
 
 export default function About() {
   const { aspInfo } = useContext(AspContext)
@@ -16,7 +17,7 @@ export default function About() {
     ['Forfeit address', aspInfo.forfeitAddress],
     ['Network', aspInfo.network],
     ['Batch interval', `${aspInfo.roundInterval} secs`],
-    ['VTXO tree expiry', `${Math.round(aspInfo.vtxoTreeExpiry / 60 / 60 / 24)} days`],
+    ['VTXO tree expiry', prettyDelta(aspInfo.vtxoTreeExpiry, true)],
     ['Server pubkey', aspInfo.pubkey],
     ['Server URL', aspInfo.url],
     ['Unilateral exit delay', `${aspInfo.unilateralExitDelay} secs`],
