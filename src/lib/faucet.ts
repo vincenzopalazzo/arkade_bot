@@ -1,7 +1,29 @@
-import { getFaucetUrl } from './constants'
+import { AspInfo } from './asp'
+import { testServer } from './constants'
+import { NetworkName } from './network'
 
-export const callFaucet = async (address: string, amount: number, arkServerUrl: string): Promise<boolean> => {
-  const faucetServerUrl = getFaucetUrl(arkServerUrl)
+const faucet = {
+  regtest: 'http://localhost:9999',
+  signet: 'https://faucet.signet.arkade.sh',
+  mutinynet: {
+    main: 'https://faucet.mutinynet.arkade.sh',
+    test: 'https://faucet.mutinynet.arklabs.to',
+  },
+}
+
+export const getFaucetUrl = (aspInfo: AspInfo): string => {
+  const { network, url } = aspInfo
+  if (network === NetworkName.Regtest) return faucet.regtest
+  if (network === NetworkName.Signet) return faucet.signet
+  if (network === NetworkName.Mutinynet) {
+    if (url === testServer) return faucet.mutinynet.test
+    return faucet.mutinynet.main
+  }
+  return ''
+}
+
+export const callFaucet = async (address: string, amount: number, aspInfo: AspInfo): Promise<boolean> => {
+  const faucetServerUrl = getFaucetUrl(aspInfo)
   if (!faucetServerUrl) return false
   const url = `${faucetServerUrl}/faucet`
   const res = await fetch(url, {
@@ -12,9 +34,9 @@ export const callFaucet = async (address: string, amount: number, arkServerUrl: 
   return res.ok
 }
 
-export const pingFaucet = async (arkServerUrl: string): Promise<boolean> => {
+export const pingFaucet = async (aspInfo: AspInfo): Promise<boolean> => {
   try {
-    const faucetServerUrl = getFaucetUrl(arkServerUrl)
+    const faucetServerUrl = getFaucetUrl(aspInfo)
     if (!faucetServerUrl) return false
     const opt = { headers: { 'Content-Type': 'application/json' } }
     const url = `${faucetServerUrl}/healthcheck`
