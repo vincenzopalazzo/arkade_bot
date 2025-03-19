@@ -1,6 +1,5 @@
 import { AspInfo } from './asp'
 import { testServer } from './constants'
-import { NetworkName } from './network'
 
 const faucet = {
   regtest: 'http://localhost:9999',
@@ -13,9 +12,9 @@ const faucet = {
 
 export const getFaucetUrl = (aspInfo: AspInfo): string => {
   const { network, url } = aspInfo
-  if (network === NetworkName.Regtest) return faucet.regtest
-  if (network === NetworkName.Signet) return faucet.signet
-  if (network === NetworkName.Mutinynet) {
+  if (network === 'regtest') return faucet.regtest
+  if (network === 'signet') return faucet.signet
+  if (network === 'mutinynet') {
     if (url === testServer) return faucet.mutinynet.test
     return faucet.mutinynet.main
   }
