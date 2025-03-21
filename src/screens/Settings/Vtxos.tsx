@@ -97,21 +97,21 @@ export default function Vtxos() {
       <Content>
         {rollingover ? (
           <WaitingForRound rollover />
-        ) : showList ? (
-          <Padded>
-            <FlexCol gap='0.5rem'>
-              <Error error={Boolean(error)} text={error} />
-              <Text capitalize color='dark50' smaller>
-                Your virtual coins with amount and expiration
-              </Text>
-              {wallet.vtxos.spendable?.map((v) => (
-                <VtxoLine key={v.txid} hide={!config.showBalance} vtxo={v} />
-              ))}
-            </FlexCol>
-          </Padded>
         ) : (
           <Padded>
-            {wallet.vtxos.spendable?.length > 0 ? (
+            {wallet.vtxos.spendable?.length === 0 ? (
+              <WarningBox red text='No virtual coins available' />
+            ) : showList ? (
+              <FlexCol gap='0.5rem'>
+                <Error error={Boolean(error)} text={error} />
+                <Text capitalize color='dark50' smaller>
+                  Your virtual coins with amount and expiration
+                </Text>
+                {wallet.vtxos.spendable?.map((v) => (
+                  <VtxoLine key={v.txid} hide={!config.showBalance} vtxo={v} />
+                ))}
+              </FlexCol>
+            ) : (
               <>
                 <FlexCol gap='0.5rem' margin='0 0 1rem 0'>
                   <Error error={Boolean(error)} text={error} />
@@ -138,8 +138,6 @@ export default function Vtxos() {
                   ) : null}
                 </FlexCol>
               </>
-            ) : (
-              <WarningBox red text='No virtual coins available' />
             )}
           </Padded>
         )}
