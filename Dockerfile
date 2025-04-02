@@ -11,7 +11,7 @@ COPY . .
 # NODE_ENV=production is for runtime optimization
 ENV NODE_ENV=production
 ENV DISABLE_ESLINT_PLUGIN=true
-RUN pnpm install --prod --ignore-scripts
+RUN pnpm install --frozen-lockfile --ignore-scripts
 
 # Create git commit file from current branch HEAD
 RUN if [ -d ".git" ]; then \
