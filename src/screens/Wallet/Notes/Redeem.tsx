@@ -8,36 +8,31 @@ import Button from '../../../components/Button'
 import { NavigationContext, Pages } from '../../../providers/navigation'
 import { extractError } from '../../../lib/error'
 import { redeemNotes } from '../../../lib/asp'
-import Details, { DetailsProps } from '../../../components/Details'
-import { ArkNote } from '../../../lib/arknote'
 import Loading from '../../../components/Loading'
 import Header from '../../../components/Header'
 import FlexCol from '../../../components/FlexCol'
 import { consoleError } from '../../../lib/logs'
+import Details, { DetailsProps } from '../../../components/Details'
+import { AspContext } from '../../../providers/asp'
 
 export default function NotesRedeem() {
+  const { aspInfo } = useContext(AspContext)
   const { noteInfo } = useContext(FlowContext)
   const { navigate } = useContext(NavigationContext)
 
   const defaultButtonLabel = 'Redeem Note'
 
-  const [details, setDetails] = useState<DetailsProps>()
   const [buttonLabel, setButtonLabel] = useState(defaultButtonLabel)
   const [error, setError] = useState('')
   const [redeeming, setRedeeming] = useState(false)
 
   useEffect(() => {
-    setButtonLabel(redeeming ? 'Redeeming...' : defaultButtonLabel)
-  }, [redeeming])
+    setError(aspInfo.unreachable ? 'Ark server unreachable' : '')
+  }, [aspInfo.unreachable])
 
   useEffect(() => {
-    if (!noteInfo.note) return
-    const { value } = ArkNote.fromString(noteInfo.note).data
-    setDetails({
-      arknote: noteInfo.note,
-      satoshis: value,
-    })
-  }, [noteInfo.note])
+    setButtonLabel(redeeming ? 'Redeeming...' : defaultButtonLabel)
+  }, [redeeming])
 
   const handleBack = () => {
     navigate(Pages.NotesForm)
@@ -54,6 +49,11 @@ export default function NotesRedeem() {
       setError(extractError(err))
     }
     setRedeeming(false)
+  }
+
+  const details: DetailsProps = {
+    arknote: noteInfo.note,
+    satoshis: noteInfo.satoshis,
   }
 
   return (

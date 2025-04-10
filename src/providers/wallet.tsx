@@ -13,6 +13,7 @@ import { Wallet } from '../lib/types'
 import { sleep } from '../lib/sleep'
 import { ConfigContext } from './config'
 import { calcNextRollover, vtxosExpiringSoon } from '../lib/wallet'
+import { isPWAInstalled } from '../lib/pwaDetection'
 
 const defaultWallet: Wallet = {
   arkAddress: '',
@@ -32,7 +33,7 @@ const defaultWallet: Wallet = {
 
 interface WalletContextProps {
   initWallet: (password: string, privateKey: string) => Promise<void>
-  lockWallet: (password: string) => Promise<void>
+  lockWallet: () => Promise<void>
   rolloverVtxos: (raise?: boolean) => Promise<void>
   reloadWallet: () => void
   resetWallet: () => void
@@ -106,7 +107,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     if (!wasmLoaded) return
     const wallet = readWalletFromStorage()
     updateWallet(wallet?.initialized ? wallet : defaultWallet)
-    navigate(wallet?.initialized ? Pages.Unlock : Pages.Init)
+    navigate(wallet?.initialized ? Pages.Unlock : isPWAInstalled() ? Pages.Init : Pages.Onboard)
     setWalletLoaded(wallet)
   }, [wasmLoaded])
 
@@ -145,9 +146,9 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     updateWallet({ ...wallet, explorer: explorerUrl, initialized: true, network: aspInfo.network })
   }
 
-  const lockWallet = async (password: string) => {
+  const lockWallet = async () => {
     try {
-      await lock(password)
+      await lock()
       setWalletUnlocked(false)
     } catch {
       throw 'Invalid password'

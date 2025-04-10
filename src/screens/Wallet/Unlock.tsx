@@ -11,12 +11,12 @@ import Header from '../../components/Header'
 import { consoleError } from '../../lib/logs'
 import FlexCol from '../../components/FlexCol'
 import { authenticateUser } from '../../lib/biometrics'
-import FingerprintIcon from '../../icons/Fingerprint'
 import CenterScreen from '../../components/CenterScreen'
 import Text from '../../components/Text'
 import { IframeContext } from '../../providers/iframe'
 import FlexRow from '../../components/FlexRow'
 import Minimal from '../../components/Minimal'
+import PasskeyIcon from '../../icons/Passkey'
 
 export default function Unlock() {
   const { iframeUrl } = useContext(IframeContext)
@@ -26,7 +26,7 @@ export default function Unlock() {
   const [password, setPassword] = useState('')
 
   const getPasswordFromBiometrics = () => {
-    authenticateUser(wallet.passkeyId).then(setPassword).catch(consoleError)
+    authenticateUser().then(setPassword).catch(consoleError)
   }
 
   useEffect(() => {
@@ -67,9 +67,9 @@ export default function Unlock() {
         <Padded>
           {wallet.lockedByBiometrics ? (
             <CenterScreen onClick={getPasswordFromBiometrics}>
-              <FingerprintIcon />
+              <PasskeyIcon />
               <Text centered small wrap>
-                Unlock with biometrics
+                Unlock with your passkey
               </Text>
             </CenterScreen>
           ) : (
@@ -81,7 +81,7 @@ export default function Unlock() {
         </Padded>
       </Content>
       <ButtonsOnBottom>
-        <Button onClick={handleUnlock} label='Unlock Wallet' />
+        <Button onClick={handleUnlock} label='Unlock wallet' />
       </ButtonsOnBottom>
     </>
   )

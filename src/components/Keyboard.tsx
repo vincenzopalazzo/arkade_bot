@@ -15,18 +15,18 @@ interface KeyboardProps {
   back: () => void
   hideBalance?: boolean
   onChange: (arg0: number) => void
-  value: number
+  value: number | undefined
 }
 
 export default function Keyboard({ back, hideBalance, onChange, value }: KeyboardProps) {
-  const { toUSD } = useContext(FiatContext)
+  const { toFiat } = useContext(FiatContext)
   const { wallet } = useContext(WalletContext)
 
   const [sats, setSats] = useState(0)
   const [error, setError] = useState('')
 
   useEffect(() => {
-    setSats(value)
+    setSats(value ?? 0)
   }, [value])
 
   const amountWithSats = () => {
@@ -35,7 +35,7 @@ export default function Keyboard({ back, hideBalance, onChange, value }: Keyboar
 
   const fiatValueWithUSD = () => {
     if (!sats) return
-    return prettyNumber(toUSD(sats), 2) + ' USD'
+    return toFiat(sats)
   }
 
   const handleKeyPress = (k: string) => {
