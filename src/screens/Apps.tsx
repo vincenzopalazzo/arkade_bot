@@ -42,11 +42,11 @@ export default function Apps() {
         <Padded>
           <FlexCol>
             <App name='Ark Invaders' icon={<InvadersIcon />} desc='The classic arcade game' />
-            <App name='Coinflip' icon={<CoinflipIcon />} desc='A fun game to play with your friends' />
+            <App name='Coinflip' icon={<CoinflipIcon />} desc='Head or Tails? Place your bet!' />
             <App
               name='Fuji Money'
               icon={<FujiMoneyIcon />}
-              desc='Synthetic asset smart contract for the Liquid network'
+              desc='Synthetic Assets on the Bitcoin network'
             />
           </FlexCol>
         </Padded>
