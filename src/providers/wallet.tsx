@@ -35,8 +35,8 @@ interface WalletContextProps {
   initWallet: (password: string, privateKey: string) => Promise<void>
   lockWallet: () => Promise<void>
   rolloverVtxos: (raise?: boolean) => Promise<void>
-  reloadWallet: () => void
-  resetWallet: () => void
+  reloadWallet: () => Promise<void>
+  resetWallet: () => Promise<void>
   settlePending: () => Promise<void>
   updateWallet: (w: Wallet) => void
   unlockWallet: (password: string) => Promise<void>
@@ -50,8 +50,8 @@ export const WalletContext = createContext<WalletContextProps>({
   initWallet: () => Promise.resolve(),
   lockWallet: () => Promise.resolve(),
   rolloverVtxos: () => Promise.resolve(),
-  reloadWallet: () => {},
-  resetWallet: () => {},
+  reloadWallet: () => Promise.resolve(),
+  resetWallet: () => Promise.resolve(),
   settlePending: () => Promise.resolve(),
   unlockWallet: () => Promise.resolve(),
   updateWallet: () => {},
@@ -114,8 +114,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   // if voucher present, go to redeem page
   useEffect(() => {
     if (!walletUnlocked) return
-    reloadWallet()
-    navigate(noteInfo.satoshis ? Pages.NotesRedeem : Pages.Wallet)
+    reloadWallet().then(() => navigate(noteInfo.satoshis ? Pages.NotesRedeem : Pages.Wallet))
   }, [walletUnlocked])
 
   // auto settle vtxos if next roll over in less than 24 hours
@@ -166,7 +165,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     }
   }
 
-  const reloadWallet = async () => {
+  const reloadWallet = async (): Promise<void> => {
     const { offchainAddr } = await getReceivingAddresses()
     const vtxos = await getVtxos()
     const balance = await getBalance()
@@ -185,7 +184,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     })
   }
 
-  const resetWallet = async () => {
+  const resetWallet = async (): Promise<void> => {
     updateWallet(defaultWallet)
   }
 
