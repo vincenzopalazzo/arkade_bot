@@ -13,7 +13,7 @@ import { Wallet } from '../lib/types'
 import { sleep } from '../lib/sleep'
 import { ConfigContext } from './config'
 import { calcNextRollover, vtxosExpiringSoon } from '../lib/wallet'
-import { isPWAInstalled } from '../lib/pwaDetection'
+import { usePwa } from '@dotmind/react-use-pwa'
 
 const defaultWallet: Wallet = {
   arkAddress: '',
@@ -67,6 +67,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   const { noteInfo, setNoteInfo } = useContext(FlowContext)
   const { navigate } = useContext(NavigationContext)
   const { notifyVtxosRollover, notifyTxSettled } = useContext(NotificationsContext)
+  const { isInstalled: isPwaInstalled } = usePwa()
 
   const [walletUnlocked, setWalletUnlocked] = useState(false)
   const [walletLoaded, setWalletLoaded] = useState<Wallet>()
@@ -107,9 +108,9 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     if (!wasmLoaded) return
     const wallet = readWalletFromStorage()
     updateWallet(wallet?.initialized ? wallet : defaultWallet)
-    navigate(wallet?.initialized ? Pages.Unlock : isPWAInstalled() ? Pages.Init : Pages.Onboard)
+    navigate(wallet?.initialized ? Pages.Unlock : isPwaInstalled ? Pages.Init : Pages.Onboard)
     setWalletLoaded(wallet)
-  }, [wasmLoaded])
+  }, [wasmLoaded, isPwaInstalled])
 
   // if voucher present, go to redeem page
   useEffect(() => {
