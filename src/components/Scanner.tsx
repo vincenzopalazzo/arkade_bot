@@ -7,16 +7,6 @@ import Padded from './Padded'
 import { QRCanvas, frameLoop, frontalCamera } from '@paulmillr/qr/dom.js'
 import { useRef, useEffect, useState } from 'react'
 
-const isCamAvailable = async (): Promise<boolean> => {
-  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return false
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true })
-    for (const track of stream.getTracks()) track.stop()
-    return true
-  } catch {}
-  return false
-}
-
 interface ScannerProps {
   close: () => void
   label: string
@@ -49,13 +39,13 @@ export default function Scanner({ close, label, setData }: ScannerProps) {
             handleClose()
           }
         })
-      } catch {}
+      } catch (e) {
+        setError(true)
+      }
     }
 
-    isCamAvailable().then((available) => {
-      if (!available) setError(true)
-      else startCameraCapture()
-    })
+    startCameraCapture()
+
     return () => handleClose()
   }, [videoRef])
 
