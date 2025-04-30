@@ -10,7 +10,8 @@ import { useRef, useEffect, useState } from 'react'
 const isCamAvailable = async (): Promise<boolean> => {
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return false
   try {
-    await navigator.mediaDevices.getUserMedia({ video: true })
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true })
+    for (const track of stream.getTracks()) track.stop()
     return true
   } catch {}
   return false
@@ -55,11 +56,11 @@ export default function Scanner({ close, label, setData }: ScannerProps) {
       if (!available) setError(true)
       else startCameraCapture()
     })
-
     return () => handleClose()
   }, [videoRef])
 
   const handleClose = () => {
+    if (!cancel && !error) return
     if (cancel) cancel()
     camera?.stop()
     close()
