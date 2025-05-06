@@ -4,7 +4,7 @@ import Content from './Content'
 import Error from './Error'
 import Header from './Header'
 import Padded from './Padded'
-import { QRCanvas, frameLoop, frontalCamera } from '@paulmillr/qr/dom.js'
+import { QRCanvas, frameLoop, frontalCamera } from 'qr/dom.js'
 import { useRef, useEffect, useState } from 'react'
 
 interface ScannerProps {
