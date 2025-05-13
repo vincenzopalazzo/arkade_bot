@@ -30,7 +30,7 @@ export default function ReceiveAmount() {
   const { fromFiat, toFiat } = useContext(FiatContext)
   const { recvInfo, setRecvInfo } = useContext(FlowContext)
   const { navigate } = useContext(NavigationContext)
-  const { wallet } = useContext(WalletContext)
+  const { balance, svcWallet } = useContext(WalletContext)
 
   const defaultButtonLabel = 'Skip'
 
@@ -53,8 +53,10 @@ export default function ReceiveAmount() {
       .catch(() => {})
   }, [])
 
+  if (!svcWallet) return <Loading text='Loading...' />
+
   useEffect(() => {
-    getReceivingAddresses()
+    getReceivingAddresses(svcWallet)
       .then(({ offchainAddr, boardingAddr }) => {
         if (!offchainAddr) throw 'Unable to get offchain address'
         if (!boardingAddr) throw 'Unable to get boarding address'
@@ -111,7 +113,7 @@ export default function ReceiveAmount() {
     navigate(Pages.ReceiveQRCode)
   }
 
-  const showFaucetButton = wallet.balance === 0 && faucetAvailable
+  const showFaucetButton = balance === 0 && faucetAvailable
   const disabled = !satoshis ? false : amountIsBelowMinLimit(satoshis) || amountIsAboveMaxLimit(satoshis)
 
   if (showKeys) {

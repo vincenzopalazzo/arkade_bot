@@ -1,9 +1,14 @@
-FROM node:18-alpine AS builder
+FROM node:23-alpine AS builder
 
 # Install pnpm and required build dependencies
 RUN apk add --no-cache python3 make g++ git
 RUN corepack enable && corepack prepare pnpm@8.15.4 --activate
 
+# Set up pnpm store
+ENV PNPM_HOME="/root/.local/share/pnpm"
+RUN mkdir -p $PNPM_HOME/store
+
+# Set working directory
 WORKDIR /app
 
 # Copy package files first to leverage Docker cache
@@ -17,7 +22,7 @@ RUN pnpm install
 COPY src ./src
 COPY scripts ./scripts
 COPY public ./public
-COPY index.html vite.config.ts tsconfig.json .eslintrc* ./
+COPY index.html vite.config.ts vite.worker.config.ts tsconfig.json .eslintrc* ./
 COPY .git ./.git
 
 # Build the app

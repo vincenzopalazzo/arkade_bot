@@ -12,6 +12,7 @@ import Loading from '../../../components/Loading'
 import Header from '../../../components/Header'
 import FlexCol from '../../../components/FlexCol'
 import { consoleError } from '../../../lib/logs'
+import { WalletContext } from '../../../providers/wallet'
 import Details, { DetailsProps } from '../../../components/Details'
 import { AspContext } from '../../../providers/asp'
 
@@ -19,6 +20,7 @@ export default function NotesRedeem() {
   const { aspInfo } = useContext(AspContext)
   const { noteInfo } = useContext(FlowContext)
   const { navigate } = useContext(NavigationContext)
+  const { svcWallet } = useContext(WalletContext)
 
   const defaultButtonLabel = 'Redeem Note'
 
@@ -38,11 +40,13 @@ export default function NotesRedeem() {
     navigate(Pages.NotesForm)
   }
 
+  if (!svcWallet) return <Loading text='Loading...' />
+
   const handleRedeem = async () => {
     setError('')
     setRedeeming(true)
     try {
-      await redeemNotes([noteInfo.note])
+      await redeemNotes(svcWallet, [noteInfo.note])
       navigate(Pages.NotesSuccess)
     } catch (err) {
       consoleError(err, 'error redeeming note')

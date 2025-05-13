@@ -112,21 +112,17 @@ const TransactionLine = ({ tx }: { tx: Tx }) => {
 }
 
 export default function TransactionsList() {
-  const { reloadWallet, wallet } = useContext(WalletContext)
+  const { txs } = useContext(WalletContext)
 
-  const transactions = wallet.txs
-
-  if (transactions?.length === 0) return <></>
+  if (txs?.length === 0) return <></>
 
   const key = (tx: Tx) => `${tx.amount}${tx.createdAt}${tx.boardingTxid}${tx.roundTxid}${tx.redeemTxid}${tx.type}`
 
   return (
     <div style={{ width: 'calc(100% + 2rem)', margin: '0 -1rem' }}>
-      <div onClick={reloadWallet} style={{ cursor: 'pointer' }}>
-        <TextLabel>Transaction history</TextLabel>
-      </div>
+      <TextLabel>Transaction history</TextLabel>
       <div style={{ borderBottom: border }}>
-        {transactions.map((tx) => (
+        {txs.map((tx) => (
           <TransactionLine key={key(tx)} tx={tx} />
         ))}
       </div>

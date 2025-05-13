@@ -8,7 +8,7 @@ import Padded from '../../../components/Padded'
 import { isArkAddress, isBTCAddress, decodeArkAddress } from '../../../lib/address'
 import { AspContext } from '../../../providers/asp'
 import * as bip21 from '../../../lib/bip21'
-import { ArkNote, isArkNote } from '../../../lib/arknote'
+import { isArkNote } from '../../../lib/arknote'
 import InputAmount from '../../../components/InputAmount'
 import InputAddress from '../../../components/InputAddress'
 import Header from '../../../components/Header'
@@ -19,6 +19,7 @@ import FlexCol from '../../../components/FlexCol'
 import Keyboard from '../../../components/Keyboard'
 import Text from '../../../components/Text'
 import Scanner from '../../../components/Scanner'
+import Loading from '../../../components/Loading'
 import { consoleError } from '../../../lib/logs'
 import { Addresses, SettingsOptions } from '../../../lib/types'
 import { getReceivingAddresses } from '../../../lib/asp'
@@ -26,6 +27,7 @@ import { OptionsContext } from '../../../providers/options'
 import { isMobileBrowser } from '../../../lib/browser'
 import { ConfigContext } from '../../../providers/config'
 import { FiatContext } from '../../../providers/fiat'
+import { ArkNote } from '@arklabs/wallet-sdk'
 
 export default function SendForm() {
   const { aspInfo, amountIsAboveMaxLimit, amountIsBelowMinLimit } = useContext(AspContext)
@@ -34,7 +36,7 @@ export default function SendForm() {
   const { sendInfo, setNoteInfo, setSendInfo } = useContext(FlowContext)
   const { setOption } = useContext(OptionsContext)
   const { navigate } = useContext(NavigationContext)
-  const { wallet } = useContext(WalletContext)
+  const { balance, svcWallet } = useContext(WalletContext)
 
   const [amount, setAmount] = useState<number>()
   const [error, setError] = useState('')
@@ -47,13 +49,17 @@ export default function SendForm() {
   const [scan, setScan] = useState(false)
   const [tryingToSelfSend, setTryingToSelfSend] = useState(false)
 
+  if (!svcWallet) return <Loading text='Loading...' />
+
+  // get receiving addresses
   useEffect(() => {
     const { recipient, satoshis } = sendInfo
     setRecipient(recipient ?? '')
     setAmount(satoshis ? satoshis : undefined)
-    getReceivingAddresses().then(setReceivingAddresses)
+    getReceivingAddresses(svcWallet).then(setReceivingAddresses)
   }, [])
 
+  // parse recipient data
   useEffect(() => {
     smartSetError('')
     if (!recipient) return
@@ -65,8 +71,6 @@ export default function SendForm() {
       return setState({ address, arkAddress, recipient, satoshis })
     }
     if (isArkAddress(lowerCaseData)) {
-      const { aspKey } = decodeArkAddress(lowerCaseData)
-      if (aspKey !== aspInfo.pubkey.slice(2)) return setError('Invalid Ark server pubkey')
       return setState({ ...sendInfo, address: '', arkAddress: lowerCaseData })
     }
     if (isBTCAddress(lowerCaseData)) {
@@ -84,13 +88,31 @@ export default function SendForm() {
     setError('Invalid recipient address')
   }, [recipient])
 
+  // validate recipient addresses
   useEffect(() => {
-    if (sendInfo.address && !sendInfo.arkAddress && aspInfo.utxoMaxAmount === 0) {
+    if (!receivingAddresses) return setError('Unable to get receiving addresses')
+    const { boardingAddr, offchainAddr } = receivingAddresses
+    const { address, arkAddress } = sendInfo
+    // check server limits for onchain transactions
+    if (address && !arkAddress && aspInfo.utxoMaxAmount === 0) {
       return setError('Sending onchain not allowed')
     }
-    if (!sendInfo.address && sendInfo.arkAddress && aspInfo.vtxoMaxAmount === 0) {
+    // check server limits for offchain transactions
+    if (!address && arkAddress && aspInfo.vtxoMaxAmount === 0) {
       return setError('Sending offchain not allowed')
     }
+    // check if server key is valid
+    if (arkAddress && arkAddress.length > 0) {
+      const { aspKey } = decodeArkAddress(arkAddress)
+      const { aspKey: expectedAspKey } = decodeArkAddress(offchainAddr)
+      if (aspKey !== expectedAspKey) return setError('Invalid Ark server pubkey')
+    }
+    // check if is trying to self send
+    if (address === boardingAddr || arkAddress === offchainAddr) {
+      setError('Cannot send to yourself')
+      setTryingToSelfSend(true) // nudge user to rollover
+    }
+    // everything is ok, clean error
     setError('')
   }, [sendInfo.address, sendInfo.arkAddress])
 
@@ -101,7 +123,7 @@ export default function SendForm() {
   useEffect(() => {
     setState({ ...sendInfo, satoshis })
     setLabel(
-      satoshis > wallet.balance
+      satoshis > balance
         ? 'Insufficient funds'
         : amountIsBelowMinLimit(satoshis)
         ? 'Amount below dust limit'
@@ -119,12 +141,6 @@ export default function SendForm() {
   const setState = (info: SendInfo) => {
     setScan(false)
     setSendInfo(info)
-    if (!receivingAddresses) return
-    const { address, arkAddress } = info
-    const { boardingAddr, offchainAddr } = receivingAddresses
-    const selfSend = address === boardingAddr || arkAddress === offchainAddr
-    setError(selfSend ? 'Cannot send to yourself' : error)
-    setTryingToSelfSend(selfSend)
   }
 
   const gotoRollover = () => {
@@ -152,7 +168,7 @@ export default function SendForm() {
   }
 
   const Available = () => {
-    const amount = useFiat ? toFiat(wallet.balance) : wallet.balance
+    const amount = useFiat ? toFiat(balance) : balance
     const pretty = useFiat ? prettyAmount(amount, config.fiat) : prettyAmount(amount)
     return (
       <Text color='dark50' smaller>
@@ -167,7 +183,7 @@ export default function SendForm() {
     !((address || arkAddress) && satoshis && satoshis > 0) ||
     aspInfo.unreachable ||
     tryingToSelfSend ||
-    satoshis > wallet.balance ||
+    satoshis > balance ||
     amountIsAboveMaxLimit(satoshis) ||
     amountIsBelowMinLimit(satoshis) ||
     Boolean(error)

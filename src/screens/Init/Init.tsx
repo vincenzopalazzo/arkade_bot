@@ -1,12 +1,11 @@
 import { useContext, useEffect, useState } from 'react'
-import { generateMnemonic } from '@scure/bip39'
+import { generateMnemonic, mnemonicToSeedSync } from '@scure/bip39'
 import { wordlist } from '@scure/bip39/wordlists/english'
 import Button from '../../components/Button'
 import ButtonsOnBottom from '../../components/ButtonsOnBottom'
 import { NavigationContext, Pages } from '../../providers/navigation'
 import { AspContext } from '../../providers/asp'
 import Error from '../../components/Error'
-import { getPrivateKeyFromMnemonic } from '../../lib/wallet'
 import { FlowContext } from '../../providers/flow'
 import Content from '../../components/Content'
 import CenterScreen from '../../components/CenterScreen'
@@ -14,6 +13,7 @@ import Text from '../../components/Text'
 import FlexCol from '../../components/FlexCol'
 import { IframeContext } from '../../providers/iframe'
 import Minimal from '../../components/Minimal'
+import { deriveKeyFromSeed } from '../../lib/wallet'
 import SheetModal from '../../components/SheetModal'
 import WalletNewIcon from '../../icons/WalletNew'
 
@@ -32,10 +32,10 @@ export default function Init() {
 
   const handleNewWallet = () => {
     const mnemonic = generateMnemonic(wordlist)
-    getPrivateKeyFromMnemonic(mnemonic).then((privateKey) => {
-      setInitInfo({ privateKey })
-      navigate(Pages.InitPassword)
-    })
+    const seed = mnemonicToSeedSync(mnemonic)
+    const privateKey = deriveKeyFromSeed(seed)
+    setInitInfo({ privateKey })
+    navigate(Pages.InitPassword)
   }
 
   const handleOldWallet = () => navigate(Pages.InitRestore)

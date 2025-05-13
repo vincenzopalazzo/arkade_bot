@@ -14,24 +14,22 @@ import '@ionic/react/css/display.css'
 
 import '@ionic/react/css/palettes/dark.class.css'
 
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { ConfigContext } from './providers/config'
 import { NavigationContext, pageComponent, Pages, Tabs } from './providers/navigation'
-import { WalletContext } from './providers/wallet'
 
-import './wasm_exec.js'
-import './wasmTypes.d.ts'
-
-import { IonApp, IonPage, IonTab, IonTabBar, IonTabButton, IonTabs, setupIonicReact, useIonToast } from '@ionic/react'
+import { IonApp, IonPage, IonTab, IonTabBar, IonTabButton, IonTabs, setupIonicReact } from '@ionic/react'
 import HomeIcon from './icons/Home'
 import SettingsIcon from './icons/Settings'
 import { OptionsContext } from './providers/options'
 import { AspContext } from './providers/asp'
 import { SettingsOptions } from './lib/types'
-import * as serviceWorkerRegistration from './serviceWorkerRegistration'
-import { newVersionAvailable } from './lib/toast'
 import { IframeContext } from './providers/iframe'
+import Loading from './components/Loading'
 import AppsIcon from './icons/Apps'
+import { WalletContext } from './providers/wallet'
+import { FlowContext } from './providers/flow'
+import { usePwa } from '@dotmind/react-use-pwa'
 
 setupIonicReact()
 
@@ -40,46 +38,51 @@ export default function App() {
   const { configLoaded } = useContext(ConfigContext)
   const { iframeUrl } = useContext(IframeContext)
   const { navigate, screen, tab } = useContext(NavigationContext)
+  const { initInfo } = useContext(FlowContext)
   const { setOption } = useContext(OptionsContext)
-  const { reloadWallet, wasmLoaded } = useContext(WalletContext)
-
-  const [present] = useIonToast()
-
-  useEffect(() => {
-    serviceWorkerRegistration.register({
-      onUpdate: () => {
-        present(newVersionAvailable)
-      },
-    })
-  }, [])
+  const { wallet, initialized, svcWallet } = useContext(WalletContext)
+  const [loadingError, setLoadingError] = useState<string | null>(null)
+  const { isInstalled: isPwaInstalled } = usePwa()
 
   useEffect(() => {
-    setInterval(() => {
-      navigator.serviceWorker.getRegistration().then((registration) => {
-        if (registration) registration.update()
-      })
-    }, 1000 * 60 * 60)
-  }, [])
+    if (!configLoaded) {
+      setLoadingError(null)
+    }
+  }, [configLoaded])
+
+  useEffect(() => {
+    if (aspInfo.unreachable) {
+      setLoadingError('Unable t connect to the server. Please check your internet connection and try again.')
+    }
+  }, [aspInfo.unreachable])
+
+  useEffect(() => {
+    // avoid redirect if the user is still setting up the wallet
+    if (initInfo.password || initInfo.privateKey) return
+
+    if (!svcWallet || initialized === undefined) navigate(Pages.Loading)
+    else if (wallet.network === '') navigate(isPwaInstalled ? Pages.Init : Pages.Onboard)
+    else if (!initialized) navigate(Pages.Unlock)
+  }, [wallet, initialized, svcWallet, initInfo])
+
+  if (!svcWallet) return <Loading text={loadingError || undefined} />
 
   const handleWallet = () => {
-    reloadWallet()
     navigate(Pages.Wallet)
   }
 
   const handleApps = () => {
-    reloadWallet()
     navigate(Pages.Apps)
   }
 
   const handleSettings = () => {
-    reloadWallet()
     setOption(SettingsOptions.Menu)
     navigate(Pages.Settings)
   }
 
-  const page = configLoaded && wasmLoaded && (aspInfo.pubkey || aspInfo.unreachable) ? screen : Pages.Loading
+  const page = configLoaded && (aspInfo.pubkey || aspInfo.unreachable) ? screen : Pages.Loading
 
-  const comp = pageComponent(page)
+  const comp = page === Pages.Loading ? <Loading text={loadingError || undefined} /> : pageComponent(page)
 
   if (iframeUrl)
     return (

@@ -1,3 +1,5 @@
+import type { ExtendedVirtualCoin } from '@arklabs/wallet-sdk'
+
 export type Addresses = {
   boardingAddr: string
   offchainAddr: string
@@ -75,36 +77,11 @@ export enum Unit {
   SAT = 'sat',
 }
 
-export type Vtxo = {
-  amount: number
-  createdAt: string
-  descriptor: string
-  expireAt: number
-  pending: boolean
-  roundTxid: string
-  redeemTx: string
-  spent: boolean
-  spentBy: string
-  txid: string
-  vout: number
-}
-
-export type Vtxos = {
-  spendable: Vtxo[]
-  spent: Vtxo[]
-}
+export type Vtxo = ExtendedVirtualCoin
 
 export type Wallet = {
-  arkAddress: string
-  balance: number
-  explorer: string
-  initialized: boolean
-  lastUpdate: number
   lockedByBiometrics?: boolean
   network: string
   nextRollover: number
-  txs: Tx[]
-  vtxos: Vtxos
-  wasmVersion: string
   passkeyId?: string
 }

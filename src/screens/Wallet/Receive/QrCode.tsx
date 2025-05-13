@@ -1,14 +1,11 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import Button from '../../../components/Button'
 import Padded from '../../../components/Padded'
 import QrCode from '../../../components/QrCode'
 import ButtonsOnBottom from '../../../components/ButtonsOnBottom'
-import Error from '../../../components/Error'
 import { FlowContext } from '../../../providers/flow'
 import { NavigationContext, Pages } from '../../../providers/navigation'
-import { extractError } from '../../../lib/error'
 import * as bip21 from '../../../lib/bip21'
-import { notifyIncomingFunds } from '../../../lib/asp'
 import { WalletContext } from '../../../providers/wallet'
 import { NotificationsContext } from '../../../providers/notifications'
 import Header from '../../../components/Header'
@@ -18,16 +15,17 @@ import { canBrowserShareData, shareData } from '../../../lib/share'
 import ExpandAddresses from '../../../components/ExpandAddresses'
 import FlexCol from '../../../components/FlexCol'
 import { AspContext } from '../../../providers/asp'
+import { ExtendedCoin } from '@arklabs/wallet-sdk'
 
 export default function ReceiveQRCode() {
   const { aspInfo } = useContext(AspContext)
   const { recvInfo, setRecvInfo } = useContext(FlowContext)
   const { navigate } = useContext(NavigationContext)
   const { notifyPaymentReceived } = useContext(NotificationsContext)
-  const { wallet } = useContext(WalletContext)
+  const { vtxos, svcWallet, reloadWallet } = useContext(WalletContext)
 
-  const [error, setError] = useState('')
   const [sharing, setSharing] = useState(false)
+  const isFirstMount = useRef(true)
 
   const { boardingAddr, offchainAddr, satoshis } = recvInfo
   const address = aspInfo.utxoMaxAmount === 0 ? '' : boardingAddr
@@ -35,22 +33,49 @@ export default function ReceiveQRCode() {
   const bip21uri = bip21.encode(address, arkAddress, satoshis)
 
   useEffect(() => {
-    if (!wallet) return
-    try {
-      notifyIncomingFunds().then((amount) => {
-        onFinish(amount)
-      })
-    } catch (err) {
-      consoleError(err, 'error waiting for payment')
-      setError(extractError(err))
+    if (isFirstMount.current) {
+      isFirstMount.current = false
+      return
     }
-  }, [wallet])
 
-  const onFinish = (satoshis: number) => {
-    setRecvInfo({ ...recvInfo, satoshis })
-    notifyPaymentReceived(satoshis)
+    const lastVtxo = vtxos.spendable.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())[0]
+    if (!lastVtxo) return
+    const { value } = lastVtxo
+    setRecvInfo({ ...recvInfo, satoshis: value })
+    notifyPaymentReceived(value)
     navigate(Pages.ReceiveSuccess)
-  }
+  }, [vtxos])
+
+  useEffect(() => {
+    if (!svcWallet) return
+
+    async function getBoardingUtxos() {
+      return svcWallet!.getBoardingUtxos()
+    }
+
+    let currentUtxos: ExtendedCoin[] = []
+    getBoardingUtxos().then((utxos) => {
+      currentUtxos = utxos
+    })
+
+    const interval = setInterval(async () => {
+      const utxos = await getBoardingUtxos()
+      if (utxos.length < currentUtxos.length) {
+        currentUtxos = utxos
+      }
+      if (utxos.length > currentUtxos.length) {
+        const newUtxo = utxos.find((utxo) => !currentUtxos.includes(utxo))
+        if (newUtxo) {
+          currentUtxos = utxos
+          setRecvInfo({ ...recvInfo, satoshis: newUtxo.value })
+          await reloadWallet()
+          notifyPaymentReceived(newUtxo.value)
+          navigate(Pages.ReceiveSuccess)
+        }
+      }
+    }, 5_000)
+    return () => clearInterval(interval)
+  }, [svcWallet])
 
   const handleShare = () => {
     setSharing(true)
@@ -68,7 +93,6 @@ export default function ReceiveQRCode() {
       <Content>
         <Padded>
           <FlexCol>
-            <Error error={Boolean(error)} text={error} />
             <QrCode value={bip21uri ?? ''} />
             <ExpandAddresses bip21uri={bip21uri} boardingAddr={address} offchainAddr={arkAddress} />
           </FlexCol>

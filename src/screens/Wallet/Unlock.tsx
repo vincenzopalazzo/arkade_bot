@@ -16,11 +16,14 @@ import Text from '../../components/Text'
 import { IframeContext } from '../../providers/iframe'
 import FlexRow from '../../components/FlexRow'
 import Minimal from '../../components/Minimal'
+import { getPrivateKey } from '../../lib/privateKey'
+import { NavigationContext, Pages } from '../../providers/navigation'
 import PasskeyIcon from '../../icons/Passkey'
 
 export default function Unlock() {
   const { iframeUrl } = useContext(IframeContext)
-  const { unlockWallet, wallet, walletUnlocked } = useContext(WalletContext)
+  const { wallet, initWallet } = useContext(WalletContext)
+  const { navigate } = useContext(NavigationContext)
 
   const [error, setError] = useState('')
   const [password, setPassword] = useState('')
@@ -31,11 +34,17 @@ export default function Unlock() {
 
   useEffect(() => {
     if (!password) return
-    unlockWallet(password).catch(() => {})
+    getPrivateKey(password)
+      .then(initWallet)
+      .then(() => navigate(Pages.Wallet))
+      .catch((err) => {
+        consoleError(err, 'error unlocking wallet')
+        setError(extractError(err))
+      })
   }, [password])
 
   useEffect(() => {
-    if (!wallet.lockedByBiometrics || walletUnlocked) return
+    if (!wallet.lockedByBiometrics) return
     getPasswordFromBiometrics()
   }, [wallet.lockedByBiometrics])
 
@@ -44,10 +53,13 @@ export default function Unlock() {
   const handleUnlock = async () => {
     if (wallet.lockedByBiometrics) return getPasswordFromBiometrics()
     if (!password) return
-    unlockWallet(password).catch((err: any) => {
-      consoleError(err, 'error unlocking wallet')
-      setError(extractError(err))
-    })
+    getPrivateKey(password)
+      .then(initWallet)
+      .then(() => navigate(Pages.Wallet))
+      .catch((err) => {
+        consoleError(err, 'error unlocking wallet')
+        setError(extractError(err))
+      })
   }
 
   if (iframeUrl)

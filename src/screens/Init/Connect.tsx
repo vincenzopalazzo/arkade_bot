@@ -7,7 +7,8 @@ import Content from '../../components/Content'
 import { WalletContext } from '../../providers/wallet'
 import Loading from '../../components/Loading'
 import Header from '../../components/Header'
-
+import { setPrivateKey } from '../../lib/privateKey'
+import { consoleError } from '../../lib/logs'
 export default function InitConnect() {
   const { initInfo } = useContext(FlowContext)
   const { navigate } = useContext(NavigationContext)
@@ -17,7 +18,10 @@ export default function InitConnect() {
 
   useEffect(() => {
     if (!password || !privateKey) return
-    initWallet(password, privateKey).then(() => navigate(Pages.Wallet))
+    setPrivateKey(privateKey, password)
+      .then(() => initWallet(privateKey))
+      .then(() => navigate(Pages.Wallet))
+      .catch(consoleError)
   }, [])
 
   const handleCancel = () => navigate(Pages.Init)

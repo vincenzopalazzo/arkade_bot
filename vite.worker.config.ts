@@ -4,9 +4,9 @@ import { resolve } from 'path';
 export default defineConfig({
   build: {
     lib: {
-      entry: resolve(__dirname, 'src/service-worker.ts'),
+      entry: resolve(__dirname, 'src/wallet-service-worker.ts'),
       formats: ['es'],
-      fileName: 'service-worker',
+      fileName: 'wallet-service-worker',
     },
     outDir: 'public',
     emptyOutDir: false,
@@ -17,7 +17,7 @@ export default defineConfig({
   worker: {
     format: 'es',
   },
-  define: {
-    'process.env': JSON.stringify(process.env),
+  optimizeDeps: {
+    include: ['@arklabs/wallet-sdk'],
   },
 });

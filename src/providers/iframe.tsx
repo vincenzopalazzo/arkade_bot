@@ -16,7 +16,7 @@ export const IframeContext = createContext<IframeContextProps>({
 export const IframeProvider = ({ children }: { children: ReactNode }) => {
   const { setSendInfo } = useContext(FlowContext)
   const { navigate } = useContext(NavigationContext)
-  const { walletUnlocked, wallet, walletLoaded } = useContext(WalletContext)
+  const { wallet, walletLoaded, isLocked } = useContext(WalletContext)
 
   const [iframeUrl, setIframeUrl] = useState('')
 
@@ -26,11 +26,11 @@ export const IframeProvider = ({ children }: { children: ReactNode }) => {
     iframe.contentWindow.postMessage(message, '*')
   }
 
-  const sendStatus = (w = wallet) => {
+  const sendStatus = async (w = wallet) => {
     sendMessage(
       JSON.stringify({
         action: 'status',
-        status: !w.initialized ? 'uninitialized' : walletUnlocked ? 'unlocked' : 'locked',
+        status: !w.network ? 'uninitialized' : (await isLocked()) ? 'locked' : 'unlocked',
       }),
     )
   }
@@ -83,7 +83,7 @@ export const IframeProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (walletLoaded) sendStatus(walletLoaded)
-  }, [walletLoaded, walletUnlocked])
+  }, [walletLoaded, wallet])
 
   return <IframeContext.Provider value={{ iframeUrl, sendMessage }}>{children}</IframeContext.Provider>
 }
