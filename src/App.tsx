@@ -49,9 +49,7 @@ export default function App() {
   // not being supported in some browsers
   const orientation = window.screen.orientation as any
   if (orientation && typeof orientation.lock === 'function') {
-    orientation.lock('portrait').catch((err: any) => {
-      console.log('Screen orientation lock failed:', err)
-    })
+    orientation.lock('portrait').catch(() => {})
   }
 
   useEffect(() => {
@@ -70,7 +68,7 @@ export default function App() {
     // avoid redirect if the user is still setting up the wallet
     if (initInfo.password || initInfo.privateKey) return
     if (!svcWallet || initialized === undefined) navigate(Pages.Loading)
-    else if (wallet.network === '') navigate(isPwaInstalled ? Pages.Init : Pages.Onboard)
+    else if (!wallet.network) navigate(isPwaInstalled ? Pages.Init : Pages.Onboard)
     else if (!initialized) navigate(Pages.Unlock)
   }, [wallet, initialized, svcWallet, initInfo])
 

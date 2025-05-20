@@ -28,10 +28,12 @@ import { isMobileBrowser } from '../../../lib/browser'
 import { ConfigContext } from '../../../providers/config'
 import { FiatContext } from '../../../providers/fiat'
 import { ArkNote } from '@arklabs/wallet-sdk'
+import { LimitsContext } from '../../../providers/limits'
 
 export default function SendForm() {
-  const { aspInfo, amountIsAboveMaxLimit, amountIsBelowMinLimit } = useContext(AspContext)
+  const { aspInfo } = useContext(AspContext)
   const { config, useFiat } = useContext(ConfigContext)
+  const { amountIsAboveMaxLimit, amountIsBelowMinLimit } = useContext(LimitsContext)
   const { fromFiat, toFiat } = useContext(FiatContext)
   const { sendInfo, setNoteInfo, setSendInfo } = useContext(FlowContext)
   const { setOption } = useContext(OptionsContext)
