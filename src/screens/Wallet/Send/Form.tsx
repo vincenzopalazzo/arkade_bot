@@ -195,10 +195,10 @@ export default function SendForm() {
     )
   }
 
-  const { address, arkAddress } = sendInfo
+  const { address, arkAddress, invoice } = sendInfo
 
   const disabled =
-    !((address || arkAddress) && satoshis && satoshis > 0) ||
+    !((address || arkAddress || invoice) && satoshis && satoshis > 0) ||
     aspInfo.unreachable ||
     tryingToSelfSend ||
     satoshis > balance ||
