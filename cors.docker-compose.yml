@@ -1,0 +1,8 @@
+services:
+  cors:
+    build:
+      context: .
+      dockerfile: Dockerfile.cors
+    container_name: cors
+    ports:
+      - '9069:9069'
