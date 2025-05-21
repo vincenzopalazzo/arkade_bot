@@ -2,12 +2,30 @@ import { NetworkName } from '@arklabs/wallet-sdk/dist/types/networks'
 import { Satoshis, Wallet } from './types'
 import * as bolt11 from './bolt11'
 
+type SwapSubmarineResponse = {
+  ARK: {
+    BTC: {
+      hash: string
+      rate: number
+      limits: {
+        maximal: number
+        minimal: number
+        maximalZeroConf: number
+      }
+      fees: {
+        percentage: number
+        minerFees: number
+      }
+    }
+  }
+}
+
 export const getBoltzApiUrl = (network: NetworkName): string => {
   switch (network) {
     case 'bitcoin':
       return 'https://api-boltz-bitcoin.arkade.sh'
     case 'regtest':
-      return 'http://localhost:9001'
+      return 'http://localhost:9069'
     default:
       return ''
   }
@@ -21,10 +39,11 @@ export const getBoltzLimits = async (network: NetworkName): Promise<{ min: numbe
     const errorData = await response.json()
     throw errorData.error || 'Failed to fetch limits'
   }
-  const json = await response.json()
+  const json: SwapSubmarineResponse = await response.json()
+  const { minimal, maximal } = json.ARK.BTC.limits
   return {
-    min: json.limits.minimal,
-    max: json.limits.maximal,
+    min: minimal,
+    max: maximal,
   }
 }
 

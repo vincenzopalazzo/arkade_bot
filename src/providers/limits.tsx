@@ -37,13 +37,12 @@ export const LimitsProvider = ({ children }: { children: ReactNode }) => {
   const { aspInfo } = useContext(AspContext)
 
   const limits = useRef<LimitTxTypes>({
-    swap: { min: 0, max: 0 },
-    utxo: { min: 0, max: 0 },
-    vtxo: { min: 0, max: 0 },
+    swap: { min: 1000, max: 4294967 },
+    utxo: { min: 0, max: -1 },
+    vtxo: { min: 0, max: -1 },
   })
 
   useEffect(() => {
-    console.log('LimitsProvider: aspInfo', aspInfo.network)
     if (!aspInfo.network) return
 
     limits.current.utxo = {
