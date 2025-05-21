@@ -39,10 +39,10 @@ const AppWithProviders = () => {
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
   // <React.StrictMode>
-  <LimitsProvider>
-    <NavigationProvider>
-      <ConfigProvider>
-        <AspProvider>
+  <NavigationProvider>
+    <ConfigProvider>
+      <AspProvider>
+        <LimitsProvider>
           <NotificationsProvider>
             <FiatProvider>
               <FlowProvider>
@@ -54,9 +54,9 @@ root.render(
               </FlowProvider>
             </FiatProvider>
           </NotificationsProvider>
-        </AspProvider>
-      </ConfigProvider>
-    </NavigationProvider>
-  </LimitsProvider>,
+        </LimitsProvider>
+      </AspProvider>
+    </ConfigProvider>
+  </NavigationProvider>,
   // </React.StrictMode>,
 )

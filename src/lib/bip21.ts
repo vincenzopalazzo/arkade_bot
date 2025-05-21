@@ -42,5 +42,5 @@ export const encode = (address: string, arkAddress: string, invoice: string, sat
 }
 
 export const isBip21 = (data: string): boolean => {
-  return /^\w+:.+/.test(data) // TODO
+  return /^(bitcoin|lightning|liquidnetwork|liquidtestnet):([a-z0-9]{26,}).*$/.test(data.toLowerCase())
 }

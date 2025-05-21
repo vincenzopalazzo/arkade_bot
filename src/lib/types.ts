@@ -88,7 +88,8 @@ export type Vtxo = ExtendedVirtualCoin
 
 export type Wallet = {
   lockedByBiometrics?: boolean
-  network?: NetworkName
+  network?: NetworkName | ''
   nextRollover: number
   passkeyId?: string
+  pubkey?: string
 }

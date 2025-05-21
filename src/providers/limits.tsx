@@ -43,6 +43,7 @@ export const LimitsProvider = ({ children }: { children: ReactNode }) => {
   })
 
   useEffect(() => {
+    console.log('LimitsProvider: aspInfo', aspInfo.network)
     if (!aspInfo.network) return
 
     limits.current.utxo = {

@@ -1,5 +1,5 @@
 import { NetworkName } from '@arklabs/wallet-sdk/dist/types/networks'
-import { Satoshis } from './types'
+import { Satoshis, Wallet } from './types'
 import * as bolt11 from './bolt11'
 
 export const getBoltzApiUrl = (network: NetworkName): string => {
@@ -7,7 +7,7 @@ export const getBoltzApiUrl = (network: NetworkName): string => {
     case 'bitcoin':
       return 'https://api-boltz-bitcoin.arkade.sh'
     case 'regtest':
-      return 'http://localhost:9006'
+      return 'http://localhost:9001'
     default:
       return ''
   }
@@ -16,14 +16,15 @@ export const getBoltzApiUrl = (network: NetworkName): string => {
 export const getBoltzLimits = async (network: NetworkName): Promise<{ min: number; max: number }> => {
   const url = getBoltzApiUrl(network)
   if (!url) throw 'Invalid network for Boltz API'
-  const response = await fetch(`${getBoltzApiUrl(network)}/v2/swap/limits`)
+  const response = await fetch(`${getBoltzApiUrl(network)}/v2/swap/submarine`)
   if (!response.ok) {
     const errorData = await response.json()
     throw errorData.error || 'Failed to fetch limits'
   }
-  return (await response.json()) as {
-    min: number
-    max: number
+  const json = await response.json()
+  return {
+    min: json.limits.minimal,
+    max: json.limits.maximal,
   }
 }
 
@@ -31,18 +32,12 @@ export const getInvoiceSatoshis = (invoice: string): number => {
   return bolt11.decode(invoice).satoshis ?? 0
 }
 
-const getPubKey = async (): Promise<string> => {
-  return 'xxxx'
-}
-
-export const submarineSwap = async (
-  invoice: string,
-  network: NetworkName,
-): Promise<{ address: string; amount: number }> => {
-  const refundPublicKey = await getPubKey()
+export const submarineSwap = async (invoice: string, wallet: Wallet): Promise<{ address: string; amount: number }> => {
+  const refundPublicKey = wallet.pubkey
   if (!refundPublicKey) throw 'Failed to get public key'
+  if (!wallet.network) throw 'Failed to get network'
 
-  const response = await fetch(`${getBoltzApiUrl(network)}/v2/swap/submarine`, {
+  const response = await fetch(`${getBoltzApiUrl(wallet.network)}/v2/swap/submarine`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
