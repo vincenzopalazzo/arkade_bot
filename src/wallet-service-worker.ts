@@ -1,64 +1,62 @@
-import { ExtendedVirtualCoin, Worker } from '@arklabs/wallet-sdk'
-import { vtxosExpiringSoon } from './lib/wallet'
-import { prettyAgo } from './lib/format'
+import { Worker } from '@arklabs/wallet-sdk'
 import { vtxosRepository } from './lib/db'
-
-// service worker global scope
-declare const self: ServiceWorkerGlobalScope
 
 const worker = new Worker(vtxosRepository)
 worker.start().catch(console.error)
 
-function notify(title: string, body: string): void {
-  self.registration.showNotification(title, { body, icon: '/arkade-icon-220.png' })
-}
+const CACHE_NAME = 'arkade-cache-v1'
+declare const self: ServiceWorkerGlobalScope
 
-// notify user of expiring vtxos
-function notifyUser(nextRollOver: number): void {
-  const title = `Virtual coins expiring ${prettyAgo(nextRollOver)}`
-  const body = 'Open wallet to renew virtual coins'
-  notify(title, body)
-}
+// install event: activate service worker immediately
+self.addEventListener('install', (event: ExtendableEvent) => {
+  event.waitUntil(caches.open(CACHE_NAME))
+  self.skipWaiting() // activate service worker immediately
+})
 
-// we can't use ./lib/wallet/calcNextRollover because vtxos have different types
-function calcNextRollover(vtxos: ExtendedVirtualCoin[]): number {
-  return vtxos
-    ? vtxos.reduce((acc: number, cur: ExtendedVirtualCoin) => {
-        const expiry = cur.virtualStatus.batchExpiry
-        if (!expiry) return acc
-        const unixtimestamp = expiry
-        return unixtimestamp < acc || acc === 0 ? unixtimestamp : acc
-      }, 0)
-    : 0
-}
+// activate event: clean up old caches
+self.addEventListener('activate', (event: ExtendableEvent) => {
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cacheName) => {
+          if (cacheName === CACHE_NAME) return
+          return caches.delete(cacheName)
+        }),
+      )
+    }),
+  )
+  self.clients.claim() // take control of clients immediately
+})
 
-// check for expiring vtxos
-async function checkExpiringVtxos(): Promise<void> {
-  const vtxos = await vtxosRepository.getSpendableVtxos()
-  const nextRollOver = calcNextRollover(vtxos)
-  if (vtxosExpiringSoon(nextRollOver)) notifyUser(nextRollOver)
-}
+// we can adopt two different strategies for caching:
+// 1. cache first: try to get the response from the cache first, then fetch from network
+// 2. network first: try to fetch from the network first, then get the response from the cache
+//
+// due to the fast development of the wallet-sdk, we should use network first for now
+//
+// async function cacheFirst(request) {
+//   const cache = await caches.open(CACHE_NAME)
+//   const cachedResponse = await cache.match(request)
+//   if (cachedResponse) return cachedResponse
+//   const response = await fetch(request)
+//   cache.put(request, response.clone())
+//   return response
+// }
 
-// This allows the web app to trigger actions on the service worker
-self.addEventListener('message', (event: any) => {
-  let intervalId: number | undefined
-  if (!event.data) return
-  const { type } = event.data as { type: string }
-  // This allows the web app to trigger skipWaiting via
-  // registration.waiting.postMessage({type: 'SKIP_WAITING'})
-  if (type === 'SKIP_WAITING') {
-    self.skipWaiting()
+async function networkFirst(request: RequestInfo): Promise<Response> {
+  const cache = await caches.open(CACHE_NAME)
+  try {
+    const response = await fetch(request)
+    cache.put(request, response.clone())
+    return response
+  } catch (error) {
+    const cachedResponse = await cache.match(request)
+    if (!cachedResponse) throw new Error('No cached response found')
+    return cachedResponse
   }
-  // This allows the web app to trigger the vtxo expiration check via
-  // registration.active.postMessage({type: 'START_CHECK', data: {arkAddress, serverUrl}})
-  if (type === 'START_CHECK') {
-    intervalId = window.setInterval(() => {
-      checkExpiringVtxos()
-    }, 4 * 60 * 60 * 1000) // every 4 hours
-  }
-  // This allows the web app to stop the vtxo expiration check via
-  // registration.active.postMessage({type: 'STOP_CHECK'})
-  if (type === 'STOP_CHECK') {
-    if (intervalId) clearInterval(intervalId)
-  }
+}
+
+// fetch event: use network first, then cache
+self.addEventListener('fetch', (event: FetchEvent) => {
+  event.respondWith(networkFirst(event.request))
 })
