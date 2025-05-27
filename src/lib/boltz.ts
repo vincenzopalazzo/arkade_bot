@@ -82,6 +82,7 @@ export const submarineSwap = async (invoice: string, wallet: Wallet): Promise<{ 
   return { address: res.address, amount: res.expectedAmount }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const reverseSwap = async (sats: Satoshis): Promise<string> => {
-  return `lnbc1${sats}` // TODO not implemented yet
+  return '' // TODO not implemented yet
 }
