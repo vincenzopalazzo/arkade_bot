@@ -183,8 +183,8 @@ export const getTxHistory = async (wallet: IWallet): Promise<Tx[]> => {
 export const getReceivingAddresses = async (wallet: IWallet): Promise<Addresses> => {
   const address = await wallet.getAddress()
   return {
-    boardingAddr: address.boarding?.address ?? '',
-    offchainAddr: address.offchain?.address ?? '',
+    boardingAddr: address.boarding ?? '',
+    offchainAddr: address.offchain ?? '',
   }
 }
 
