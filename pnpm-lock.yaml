@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@arklabs/wallet-sdk':
-    specifier: 0.0.13
-    version: 0.0.13
+    specifier: 0.0.15
+    version: 0.0.15
   '@dotmind/react-use-pwa':
     specifier: ^1.0.4
     version: 1.0.4
@@ -126,8 +126,8 @@ packages:
       '@jridgewell/trace-mapping': 0.3.25
     dev: true
 
-  /@arklabs/wallet-sdk@0.0.13:
-    resolution: {integrity: sha512-VGrVJZCRI1TDfvhwjNXGVL9rW2Y3B4zwx9hwGrCV2UAsHxQn66ZkOkmZAs/nSSgydoRUf/3BXZpaGfLapwlKpQ==}
+  /@arklabs/wallet-sdk@0.0.15:
+    resolution: {integrity: sha512-quG0oHzc+3eXdfTMEuiE987o4PqWNIJMRFBBtNEOO0bzJWNWPKbXvzgLp+T1/Dc/+cl4EdJkutihS1ZMXhff5g==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     requiresBuild: true
     dependencies:
