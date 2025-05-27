@@ -50,6 +50,9 @@ dependencies:
   react-dom:
     specifier: ^18.3.1
     version: 18.3.1(react@18.3.1)
+  secp256k1:
+    specifier: link:@noble/curves/secp256k1
+    version: link:@noble/curves/secp256k1
   typescript:
     specifier: ^5.8.3
     version: 5.8.3
