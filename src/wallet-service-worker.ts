@@ -59,6 +59,6 @@ async function networkFirst(request: Request): Promise<Response> {
 }
 
 // fetch event: use network first, then cache
-self.addEventListener('fetch', (event: FetchEvent) => {
-  event.respondWith(networkFirst(event.request))
-})
+// self.addEventListener('fetch', (event: FetchEvent) => {
+//   event.respondWith(networkFirst(event.request))
+// })
