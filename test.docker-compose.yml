@@ -1,4 +1,28 @@
 services:
+  arkd:
+    container_name: arkd
+    build:
+      context: .
+      dockerfile: arkd.Dockerfile
+    restart: unless-stopped
+    environment:
+      - ARK_ROUND_INTERVAL=10
+      - ARK_NETWORK=regtest
+      - ARK_LOG_LEVEL=6
+      - ARK_TX_BUILDER_TYPE=covenantless
+      - ARK_ESPLORA_URL=http://chopsticks:3000
+      - ARK_NEUTRINO_PEER=bitcoin:18444
+      - ARK_NO_TLS=true
+      - ARK_NO_MACAROONS=true
+      - ARK_DATADIR=/app/data
+      - ARK_ALLOW_ZERO_FEES=true
+      - ARK_UNILATERAL_EXIT_DELAY=512
+    ports:
+      - '7070:7070'
+    volumes:
+      - type: tmpfs
+        target: /app/data
+
   boltz-lnd:
     image: lightninglabs/lnd:v0.18.5-beta
     restart: unless-stopped
@@ -141,7 +165,7 @@ services:
   boltz-fulmine:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: fulmine.Dockerfile
     environment:
       - FULMINE_ARK_SERVER=arkd:7070
       - FULMINE_ESPLORA_URL=http://chopsticks:3000
@@ -151,6 +175,13 @@ services:
     volumes:
       - bitcoin_fulmine_data:/app/data
     restart: unless-stopped
+  cors:
+    build:
+      context: .
+      dockerfile: cors.Dockerfile
+    container_name: cors
+    ports:
+      - '9069:9069'
 
 volumes:
   postgres_datadir:

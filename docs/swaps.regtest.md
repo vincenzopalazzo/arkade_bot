@@ -41,7 +41,7 @@ nigiri faucet lnd
 Start LND used by boltz:
 
 ```sh
-docker compose -f boltz.docker-compose.yml up -d boltz-lnd
+docker compose -f test.docker-compose.yml up -d boltz-lnd
 # Create an alias for lncli
 alias lncli="docker exec -it boltz-lnd lncli --network=regtest"
 ```
@@ -59,8 +59,8 @@ Connect the LND instances:
 ```sh
 lncli connect `nigiri lnd getinfo | jq -r .identity_pubkey`@lnd:9735
 # Check the list of peers contains exactly one peer on both sides
-lncli listpeers
-nigiri lnd listpeers
+lncli listpeers | jq .peers | jq length
+nigiri lnd listpeers | jq .peers | jq length
 ```
 
 Open and fund channel between the LND instances:
@@ -73,7 +73,7 @@ nigiri rpc --generate 10
 # Send 50k sats to the other side to balance the channel
 nigiri lnd addinvoice --amt 50000
 # Type 'yes' when asked
-lncli payinvoice <invoice>
+lncli payinvoice <invoice aka payment_request>
 ```
 
 Start and provision Arkd:
@@ -100,7 +100,7 @@ NOTE: _The docker services defined in `test.docker-compose.yml` make use of temp
 Start Fulmine used by Boltz:
 
 ```sh
-docker compose -f boltz.docker-compose.yml up -d boltz-fulmine
+docker compose -f test.docker-compose.yml up -d boltz-fulmine
 ```
 
 On your browser, go to http://localhost:7003 and initialize and unlock Fulmine - the Arkd url will be filled by default with the right value.
@@ -114,7 +114,7 @@ nigiri faucet <address> 0.001
 
 On your browser, go back to homepage of Fulmine, click on the pending tx and settle - click on the action menu, three dots on the top-right.
 
-Lastly, connect Fulmine with the LND instance. For this you need an lndconnect URL that you can generate with:
+Lastly, connect Fulmine with Boltz's LND instance. For this you need an lndconnect URL that you can generate with:
 
 ```sh
 docker exec -i boltz-lnd bash -c \
@@ -125,31 +125,65 @@ docker exec -i boltz-lnd bash -c \
 
 Copy the generated URL to the clipboard. On Fulmine's tab of your browser, go to Settings > Lightning, paste the URL and click the Connect button.
 
-# Start Boltz backend
+### Start Boltz backend
 
 Start Boltz backend with:
 
 ```sh
-docker compose -f boltz.docker-compose.yml up -d boltz-postgres boltz
+docker compose -f test.docker-compose.yml up -d boltz-postgres boltz
 ```
 
-### Setup Fulmine used by end user
+### Start CORS proxy
+
+Start CORS proxy with:
+
+```sh
+docker compose -f test.docker-compose.yml up -d cors
+```
+
+### Setup Arkade used by end user
 
 Start Arkade:
 
 ```sh
-pnpm run start
+VITE_ARK_SERVER=localhost:7070 pnpm start
 ```
 
 Open a new tab on the browser, go to http://localhost:3002 and initialize and unlock the service.
 
-Go then to the receive page, copy the boarding address - the second one - and send it some funds:
+Go then to the receive page, click Skip, copy the boarding address - the second one - and send it some funds:
 
 ```sh
 nigiri faucet <address> 0.001
 ```
 
+On your browser, go back to homepage of Arkade, click on the pending tx and settle.
+
 You're good to go to test submarine and reverse submarine swaps on Ark!
+
+### Test Submarine Swap (Ark => Lightning)
+
+Generate a 5000 sats Lightning invoice:
+
+```sh
+lncli addinvoice --amt 5000
+```
+
+Copy the invoice (aka payment_request) and try to pay it on Arkade
+
+### Test Reverse Swap (Lightning => Ark)
+
+In Arkade go to Receive, define an amount in sats > 1000 and < 25.000.000, and click Continue
+
+Copy the Lightning invoice, the fourth one.
+
+Pay the invoice with LND:
+
+```sh
+lncli payinvoice <invoice>
+```
+
+Check if you receive the payment on Arkade
 
 ### Troubleshooting
 
