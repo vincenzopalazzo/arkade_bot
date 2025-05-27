@@ -173,6 +173,8 @@ Copy the invoice (aka payment_request) and try to pay it on Arkade
 
 ### Test Reverse Swap (Lightning => Ark)
 
+NOT IMPLEMENTED
+
 In Arkade go to Receive, define an amount in sats > 1000 and < 25.000.000, and click Continue
 
 Copy the Lightning invoice, the fourth one.
