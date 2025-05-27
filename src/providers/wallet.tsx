@@ -16,7 +16,7 @@ import { hex } from '@scure/base'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../lib/db'
 
-import { secp256k1 as secp } from '@noble/curves/secp256k1'
+import * as secp from '@noble/secp256k1'
 
 const defaultWallet: Wallet = {
   network: '',
