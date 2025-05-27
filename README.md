@@ -1,6 +1,6 @@
-# Arkade Wallet
+# 👾 Wallet
 
-Arkade Wallet is a modern self-custodial **Bitcoin** wallet built as a Progressive Web App (PWA). It includes native support for the ARK protocol, enabling users to interact seamlessly with [arkd](https://github.com/arkade-os/arkd) instances. The wallet allows users to handle Virtual Transaction Outputs (VTXOs), facilitating offchain Bitcoin transactions with instant pre-confirmations and secure eventual onchain settlement, all without giving up custody or requiring protocol changes to Bitcoin.
+Arkade Wallet is a modern self-custodial **Bitcoin** wallet built as a Progressive Web App (PWA). It includes native support for the ARK protocol, enabling users to interact seamlessly with [arkd](https://github.com/arkade-os/arkd) instances. The wallet allows users to handle Virtual Transaction Outputs (VTXOs), facilitating offchain Bitcoin transactions with instant pre-confirmations and delayed onchain settlement, all without giving up custody or requiring protocol changes to Bitcoin.
 
 ## Screenshots
 
@@ -8,11 +8,9 @@ Arkade Wallet is a modern self-custodial **Bitcoin** wallet built as a Progressi
 <table>
   <tr>
     <td width="50%" align="center">
-      <h3>New Wallet Creation</h3>
       <img src="./mockup/new-wallet.png" alt="New Wallet" width="250">
     </td>
     <td width="50%" align="center">
-      <h3>Home Screen</h3>
       <img src="./mockup/home-arkade-wallet.png" alt="Home Screen" width="250">
     </td>
   </tr>
