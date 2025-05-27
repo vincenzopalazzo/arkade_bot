@@ -25,7 +25,7 @@ NOTE: _For sake of simplicity, all stacks use the same Bitcoind instance._
 
 ### Setup regtest environment
 
-Start regtest enviroment with Bitcoin and LND - this LND instance will be used by the end user:
+Start regtest enviroment with Bitcoin and LND:
 
 ```sh
 nigiri start --ln
@@ -166,7 +166,7 @@ You're good to go to test submarine and reverse submarine swaps on Ark!
 Generate a 5000 sats Lightning invoice:
 
 ```sh
-lncli addinvoice --amt 5000
+nigiri lnd addinvoice --amt 5000
 ```
 
 Copy the invoice (aka payment_request) and try to pay it on Arkade
