@@ -204,3 +204,7 @@ ion-select {
     padding: 0 1rem;
   }
 }
+
+input.native-input:focus::placeholder {
+  color: transparent; /* Hide placeholder on focus */
+}
