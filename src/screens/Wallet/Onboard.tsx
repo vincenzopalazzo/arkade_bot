@@ -1,4 +1,4 @@
-import { ReactNode, useContext, useState } from 'react'
+import { ReactNode, useContext, useEffect, useState } from 'react'
 import StepBars from '../../components/StepBars'
 import { NavigationContext, Pages } from '../../providers/navigation'
 import { OnboardImage1 } from '../../icons/Onboard1'
@@ -17,13 +17,22 @@ import FlexRow from '../../components/FlexRow'
 import Shadow from '../../components/Shadow'
 import AddIcon from '../../icons/Add'
 import ShareIcon from '../../icons/Share'
+import { pwaCanInstall } from '../../lib/pwa'
 import { usePwa } from '@dotmind/react-use-pwa'
 
 export default function Onboard() {
   const { navigate } = useContext(NavigationContext)
+  const [installable, setInstallable] = useState(false)
   const [step, setStep] = useState(1)
-  const { installPrompt, canInstall } = usePwa()
-  const steps = canInstall ? 4 : 3
+
+  const { installPrompt, canInstall, isInstalled } = usePwa()
+
+  const steps = pwaCanInstall() ? 4 : 3
+
+  useEffect(() => {
+    console.log('isInstalled', isInstalled)
+    setInstallable(canInstall)
+  }, [canInstall, isInstalled])
 
   const handleContinue = () => setStep(step + 1)
 
@@ -44,7 +53,7 @@ export default function Onboard() {
       maxHeight: '50%',
     }
 
-    if (step === 4) {
+    if (step === 4 && installable) {
       style.cursor = 'pointer'
       return (
         <div style={style} onClick={installPrompt}>
@@ -123,7 +132,7 @@ export default function Onboard() {
       <Content>
         <Padded>
           <FlexCol between>
-            {step < 4 ? <StepBars active={step} length={steps - 1} /> : <div />}
+            <StepBars active={step} length={steps} />
             <ImageContainer />
             <InfoContainer />
           </FlexCol>
