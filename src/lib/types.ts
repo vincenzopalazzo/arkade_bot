@@ -64,7 +64,7 @@ export type Tx = {
   boardingTxid: string
   createdAt: number
   explorable: string | undefined
-  pending: boolean
+  preconfirmed: boolean
   redeemTxid: string
   roundTxid: string
   settled: boolean

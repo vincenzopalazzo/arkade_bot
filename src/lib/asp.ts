@@ -163,7 +163,7 @@ export const getTxHistory = async (wallet: IWallet): Promise<Tx[]> => {
         roundTxid: key.roundTxid,
         createdAt: unix,
         explorable,
-        pending: !settled,
+        preconfirmed: !settled,
         settled: type === 'SENT' ? true : settled, // show all sent tx as settled
         type: type.toLowerCase(),
       })
