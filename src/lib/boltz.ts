@@ -23,7 +23,7 @@ type SwapSubmarineResponse = {
 export const getBoltzApiUrl = (network: NetworkName): string => {
   switch (network) {
     case 'bitcoin':
-      return 'https://api-boltz-bitcoin.arkade.sh'
+      return 'https://boltz.arkade.sh'
     case 'regtest':
       return 'http://localhost:9069'
     default:
