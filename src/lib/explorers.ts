@@ -1,4 +1,4 @@
-import { NetworkName } from '@arklabs/wallet-sdk/dist/types/networks'
+import { NetworkName } from '@arkade-os/sdk/dist/types/networks'
 import { Wallet } from '../lib/types'
 
 type ExplorerURLs = {

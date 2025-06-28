@@ -1,5 +1,5 @@
-import { NetworkName } from '@arklabs/wallet-sdk/dist/types/networks'
-import type { ExtendedVirtualCoin } from '@arklabs/wallet-sdk'
+import { NetworkName } from '@arkade-os/sdk/dist/types/networks'
+import type { ExtendedVirtualCoin } from '@arkade-os/sdk'
 
 export type Addresses = {
   boardingAddr: string
