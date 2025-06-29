@@ -26,6 +26,7 @@ export type SendInfo = {
   recipient?: string
   satoshis?: number
   swapAddress?: string
+  swapId?: string
   total?: number
   text?: string
   txid?: string

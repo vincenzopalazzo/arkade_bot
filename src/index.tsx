@@ -12,6 +12,7 @@ import { WalletProvider } from './providers/wallet'
 import { OptionsProvider } from './providers/options'
 import { IframeProvider } from './providers/iframe'
 import { LimitsProvider } from './providers/limits'
+import { LightningProvider } from './providers/lightning'
 import * as Sentry from '@sentry/react'
 
 Sentry.init({
@@ -48,7 +49,9 @@ root.render(
               <FlowProvider>
                 <WalletProvider>
                   <OptionsProvider>
-                    <AppWithProviders />
+                    <LightningProvider>
+                      <AppWithProviders />
+                    </LightningProvider>
                   </OptionsProvider>
                 </WalletProvider>
               </FlowProvider>
