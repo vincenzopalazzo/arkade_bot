@@ -90,9 +90,8 @@ export default function SendDetails() {
     navigate(Pages.Wallet)
   }
 
-  const handleContinue = async () => {
-    if (!svcWallet) return
-    if (!satoshis) return
+  const handleContinue = () => {
+    if (!satoshis || !svcWallet) return
     setSending(true)
     if (arkAddress) {
       sendOffChain(svcWallet, satoshis, arkAddress).then(handleTxid).catch(handleError)

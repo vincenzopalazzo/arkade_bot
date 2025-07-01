@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@arkade-os/sdk':
-    specifier: ^0.1.1
-    version: 0.1.1
+    specifier: ^0.1.3
+    version: 0.1.3
   '@dotmind/react-use-pwa':
     specifier: ^1.0.4
     version: 1.0.4
@@ -129,8 +129,8 @@ packages:
       '@jridgewell/trace-mapping': 0.3.25
     dev: true
 
-  /@arkade-os/sdk@0.1.1:
-    resolution: {integrity: sha512-WpoVZZQanTjGxqimGWz8vepLZIGM0LBdWxBiXzEI1mtoXP/v2XBp/BchGrSidvDxkU96f6mWYJ2nZPQJqjDkgg==}
+  /@arkade-os/sdk@0.1.3:
+    resolution: {integrity: sha512-0Erb788nXBmYS52ivpbofS2ST3bQDfG/rEZwe4KJioiVlGrqyZc9K/WDI+XkkbI5ajTTgQ2RVL4XEN0yjx8Zlw==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     requiresBuild: true
     dependencies:
