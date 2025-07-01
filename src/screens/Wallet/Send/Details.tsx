@@ -73,8 +73,7 @@ export default function SendDetails() {
   }
 
   const handleContinue = () => {
-    console.log('handleContinue', satoshis, arkAddress, address)
-    if (!satoshis) return
+    if (!satoshis || !svcWallet) return
     setSending(true)
     if (arkAddress) {
       sendOffChain(svcWallet, satoshis, arkAddress).then(handleTxid).catch(handleError)

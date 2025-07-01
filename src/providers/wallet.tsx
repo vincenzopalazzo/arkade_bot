@@ -10,7 +10,7 @@ import { arkNoteInUrl } from '../lib/arknote'
 import { consoleError } from '../lib/logs'
 import { Tx, Vtxo, Wallet } from '../lib/types'
 import { calcNextRollover } from '../lib/wallet'
-import { ArkNote, ServiceWorkerWallet } from '@arkade-os/sdk'
+import { ArkNote, ServiceWorkerWallet, setupServiceWorker } from '@arkade-os/sdk'
 import { NetworkName } from '@arkade-os/sdk/dist/types/networks'
 import { hex } from '@scure/base'
 import { useLiveQuery } from 'dexie-react-hooks'
@@ -124,8 +124,15 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     let pingInterval: NodeJS.Timeout
     async function initSvcWorkerWallet() {
       try {
+        navigator.serviceWorker.addEventListener('message', (event) => {
+          if (event.data && event.data.type === 'RELOAD_PAGE') {
+            window.location.reload()
+          }
+        })
+
         // connect to the service worker
-        const svcWallet = await ServiceWorkerWallet.create('/wallet-service-worker.mjs')
+        const serviceWorker = await setupServiceWorker('/wallet-service-worker.mjs')
+        const svcWallet = new ServiceWorkerWallet(serviceWorker)
         setSvcWallet(svcWallet)
 
         // check if the service worker wallet is initialized
@@ -145,7 +152,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
         consoleError(err, 'Error initializing service worker wallet')
       }
     }
-
+    // call async function to initialize the service worker wallet
     initSvcWorkerWallet()
     return () => clearInterval(pingInterval)
   }, [])
@@ -200,7 +207,6 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     await svcWallet.clear()
     setInitialized(false)
     await clearStorage()
-    updateWallet(defaultWallet)
   }
 
   const settlePreconfirmed = async () => {

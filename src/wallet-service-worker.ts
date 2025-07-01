@@ -7,6 +7,12 @@ worker.start().catch(console.error)
 const CACHE_NAME = 'arkade-cache-v1'
 declare const self: ServiceWorkerGlobalScope
 
+// The first event a service worker gets is install.
+// It's triggered as soon as the worker executes, and it's
+// only called once per service worker. If you alter your
+// service worker script the browser considers it a
+// different service worker, and it'll get its own install event.
+//
 // install event: activate service worker immediately
 self.addEventListener('install', (event: ExtendableEvent) => {
   event.waitUntil(caches.open(CACHE_NAME))
@@ -25,6 +31,19 @@ self.addEventListener('activate', (event: ExtendableEvent) => {
       )
     }),
   )
+  // some weird stuff happens if we don't reload the page when
+  // the service worker is activated, so we force a reload
+  // by sending a message to all clients to reload the page
+  self.clients
+    .matchAll({
+      includeUncontrolled: true,
+      type: 'window',
+    })
+    .then((clients) => {
+      clients.forEach((client) => {
+        client.postMessage({ type: 'RELOAD_PAGE' })
+      })
+    })
   self.clients.claim() // take control of clients immediately
 })
 
@@ -43,11 +62,13 @@ self.addEventListener('activate', (event: ExtendableEvent) => {
 //   return response
 // }
 
-async function networkFirst(request: RequestInfo): Promise<Response> {
+async function networkFirst(request: Request): Promise<Response> {
   const cache = await caches.open(CACHE_NAME)
   try {
     const response = await fetch(request)
-    cache.put(request, response.clone())
+    if (request.method === 'GET') {
+      cache.put(request, response.clone())
+    }
     return response
   } catch (error) {
     const cachedResponse = await cache.match(request)
