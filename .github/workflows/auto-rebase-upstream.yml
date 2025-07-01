@@ -1,0 +1,239 @@
+name: Auto Rebase Upstream
+
+on:
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  rebase-upstream:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # Fetch full history for rebase
+          fetch-depth: 0
+          # Use a token that can push to protected branches
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Add upstream remote
+        run: |
+          git remote add upstream https://github.com/arkade-os/wallet.git || true
+          git remote -v
+
+      - name: Fetch upstream changes
+        run: |
+          git fetch upstream
+          git fetch origin
+
+      - name: Get current branch name
+        id: branch
+        run: |
+          BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
+          echo "current_branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
+          echo "Current branch: $BRANCH_NAME"
+
+      - name: Check for upstream changes
+        id: check_changes
+        run: |
+          # Get the latest commit hash from upstream master
+          UPSTREAM_HASH=$(git rev-parse upstream/master)
+          echo "Upstream master hash: $UPSTREAM_HASH"
+
+          # Get the merge-base (common ancestor) of current branch and upstream master
+          MERGE_BASE=$(git merge-base HEAD upstream/master)
+          echo "Merge base hash: $MERGE_BASE"
+
+          # Check if upstream has new commits
+          if [ "$UPSTREAM_HASH" != "$MERGE_BASE" ]; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "New changes detected in upstream"
+
+            # Show what changes are available
+            echo "New commits in upstream:"
+            git log --oneline $MERGE_BASE..upstream/master
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "No new changes in upstream"
+          fi
+
+      - name: Rebase onto upstream master
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: |
+          echo "Starting rebase process..."
+
+          # Rebase current branch onto upstream/master
+          if git rebase upstream/master; then
+            echo "Rebase successful"
+          else
+            echo "Rebase failed with conflicts"
+
+            # Show conflicted files
+            echo "Conflicted files:"
+            git status --porcelain | grep "^UU\|^AA\|^DD" || echo "No conflicted files found"
+
+            # Abort the rebase
+            git rebase --abort
+
+            # Create an issue to notify about the conflict
+            echo "REBASE_FAILED=true" >> $GITHUB_ENV
+            exit 1
+          fi
+
+      - name: Push rebased changes
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: |
+          echo "Pushing rebased changes..."
+
+          # Force push the rebased branch
+          git push --force-with-lease origin ${{ steps.branch.outputs.current_branch }}
+
+          echo "Successfully pushed rebased branch"
+
+      - name: Create issue on rebase failure
+        if: failure() && env.REBASE_FAILED == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const branchName = '${{ steps.branch.outputs.current_branch }}';
+
+            const title = `🔄 Auto-rebase failed for branch: ${branchName}`;
+            const body = `
+            ## Auto Rebase Failure
+
+            The automatic rebase of branch \`${branchName}\` onto upstream \`master\` failed due to merge conflicts.
+
+            **Branch:** \`${branchName}\`
+            **Upstream:** \`https://github.com/arkade-os/wallet\`
+            **Workflow Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            ### Action Required
+
+            Please manually resolve the conflicts:
+
+            \`\`\`bash
+            # Checkout your branch
+            git checkout ${branchName}
+
+            # Add upstream remote (if not already added)
+            git remote add upstream https://github.com/arkade-os/wallet.git
+
+            # Fetch latest changes
+            git fetch upstream
+
+            # Start rebase
+            git rebase upstream/master
+
+            # Resolve conflicts in your editor, then:
+            git add .
+            git rebase --continue
+
+            # Force push the rebased branch
+            git push --force-with-lease origin ${branchName}
+            \`\`\`
+
+            ### Files Likely to Have Conflicts
+
+            Based on your Telegram Mini App changes, watch out for conflicts in:
+            - \`src/index.tsx\` (provider hierarchy)
+            - \`src/App.tsx\` (component imports)
+            - \`package.json\` (dependencies)
+            - \`index.html\` (script tags)
+
+            This issue will be automatically closed when the next auto-rebase succeeds.
+            `;
+
+            // Check if issue already exists
+            const issues = await github.rest.issues.listForRepo({
+              owner,
+              repo,
+              state: 'open',
+              labels: 'auto-rebase-failed'
+            });
+
+            const existingIssue = issues.data.find(issue =>
+              issue.title.includes(branchName)
+            );
+
+            if (!existingIssue) {
+              await github.rest.issues.create({
+                owner,
+                repo,
+                title,
+                body,
+                labels: ['auto-rebase-failed', 'automation']
+              });
+            } else {
+              // Update existing issue
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: existingIssue.number,
+                body: `🔄 Auto-rebase failed again on ${new Date().toISOString()}\n\nWorkflow Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}`
+              });
+            }
+
+      - name: Close resolved rebase issues
+        if: steps.check_changes.outputs.has_changes == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const branchName = '${{ steps.branch.outputs.current_branch }}';
+
+            // Find and close any existing rebase failure issues for this branch
+            const issues = await github.rest.issues.listForRepo({
+              owner,
+              repo,
+              state: 'open',
+              labels: 'auto-rebase-failed'
+            });
+
+            for (const issue of issues.data) {
+              if (issue.title.includes(branchName)) {
+                await github.rest.issues.createComment({
+                  owner,
+                  repo,
+                  issue_number: issue.number,
+                  body: `✅ Auto-rebase succeeded! This issue is now resolved.\n\nWorkflow Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}`
+                });
+
+                await github.rest.issues.update({
+                  owner,
+                  repo,
+                  issue_number: issue.number,
+                  state: 'closed'
+                });
+              }
+            }
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Auto Rebase Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch:** ${{ steps.branch.outputs.current_branch }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Upstream:** https://github.com/arkade-os/wallet" >> $GITHUB_STEP_SUMMARY
+          echo "- **Has Changes:** ${{ steps.check_changes.outputs.has_changes }}" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ steps.check_changes.outputs.has_changes }}" == "true" ]; then
+            if [ "${{ job.status }}" == "success" ]; then
+              echo "- **Status:** ✅ Successfully rebased and pushed" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "- **Status:** ❌ Rebase failed due to conflicts" >> $GITHUB_STEP_SUMMARY
+              echo "- **Action:** Issue created for manual resolution" >> $GITHUB_STEP_SUMMARY
+            fi
+          else
+            echo "- **Status:** ℹ️ No changes to rebase" >> $GITHUB_STEP_SUMMARY
+          fi
