@@ -24,7 +24,7 @@ services:
         target: /app/data
 
   boltz-lnd:
-    image: lightninglabs/lnd:v0.18.5-beta
+    image: lightninglabs/lnd:v0.19.1-beta
     restart: unless-stopped
     container_name: boltz-lnd
     command:
