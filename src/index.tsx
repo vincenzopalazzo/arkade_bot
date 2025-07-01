@@ -11,6 +11,7 @@ import { NotificationsProvider } from './providers/notifications'
 import { WalletProvider } from './providers/wallet'
 import { OptionsProvider } from './providers/options'
 import { IframeProvider } from './providers/iframe'
+import { TelegramProvider } from './providers/telegram'
 import { LimitsProvider } from './providers/limits'
 import { LightningProvider } from './providers/lightning'
 import * as Sentry from '@sentry/react'
@@ -40,26 +41,28 @@ const AppWithProviders = () => {
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
   // <React.StrictMode>
-  <NavigationProvider>
-    <ConfigProvider>
-      <AspProvider>
-        <LimitsProvider>
-          <NotificationsProvider>
-            <FiatProvider>
-              <FlowProvider>
-                <WalletProvider>
-                  <OptionsProvider>
-                    <LightningProvider>
-                      <AppWithProviders />
-                    </LightningProvider>
-                  </OptionsProvider>
-                </WalletProvider>
-              </FlowProvider>
-            </FiatProvider>
-          </NotificationsProvider>
-        </LimitsProvider>
-      </AspProvider>
-    </ConfigProvider>
-  </NavigationProvider>,
+  <TelegramProvider>
+    <NavigationProvider>
+      <ConfigProvider>
+        <AspProvider>
+          <LimitsProvider>
+            <NotificationsProvider>
+              <FiatProvider>
+                <FlowProvider>
+                  <WalletProvider>
+                    <OptionsProvider>
+                      <LightningProvider>
+                        <AppWithProviders />
+                      </LightningProvider>
+                    </OptionsProvider>
+                  </WalletProvider>
+                </FlowProvider>
+              </FiatProvider>
+            </NotificationsProvider>
+          </LimitsProvider>
+        </AspProvider>
+      </ConfigProvider>
+    </NavigationProvider>
+  </TelegramProvider>,
   // </React.StrictMode>,
 )
