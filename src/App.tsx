@@ -29,6 +29,7 @@ import { pwaIsInstalled } from './lib/pwa'
 import WalletIcon from './icons/Wallet'
 import AppsIcon from './icons/Apps'
 import FlexCol from './components/FlexCol'
+// import { useTelegram } from './providers/telegram'
 
 setupIonicReact()
 
@@ -46,6 +47,16 @@ export default function App() {
   const appsRef = useRef<HTMLIonTabElement>(null)
   const walletRef = useRef<HTMLIonTabElement>(null)
   const settingsRef = useRef<HTMLIonTabElement>(null)
+
+  // Telegram integration (commented out to avoid TypeScript errors during initial setup)
+  // const {
+  //   isTelegramEnvironment,
+  //   user,
+  //   colorScheme,
+  //   hapticFeedback,
+  //   showBackButton,
+  //   hideBackButton
+  // } = useTelegram()
 
   // lock screen orientation to portrait
   // this is a workaround for the issue with the screen orientation API
