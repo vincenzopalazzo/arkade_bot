@@ -30,6 +30,7 @@ import AppsIcon from './icons/Apps'
 import { WalletContext } from './providers/wallet'
 import { FlowContext } from './providers/flow'
 import { pwaIsInstalled } from './lib/pwa'
+// import { useTelegram } from './providers/telegram'
 
 setupIonicReact()
 
@@ -42,6 +43,16 @@ export default function App() {
   const { setOption } = useContext(OptionsContext)
   const { walletLoaded, initialized, svcWallet } = useContext(WalletContext)
   const [loadingError, setLoadingError] = useState('')
+
+  // Telegram integration (commented out to avoid TypeScript errors during initial setup)
+  // const {
+  //   isTelegramEnvironment,
+  //   user,
+  //   colorScheme,
+  //   hapticFeedback,
+  //   showBackButton,
+  //   hideBackButton
+  // } = useTelegram()
 
   // lock screen orientation to portrait
   // this is a workaround for the issue with the screen orientation API
