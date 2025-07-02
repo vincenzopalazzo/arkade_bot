@@ -135,8 +135,8 @@ export const TelegramProvider: React.FC<TelegramProviderProps> = ({ children }) 
     if (window.Telegram?.WebApp) {
       checkTelegram()
     } else {
-      // Wait for the Telegram script to load
-      const timeout = setTimeout(checkTelegram, 100)
+      // Wait for the Telegram script to load - increased timeout for iOS
+      const timeout = setTimeout(checkTelegram, 1000)
       return () => clearTimeout(timeout)
     }
   }, [])
