@@ -130,7 +130,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
           }
         })
 
-        // connect to the service worker
+        // connect to the service worker with iOS WebView considerations
         const serviceWorker = await setupServiceWorker('/wallet-service-worker.mjs')
         const svcWallet = new ServiceWorkerWallet(serviceWorker)
         setSvcWallet(svcWallet)
@@ -140,6 +140,8 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
         setInitialized(walletInitialized)
 
         // ping the service worker wallet status every 1 second
+        // increased interval for iOS to avoid performance issues in WebView
+        const pingDelay = window.navigator.userAgent.includes('iPhone') || window.navigator.userAgent.includes('iPad') ? 2000 : 1000
         pingInterval = setInterval(async () => {
           try {
             const { walletInitialized } = await svcWallet.getStatus()
@@ -147,9 +149,16 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
           } catch (err) {
             consoleError(err, 'Error pinging wallet status')
           }
-        }, 1_000)
+        }, pingDelay)
       } catch (err) {
         consoleError(err, 'Error initializing service worker wallet')
+        // On iOS in WebView, service worker initialization might fail
+        // Set a timeout to retry initialization
+        if (window.navigator.userAgent.includes('iPhone') || window.navigator.userAgent.includes('iPad')) {
+          setTimeout(() => {
+            initSvcWorkerWallet()
+          }, 2000)
+        }
       }
     }
     // call async function to initialize the service worker wallet
