@@ -163,7 +163,10 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
       const { walletInitialized } = await svcWallet.getStatus()
       setInitialized(walletInitialized)
 
-      // ping the service worker wallet status every 1 second
+      // ping the service worker wallet status every 1-2 seconds
+      // increased interval for iOS to avoid performance issues in WebView
+      const isIOS = window.navigator.userAgent.includes('iPhone') || window.navigator.userAgent.includes('iPad')
+      const pingDelay = isIOS ? 2_000 : 1_000
       setInterval(async () => {
         try {
           const { walletInitialized } = await svcWallet.getStatus()
@@ -171,12 +174,20 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
         } catch (err) {
           consoleError(err, 'Error pinging wallet status')
         }
-      }, 1_000)
+      }, pingDelay)
 
       // renew expiring coins on startup
       renewCoins(svcWallet).catch(() => {})
     } catch (err) {
       consoleError(err, 'Error initializing service worker wallet')
+      // On iOS in WebView, service worker initialization might fail
+      // Set a timeout to retry initialization
+      const isIOS = window.navigator.userAgent.includes('iPhone') || window.navigator.userAgent.includes('iPad')
+      if (isIOS) {
+        setTimeout(() => {
+          initSvcWorkerWallet({ arkServerUrl, esploraUrl, privateKey })
+        }, 2000)
+      }
     }
   }
 

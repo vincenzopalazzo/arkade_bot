@@ -29,7 +29,8 @@ import { pwaIsInstalled } from './lib/pwa'
 import WalletIcon from './icons/Wallet'
 import AppsIcon from './icons/Apps'
 import FlexCol from './components/FlexCol'
-// import { useTelegram } from './providers/telegram'
+import { useTelegram } from './providers/telegram'
+import { isIOS } from './lib/browser'
 
 setupIonicReact()
 
@@ -48,23 +49,26 @@ export default function App() {
   const walletRef = useRef<HTMLIonTabElement>(null)
   const settingsRef = useRef<HTMLIonTabElement>(null)
 
-  // Telegram integration (commented out to avoid TypeScript errors during initial setup)
-  // const {
-  //   isTelegramEnvironment,
-  //   user,
-  //   colorScheme,
-  //   hapticFeedback,
-  //   showBackButton,
-  //   hideBackButton
-  // } = useTelegram()
+  // Telegram integration
+  const {
+    isTelegramEnvironment,
+    user,
+    colorScheme,
+    hapticFeedback,
+    showBackButton,
+    hideBackButton
+  } = useTelegram()
 
-  // lock screen orientation to portrait
+  // lock screen orientation to portrait with iOS WebView safety
   // this is a workaround for the issue with the screen orientation API
-  // not being supported in some browsers
-  const orientation = window.screen.orientation as any
-  if (orientation && typeof orientation.lock === 'function') {
-    orientation.lock('portrait').catch(() => {})
-  }
+  // not being supported in some browsers or causing issues in WebViews
+  useEffect(() => {
+    const orientation = window.screen.orientation as any
+    if (orientation && typeof orientation.lock === 'function' && !isTelegramEnvironment) {
+      // Only lock orientation if not in Telegram environment to avoid WebView issues
+      orientation.lock('portrait').catch(() => {})
+    }
+  }, [isTelegramEnvironment])
 
   useEffect(() => {
     if (!configLoaded) {
@@ -81,10 +85,16 @@ export default function App() {
   useEffect(() => {
     // avoid redirect if the user is still setting up the wallet
     if (initInfo.password || initInfo.privateKey) return
-    if (!walletLoaded) return navigate(Pages.Loading)
-    if (!wallet.pubkey) return navigate(pwaIsInstalled() ? Pages.Init : Pages.Onboard)
-    if (!initialized) return navigate(Pages.Unlock)
-  }, [walletLoaded, initialized, svcWallet, initInfo])
+    if (!svcWallet || initialized === undefined) navigate(Pages.Loading)
+    else if (!walletLoaded) {
+      // Updated navigation logic to account for Telegram environment
+      // In Telegram, always go to Init regardless of PWA status
+      // On iOS in Telegram, pwaIsInstalled() may not work correctly
+      const shouldGoToInit = isTelegramEnvironment || pwaIsInstalled()
+      navigate(shouldGoToInit ? Pages.Init : Pages.Onboard)
+    }
+    else if (!initialized) navigate(Pages.Unlock)
+  }, [walletLoaded, initialized, svcWallet, initInfo, isTelegramEnvironment])
 
   // for some reason you need to manually set the active tab
   // if you are coming from a page in a different tab
