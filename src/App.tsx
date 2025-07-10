@@ -41,6 +41,7 @@ export default function App() {
   const { initInfo } = useContext(FlowContext)
   const { setOption } = useContext(OptionsContext)
   const { walletLoaded, initialized, svcWallet, wallet } = useContext(WalletContext)
+  const serviceWorkerSupported = typeof navigator !== 'undefined' && 'serviceWorker' in navigator
 
   const [loadingError, setLoadingError] = useState('')
 
@@ -85,7 +86,7 @@ export default function App() {
   useEffect(() => {
     // avoid redirect if the user is still setting up the wallet
     if (initInfo.password || initInfo.privateKey) return
-    if (!svcWallet || initialized === undefined) navigate(Pages.Loading)
+    if ((serviceWorkerSupported && !svcWallet) || initialized === undefined) navigate(Pages.Loading)
     else if (!walletLoaded) {
       // Updated navigation logic to account for Telegram environment
       // In Telegram, always go to Init regardless of PWA status
@@ -94,7 +95,7 @@ export default function App() {
       navigate(shouldGoToInit ? Pages.Init : Pages.Onboard)
     }
     else if (!initialized) navigate(Pages.Unlock)
-  }, [walletLoaded, initialized, svcWallet, initInfo, isTelegramEnvironment])
+  }, [walletLoaded, initialized, svcWallet, initInfo, isTelegramEnvironment, serviceWorkerSupported])
 
   // for some reason you need to manually set the active tab
   // if you are coming from a page in a different tab
@@ -122,6 +123,8 @@ export default function App() {
         break
     }
   }, [tab])
+
+  if (serviceWorkerSupported && !svcWallet) return <Loading text={loadingError} />
 
   const handleWallet = () => {
     navigate(Pages.Wallet)
