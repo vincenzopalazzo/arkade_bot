@@ -42,6 +42,7 @@ export default function App() {
   const { initInfo } = useContext(FlowContext)
   const { setOption } = useContext(OptionsContext)
   const { walletLoaded, initialized, svcWallet } = useContext(WalletContext)
+  const serviceWorkerSupported = typeof navigator !== 'undefined' && 'serviceWorker' in navigator
   const [loadingError, setLoadingError] = useState('')
 
   // Telegram integration (commented out to avoid TypeScript errors during initial setup)
@@ -76,12 +77,12 @@ export default function App() {
   useEffect(() => {
     // avoid redirect if the user is still setting up the wallet
     if (initInfo.password || initInfo.privateKey) return
-    if (!svcWallet || initialized === undefined) navigate(Pages.Loading)
+    if ((serviceWorkerSupported && !svcWallet) || initialized === undefined) navigate(Pages.Loading)
     else if (!walletLoaded) navigate(pwaIsInstalled() ? Pages.Init : Pages.Onboard)
     else if (!initialized) navigate(Pages.Unlock)
-  }, [walletLoaded, initialized, svcWallet, initInfo])
+  }, [walletLoaded, initialized, svcWallet, initInfo, serviceWorkerSupported])
 
-  if (!svcWallet) return <Loading text={loadingError} />
+  if (serviceWorkerSupported && !svcWallet) return <Loading text={loadingError} />
 
   const handleWallet = () => {
     navigate(Pages.Wallet)
