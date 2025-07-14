@@ -4,7 +4,7 @@
   "private": true,
   "homepage": ".",
   "dependencies": {
-    "@arkade-os/sdk": "^0.1.4",
+    "@arkade-os/sdk": "0.1.4",
     "@dotmind/react-use-pwa": "^1.0.4",
     "@ionic/react": "^8.5.6",
     "@scure/base": "^1.2.5",
@@ -71,9 +71,12 @@
     "vite-plugin-eslint": "^1.8.1",
     "vitest": "^1.6.1"
   },
-  "packageManager": "pnpm@8.15.4",
+  "packageManager": "pnpm@9.15.9",
   "engines": {
     "node": ">=14",
     "pnpm": ">=8"
+  },
+  "resolutions": {
+    "rollup": "4.44.2"
   }
 }
