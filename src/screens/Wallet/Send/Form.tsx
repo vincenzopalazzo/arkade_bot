@@ -153,8 +153,6 @@ export default function SendForm() {
     if (sendInfo.lnUrl && sendInfo.satoshis === balance) handleSendAll()
   }, [sendInfo.lnUrl])
 
-  console.log('SendForm: sendInfo', sendInfo)
-
   // validate recipient addresses
   useEffect(() => {
     if (!receivingAddresses) return setError('Unable to get receiving addresses')
