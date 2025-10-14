@@ -9,7 +9,7 @@ import { WalletContext } from '../../../providers/wallet'
 import { NotificationsContext } from '../../../providers/notifications'
 import Header from '../../../components/Header'
 import Content from '../../../components/Content'
-import { consoleError, consoleLog } from '../../../lib/logs'
+import { consoleError } from '../../../lib/logs'
 import { canBrowserShareData, shareData } from '../../../lib/share'
 import ExpandAddresses from '../../../components/ExpandAddresses'
 import FlexCol from '../../../components/FlexCol'
@@ -59,7 +59,6 @@ export default function ReceiveQRCode() {
           const invoice = pendingSwap.response.invoice
           setRecvInfo({ ...recvInfo, invoice })
           setInvoice(invoice)
-          consoleLog('Reverse swap invoice created:', invoice)
           swapProvider
             .waitAndClaim(pendingSwap)
             .then(() => {
