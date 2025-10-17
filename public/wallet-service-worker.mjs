@@ -8230,9 +8230,7 @@ class Ze {
         switch (n && n(A), A.type) {
           // the settlement failed
           case z.BatchFailed:
-            if (A.id === p)
-              throw new Error(A.reason);
-            break;
+            throw new Error(A.reason);
           case z.BatchStarted:
             if (d !== void 0)
               continue;
@@ -8305,7 +8303,8 @@ class Ze {
           case z.BatchFinalized:
             if (d !== z.BatchFinalization)
               continue;
-            return l.abort(), A.commitmentTxid;
+            if (A.id === p)
+              return l.abort(), A.commitmentTxid;
         }
     } catch (d) {
       l.abort();
