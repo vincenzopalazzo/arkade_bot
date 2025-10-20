@@ -16,6 +16,8 @@ import { emptyRecvInfo, emptySendInfo, FlowContext } from '../../providers/flow'
 import { NavigationContext, Pages } from '../../providers/navigation'
 import { NudgeContext } from '../../providers/nudge'
 import { EmptyTxList } from '../../components/Empty'
+import { InfoBox } from '../../components/AlertBox'
+import { getAlert } from '../../lib/alerts'
 
 export default function Wallet() {
   const { aspInfo } = useContext(AspContext)
@@ -24,11 +26,16 @@ export default function Wallet() {
   const { nudge } = useContext(NudgeContext)
   const { balance, txs } = useContext(WalletContext)
 
+  const [alert, setAlert] = useState<string | undefined>()
   const [error, setError] = useState(false)
 
   useEffect(() => {
     setError(aspInfo.unreachable)
   }, [aspInfo.unreachable])
+
+  useEffect(() => {
+    getAlert().then(setAlert)
+  }, [])
 
   const handleReceive = () => {
     setRecvInfo(emptyRecvInfo)
@@ -52,7 +59,7 @@ export default function Wallet() {
               <Button icon={<SendIcon />} label='Send' onClick={handleSend} />
               <Button icon={<ReceiveIcon />} label='Receive' onClick={handleReceive} />
             </FlexRow>
-            {nudge}
+            {nudge ? nudge : alert ? <InfoBox html={alert} /> : null}
           </FlexCol>
           {txs?.length === 0 ? (
             <div style={{ marginTop: '5rem', width: '100%' }}>
