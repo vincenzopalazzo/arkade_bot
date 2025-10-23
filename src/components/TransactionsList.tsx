@@ -3,14 +3,11 @@ import { WalletContext } from '../providers/wallet'
 import Text, { TextLabel, TextSecondary } from './Text'
 import { CurrencyDisplay, Tx } from '../lib/types'
 import { prettyAmount, prettyDate, prettyHide } from '../lib/format'
-import PreconfirmedIcon from '../icons/Preconfirmed'
 import ReceivedIcon from '../icons/Received'
 import SentIcon from '../icons/Sent'
 import FlexRow from './FlexRow'
 import { FlowContext } from '../providers/flow'
 import { NavigationContext, Pages } from '../providers/navigation'
-import { defaultFee } from '../lib/constants'
-import SelfSendIcon from '../icons/SelfSend'
 import { ConfigContext } from '../providers/config'
 import { FiatContext } from '../providers/fiat'
 
@@ -27,14 +24,7 @@ const TransactionLine = ({ tx }: { tx: Tx }) => {
   const date = tx.createdAt ? prettyDate(tx.createdAt) : tx.boardingTxid ? 'Unconfirmed' : 'Unknown'
 
   const Fiat = () => {
-    const color =
-      config.currencyDisplay === CurrencyDisplay.Both
-        ? 'dark50'
-        : tx.type === 'received'
-          ? 'green'
-          : tx.preconfirmed
-            ? 'orange'
-            : ''
+    const color = config.currencyDisplay === CurrencyDisplay.Both ? 'dark50' : tx.type === 'received' ? 'green' : ''
     const value = toFiat(tx.amount)
     const small = config.currencyDisplay === CurrencyDisplay.Both
     const world = config.showBalance ? prettyAmount(value, config.fiat) : prettyHide(value, config.fiat)
@@ -44,22 +34,11 @@ const TransactionLine = ({ tx }: { tx: Tx }) => {
       </Text>
     )
   }
-  const Icon = () =>
-    !tx.settled ? (
-      <PreconfirmedIcon />
-    ) : tx.type === 'sent' ? (
-      tx.amount === defaultFee ? (
-        <SelfSendIcon />
-      ) : (
-        <SentIcon />
-      )
-    ) : (
-      <ReceivedIcon />
-    )
+  const Icon = () => (tx.type === 'sent' ? <SentIcon /> : <ReceivedIcon />)
   const Kind = () => <Text thin>{tx.type === 'sent' ? 'Sent' : 'Received'}</Text>
   const Date = () => <TextSecondary>{date}</TextSecondary>
   const Sats = () => (
-    <Text color={tx.preconfirmed ? 'orange' : tx.type === 'received' ? 'green' : ''} thin>
+    <Text color={tx.type === 'received' ? 'green' : ''} thin>
       {amount}
     </Text>
   )
