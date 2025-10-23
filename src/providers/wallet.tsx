@@ -2,7 +2,7 @@ import { ReactNode, createContext, useContext, useEffect, useState } from 'react
 import { clearStorage, readWalletFromStorage, saveWalletToStorage } from '../lib/storage'
 import { NavigationContext, Pages } from './navigation'
 import { getRestApiExplorerURL } from '../lib/explorers'
-import { getBalance, getTxHistory, getVtxos, settleVtxos } from '../lib/asp'
+import { getBalance, getTxHistory, getVtxos, renewCoins, settleVtxos } from '../lib/asp'
 import { AspContext } from './asp'
 import { NotificationsContext } from './notifications'
 import { FlowContext } from './flow'
@@ -117,15 +117,24 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     let pingInterval: NodeJS.Timeout
     async function initSvcWorkerWallet() {
       try {
-        navigator.serviceWorker.addEventListener('message', (event) => {
-          if (event.data && event.data.type === 'RELOAD_PAGE') {
-            window.location.reload()
-          }
-        })
-
         const serviceWorker = await setupServiceWorker('/wallet-service-worker.mjs')
         const swWallet = new ServiceWorkerWallet(serviceWorker)
         setSvcWallet(swWallet)
+
+        // handle messages from the service worker
+        // we listen for UTXO/VTXO updates to refresh the tx history and balance
+        const handleServiceWorkerMessages = (event: MessageEvent) => {
+          if (event.data && event.data.type === 'RELOAD_PAGE') {
+            window.location.reload()
+          }
+          if (event.data && ['VTXO_UPDATE', 'UTXO_UPDATE'].includes(event.data.type)) {
+            reloadWallet(swWallet)
+            // reload again after a delay to give the indexer time to update its cache
+            setTimeout(() => reloadWallet(swWallet), 5000)
+          }
+        }
+
+        navigator.serviceWorker.addEventListener('message', handleServiceWorkerMessages)
 
         const { walletInitialized } = await swWallet.getStatus()
         setInitialized(walletInitialized)
@@ -142,6 +151,9 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
             consoleError(err, 'Error pinging wallet status')
           }
         }, pingDelay)
+
+        // renew expiring coins on startup
+        renewCoins(swWallet).catch(() => {})
       } catch (err) {
         consoleError(err, 'Error initializing service worker wallet')
         // On iOS in WebView, service worker initialization might fail
