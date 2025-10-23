@@ -2,7 +2,7 @@ import { ReactNode, createContext, useContext, useEffect, useState } from 'react
 import { clearStorage, readWalletFromStorage, saveWalletToStorage } from '../lib/storage'
 import { NavigationContext, Pages } from './navigation'
 import { getRestApiExplorerURL } from '../lib/explorers'
-import { getBalance, getTxHistory, settleVtxos } from '../lib/asp'
+import { getBalance, getTxHistory, getVtxos, settleVtxos } from '../lib/asp'
 import { AspContext } from './asp'
 import { NotificationsContext } from './notifications'
 import { FlowContext } from './flow'
@@ -14,14 +14,13 @@ import {
   ArkNote,
   ServiceWorkerWallet,
   Wallet as ArkWallet,
-  InMemoryKey,
+  SingleKey,
   setupServiceWorker,
   type IWallet,
+  NetworkName,
 } from '@arkade-os/sdk'
-import { NetworkName } from '@arkade-os/sdk/dist/types/networks'
 import { hex } from '@scure/base'
-import { useLiveQuery } from 'dexie-react-hooks'
-import { db } from '../lib/db'
+import * as secp from '@noble/secp256k1'
 
 const defaultWallet: Wallet = {
   network: '',
@@ -76,21 +75,6 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   const [txs, setTxs] = useState<Tx[]>([])
   const [balance, setBalance] = useState(0)
   const [initialized, setInitialized] = useState<boolean | undefined>(undefined)
-  const allVtxos = useLiveQuery(() => db.vtxos?.toArray())
-
-  useEffect(() => {
-    if (!allVtxos) return
-    const spendable = []
-    const spent = []
-    for (const vtxo of allVtxos) {
-      if (vtxo.spentBy && vtxo.spentBy.length > 0) {
-        spent.push(vtxo)
-      } else {
-        spendable.push(vtxo)
-      }
-    }
-    setVtxos({ spendable, spent })
-  }, [allVtxos])
 
   useEffect(() => {
     if (!svcWallet) return
@@ -110,21 +94,18 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [vtxos, svcWallet])
 
-  const reloadWallet = async () => {
-    if (!svcWallet) return
-    // update the txs history list
+  const reloadWallet = async (swWallet = svcWallet) => {
+    if (!swWallet) return
     try {
-      const txs = await getTxHistory(svcWallet)
+      const vtxos = await getVtxos(swWallet)
+      const txs = await getTxHistory(swWallet)
+      const balance = await getBalance(swWallet)
+      setBalance(balance)
+      setVtxos(vtxos)
       setTxs(txs)
     } catch (err) {
-      consoleError(err, 'Error getting txs history')
-    }
-    // update the balance
-    try {
-      const balance = await getBalance(svcWallet)
-      setBalance(balance)
-    } catch (err) {
-      consoleError(err, 'Error getting balance')
+      consoleError(err, 'Error reloading wallet')
+      return
     }
   }
 
@@ -204,28 +185,30 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
 
   const initWallet = async (privateKey: Uint8Array) => {
     const arkServerUrl = aspInfo.url
-    const esploraUrl = getRestApiExplorerURL(wallet.network) ?? ''
+    const network = aspInfo.network as NetworkName
+    const esploraUrl = getRestApiExplorerURL(network) ?? ''
+    const pubkey = hex.encode(secp.getPublicKey(privateKey))
 
     if (serviceWorkerSupported) {
       if (!svcWallet || !(svcWallet instanceof ServiceWorkerWallet)) throw new Error('Service worker not initialized')
       await svcWallet.init({
         arkServerUrl,
         privateKey: hex.encode(privateKey),
-        network: aspInfo.network as NetworkName,
+        network,
         esploraUrl,
       })
-      updateWallet({ ...wallet, network: aspInfo.network })
+      updateWallet({ ...wallet, network, pubkey })
       setInitialized(true)
     } else {
-      const identity = InMemoryKey.fromHex(hex.encode(privateKey))
+      const identity = SingleKey.fromHex(hex.encode(privateKey))
       const directWallet = await ArkWallet.create({
-        network: aspInfo.network as NetworkName,
+        network,
         identity,
         arkServerUrl,
         esploraUrl,
       })
       setSvcWallet(directWallet)
-      updateWallet({ ...wallet, network: aspInfo.network })
+      updateWallet({ ...wallet, network, pubkey })
       setInitialized(true)
     }
   }
