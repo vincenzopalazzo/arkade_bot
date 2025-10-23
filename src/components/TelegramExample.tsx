@@ -35,13 +35,11 @@ const TelegramExample: React.FC = () => {
       //   hapticFeedback('success')
       //   handleSendPayment()
       // })
-
       // Show back button if needed
       // showBackButton(() => {
       //   // Handle back navigation
       //   window.history.back()
       // })
-
       // Set theme colors
       // setHeaderColor(colorScheme === 'dark' ? '#1a1a1a' : '#ffffff')
       // setBackgroundColor(colorScheme === 'dark' ? '#000000' : '#f5f5f5')
@@ -89,7 +87,7 @@ const TelegramExample: React.FC = () => {
                 <IonLabel>
                   <h3>Welcome, {user?.first_name}!</h3>
                   <p>User ID: {user?.id}</p>
-                  {user?.username && <p>Username: @{user.username}</p>}
+                  {user?.username ? <p>Username: @{user.username}</p> : null}
                 </IonLabel>
               </IonItem>
 
@@ -101,19 +99,19 @@ const TelegramExample: React.FC = () => {
               </IonItem>
 
               <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <IonButton expand="block" onClick={handleHapticTest}>
+                <IonButton expand='block' onClick={handleHapticTest}>
                   Test Haptic Feedback
                 </IonButton>
 
-                <IonButton expand="block" onClick={handleShowAlert}>
+                <IonButton expand='block' onClick={handleShowAlert}>
                   Show Telegram Alert
                 </IonButton>
 
-                <IonButton expand="block" onClick={handleShowConfirm}>
+                <IonButton expand='block' onClick={handleShowConfirm}>
                   Show Telegram Confirm
                 </IonButton>
 
-                <IonButton expand="block" color="success" onClick={handleSendPayment}>
+                <IonButton expand='block' color='success' onClick={handleSendPayment}>
                   Send Payment (Main Button Action)
                 </IonButton>
               </div>
@@ -129,15 +127,15 @@ const TelegramExample: React.FC = () => {
               </IonItem>
 
               <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <IonButton expand="block" onClick={handleHapticTest}>
+                <IonButton expand='block' onClick={handleHapticTest}>
                   Test Haptic (Console Log)
                 </IonButton>
 
-                <IonButton expand="block" onClick={handleShowAlert}>
+                <IonButton expand='block' onClick={handleShowAlert}>
                   Show Browser Alert
                 </IonButton>
 
-                <IonButton expand="block" onClick={handleShowConfirm}>
+                <IonButton expand='block' onClick={handleShowConfirm}>
                   Show Browser Confirm
                 </IonButton>
               </div>
@@ -152,11 +150,21 @@ const TelegramExample: React.FC = () => {
         </IonCardHeader>
         <IonCardContent>
           <div style={{ fontSize: '14px', lineHeight: '1.5' }}>
-            <p><strong>Haptic Feedback:</strong> Use for button presses, success/error states</p>
-            <p><strong>Main Button:</strong> Use for primary actions like "Send", "Confirm", "Continue"</p>
-            <p><strong>Back Button:</strong> Show when users can navigate back</p>
-            <p><strong>Theme Integration:</strong> App automatically adapts to user's Telegram theme</p>
-            <p><strong>User Data:</strong> Access user's name, username, and profile photo</p>
+            <p>
+              <strong>Haptic Feedback:</strong> Use for button presses, success/error states
+            </p>
+            <p>
+              <strong>Main Button:</strong> Use for primary actions like "Send", "Confirm", "Continue"
+            </p>
+            <p>
+              <strong>Back Button:</strong> Show when users can navigate back
+            </p>
+            <p>
+              <strong>Theme Integration:</strong> App automatically adapts to user's Telegram theme
+            </p>
+            <p>
+              <strong>User Data:</strong> Access user's name, username, and profile photo
+            </p>
           </div>
         </IonCardContent>
       </IonCard>

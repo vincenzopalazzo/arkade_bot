@@ -30,7 +30,6 @@ import WalletIcon from './icons/Wallet'
 import AppsIcon from './icons/Apps'
 import FlexCol from './components/FlexCol'
 import { useTelegram } from './providers/telegram'
-import { isIOS } from './lib/browser'
 
 setupIonicReact()
 
@@ -40,7 +39,7 @@ export default function App() {
   const { navigate, screen, tab } = useContext(NavigationContext)
   const { initInfo } = useContext(FlowContext)
   const { setOption } = useContext(OptionsContext)
-  const { walletLoaded, initialized, svcWallet, wallet } = useContext(WalletContext)
+  const { walletLoaded, initialized, svcWallet } = useContext(WalletContext)
   const serviceWorkerSupported = typeof navigator !== 'undefined' && 'serviceWorker' in navigator
 
   const [loadingError, setLoadingError] = useState('')
@@ -51,14 +50,7 @@ export default function App() {
   const settingsRef = useRef<HTMLIonTabElement>(null)
 
   // Telegram integration
-  const {
-    isTelegramEnvironment,
-    user,
-    colorScheme,
-    hapticFeedback,
-    showBackButton,
-    hideBackButton
-  } = useTelegram()
+  const { isTelegramEnvironment } = useTelegram()
 
   // lock screen orientation to portrait with iOS WebView safety
   // this is a workaround for the issue with the screen orientation API
@@ -93,8 +85,7 @@ export default function App() {
       // On iOS in Telegram, pwaIsInstalled() may not work correctly
       const shouldGoToInit = isTelegramEnvironment || pwaIsInstalled()
       navigate(shouldGoToInit ? Pages.Init : Pages.Onboard)
-    }
-    else if (!initialized) navigate(Pages.Unlock)
+    } else if (!initialized) navigate(Pages.Unlock)
   }, [walletLoaded, initialized, svcWallet, initInfo, isTelegramEnvironment, serviceWorkerSupported])
 
   // for some reason you need to manually set the active tab
